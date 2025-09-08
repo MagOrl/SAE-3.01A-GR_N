@@ -1,0 +1,79 @@
+DROP TABLE IF EXISTS;
+
+DROP TABLE IF EXISTS;
+
+DROP TABLE IF EXISTS;
+
+DROP TABLE IF EXISTS;
+
+DROP TABLE IF EXISTS HABILITATION;
+
+DROP TABLE IF EXISTS PERSONNEL;
+
+DROP TABLE IF EXISTS PLATEFORME;
+
+CREATE TABLE
+    HABILITATION (idHab varchar(10) primary key, nomHab varchar(20));
+
+CREATE TABLE
+    PERSONNEL (
+        idPers varchar(10) primary key,
+        nomPers varchar(20)
+    );
+
+CREATE TABLE
+    PLATEFORME (
+        idPla varchar(10) primary key,
+        nomPla varchar(20),
+        nbPersNec int,
+        coutExploiJ int,
+        interMainte int
+    );
+
+CREATE TABLE
+    NECESSITER (
+        idHab varchar(10),
+        idPla varchar(10),
+        primary key (idHab, idPla),
+        foreign key (idHab) references HABILITATION (idHab),
+        foreign key (idPla) references PLATEFORME (idPla)
+    );
+
+CREATE TABLE
+    SPECIALISER_EN (
+        idHab varchar(10),
+        idPers varchar(10),
+        primary key (idHab, idPla),
+        foreign key (idHab) references HABILITATION (idHab),
+        foreign key (idPers) references PERSONNEL (idPers)
+    );
+
+CREATE TABLE
+    DATE (jma date);
+
+CREATE TABLE
+    SEQUENCE (IdSeq varchar(10) primary key);
+
+CREATE TABLE
+    ESPECE (
+        IdEsp varchar(10) primary key,
+        IdSeq varchar(10),
+        foreign key (IdEsp) references SEQUENCE (IdSeq)
+    );
+
+CREATE TABLE
+    ECHANTILLION (
+        IdEch varchar(10) primary key,
+        IdSeq varchar(10),
+        commentaire varchar(100),
+        foreign key (IdEsp) references SEQUENCE (IdSeq)
+    );
+
+create TABLE
+    PLANIFIER_CAMPAGNE (
+        idPla varchar(10),
+        idPers varchar(10),
+        primary key (idPla, idPers),
+        foreign key (idPla) references PLATEFORME (idPla),
+        foreign key (idPers) references PERSONNEL (idPers)
+    );
