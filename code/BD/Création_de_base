@@ -3,7 +3,7 @@ CREATE TABLE
 
 CREATE TABLE
     PERSONNEL (
-        idPers varchar(10) primary key,
+        IdPers varchar(10) primary key,
         nomPers varchar(20)
     );
 
@@ -12,7 +12,7 @@ CREATE TABLE
         IdPla varchar(10) primary key,
         nomPla varchar(20),
         nbPersNec int,
-        coutExploiJ int,
+        coutExploiJ decimal(10, 2),
         interMainte int
     );
 
@@ -28,29 +28,21 @@ CREATE TABLE
 CREATE TABLE
     SPECIALISER_EN (
         IdHab varchar(10),
-        idPers varchar(10),
-        primary key (IdHab, IdPla),
+        IdPers varchar(10),
+        primary key (IdHab, IdPers),
         foreign key (IdHab) references HABILITATION (IdHab),
-        foreign key (idPers) references PERSONNEL (idPers)
-    );
-
-CREATE TABLE
-    ECHANTILLION (
-        IdEch varchar(10) primary key,
-        IdSeq varchar(10),
-        commentaire varchar(100),
-        foreign key (IdEsp) references SEQUENCE (IdSeq)
+        foreign key (IdPers) references PERSONNEL (IdPers)
     );
 
 create TABLE
     CAMPAGNE (
         IdCamp varchar(10),
         IdPla varchar(10),
+        nomLieuFouille varchar(20),
         duree float,
         jma date,
-        primary key (IdPla, idPers),
-        foreign key (IdPla) references PLATEFORME (IdPla),
-        foreign key (idPers) references PERSONNEL (idPers)
+        primary key (IdCamp),
+        foreign key (IdPla) references PLATEFORME (IdPla)
     );
 
 CREATE TABLE
@@ -78,7 +70,7 @@ CREATE TABLE
     ESPECE (
         IdEsp varchar(10) primary key,
         IdSeq varchar(10),
-        NomEsp varchar(40)
+        NomEsp varchar(40),
         foreign key (IdSeq) references SEQUENCE (IdSeq)
     );
 
@@ -89,4 +81,3 @@ CREATE TABLE
         commentaire varchar(255),
         foreign key (IdSeq) references SEQUENCE (IdSeq)
     );
-
