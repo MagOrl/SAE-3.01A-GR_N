@@ -39,6 +39,9 @@ VALUES
     ("PER009", "DUBOIS"),
     ("PER010", "MOREAU");
 
+
+
+
 INSERT INTO
     PLATEFORME
 VALUES
@@ -52,6 +55,16 @@ VALUES
     ("PLA008", "MesozoicCenter", 28, 135.20, 2),
     ("PLA009", "DinoTech", 16, 88.90, 3),
     ("PLA010", "FossilWorks", 24, 115.45, 1);
+
+INSERT INTO
+    MATERIEL
+VALUES
+    ("M001", "Pelleteuse")
+
+INSERT INTO
+    UTILISER
+VALUES
+    ("M001","PLA001", 15)
 
 INSERT INTO
     NECESSITER
