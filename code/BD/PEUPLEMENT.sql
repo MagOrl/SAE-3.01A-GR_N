@@ -59,12 +59,32 @@ VALUES
 INSERT INTO
     MATERIEL
 VALUES
-    ("M001", "Pelleteuse")
+    ("M001", "H003", "Pelleteuse"),
+    ("M002", "H004", "Truelle"),
+    ("M003", "H004", "Pinceau"),
+    ("M004", "H003", "Tamis"),
+    ("M005", "H003", "Marteau"),
+    ("M006", "H002", "Scalpel"),
+    ("M007", "H001", "Gants"),
+    ("M008", "H005", "Lunettes"),
+    ("M009", "H004", "Sac à dos"),
+    ("M010", "H006", "Caméra"),
+    ("M011", "H003", "GPS");
 
 INSERT INTO
     UTILISER
 VALUES
-    ("M001","PLA001", 15)
+    ("M001", "PLA001"),
+    ("M002", "PLA002"),
+    ("M003", "PLA003"),
+    ("M004", "PLA004"),
+    ("M005", "PLA005"),
+    ("M006", "PLA006"),
+    ("M007", "PLA007"),
+    ("M008", "PLA008"),
+    ("M009", "PLA009"),
+    ("M010", "PLA010"),
+    ("M011", "PLA001");
 
 INSERT INTO
     NECESSITER

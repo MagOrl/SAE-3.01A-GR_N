@@ -52,6 +52,7 @@ CREATE TABLE
         foreign key (IdPers) references PERSONNEL (IdPers)
     );
 
+
 create TABLE
     CAMPAGNE (
         IdCamp varchar(10),
