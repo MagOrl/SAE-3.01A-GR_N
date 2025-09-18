@@ -17,6 +17,24 @@ CREATE TABLE
     );
 
 CREATE TABLE
+    MATERIEL (
+        IdMat varchar(10) primary key,
+        IdHab varchar(10),
+        nomMat varchar(20),
+        foreign key (IdHab) references HABILITATION (IdHab)
+    );
+
+
+CREATE TABLE
+    UTILISER (
+        IdMat varchar(10),
+        IdPla varchar(10),
+        primary key (IdMat, IdPla),
+        foreign key (IdMat) references MATERIEL (IdMat),
+        foreign key (IdPla) references PLATEFORME (IdPla)
+    );
+
+CREATE TABLE
     NECESSITER (
         IdHab varchar(10),
         IdPla varchar(10),
@@ -33,6 +51,7 @@ CREATE TABLE
         foreign key (IdHab) references HABILITATION (IdHab),
         foreign key (IdPers) references PERSONNEL (IdPers)
     );
+
 
 create TABLE
     CAMPAGNE (
