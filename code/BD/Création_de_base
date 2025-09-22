@@ -129,13 +129,25 @@ delimiter |
 CREATE OR REPLACE TRIGGER verifPersonnelAffecte 
 BEFORE INSERT ON PARTICIPER FOR EACH ROW 
 begin 
-    declare cursPersonnel CURSOR FOR SELECT IdPers FROM PERSONNEL natural join PARTICIPER WHERE IdPers = NEW.IdPers;
+    declare dateCamp date;
+    declare dureeCamp int ;
+    declare cursPersonnel CURSOR FOR
+    declare dateAjoute date;
+    
+    SELECT jma into dateAjoute FROM PARTICIPER natural join CAMPAGNE WHERE IdPers = NEW.IdPers and IdCamp = NEW.IdCamp;
+    SELECT jma,date FROM CAMPAGNE natural join PARTICIPER WHERE IdPers = NEW.IdPers;
+    
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = TRUE;
-    IF 
-    IF (NEW.IdPers)
-    THEN 
-        signal SQLSTATE '45000' set MESSAGE_TEXT = 'Pas la bonne habilité pour le personel.';
+    IF ROW_COUNT(cursPersonnel) != 0 THEN
+    open cursPersonnel; 
+    while not fini do
+    fetch cursPersonnel into dureeCamp,dateCamp;
+        IF NOT fini then 
+            IF (DAYS(dateCamp+dureeCamp) < dateAjoute )
+        THEN 
+            signal SQLSTATE '45000' set MESSAGE_TEXT = 'Pas la bonne habilité pour le personel.';
+        END IF; 
+        END IF;
     END IF;
 end |
 delimiter ;
-
