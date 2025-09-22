@@ -115,18 +115,18 @@ VALUES
     ("H010", "PER010");
 
 INSERT INTO
-    SEQUENCE
+    SEQUENCE (IdSeq, nomFichier)
 VALUES
-    ("S001"),
-    ("S002"),
-    ("S003"),
-    ("S004"),
-    ("S005"),
-    ("S006"),
-    ("S007"),
-    ("S008"),
-    ("S009"),
-    ("S010");
+    ("S001", "S001.fasta"),
+    ("S002", "S002.fasta"),
+    ("S003", "S003.fasta"),
+    ("S004", "S004.fasta"),
+    ("S005", "S005.fasta"),
+    ("S006", "S006.fasta"),
+    ("S007", "S007.fasta"),
+    ("S008", "S008.fasta"),
+    ("S009", "S009.fasta"),
+    ("S010", "S010.fasta");
 
 INSERT INTO
     ECHANTILLION
@@ -154,7 +154,8 @@ VALUES
     ("C007", "PLA007", "RiviereFossile", 3, '2025-06-22'),
     ("C008", "PLA008", "MontagnesDino", 2, '2025-05-14'),
     ("C009", "PLA009", "PlainePaleonto", 1, '2025-04-28'),
-    ("C010", "PLA010", "LacPrehistoire", 4, '2025-03-12');
+    ("C010", "PLA010", "LacPrehistoire", 4, '2025-03-12'),
+    ("C011", "PLA009", "PlainePaleonto", 3, '2025-03-11');
 
 INSERT INTO
     PARTICIPER
@@ -168,7 +169,9 @@ VALUES
     ("PER007", "C007"),
     ("PER008", "C008"),
     ("PER009", "C009"),
-    ("PER010", "C010");
+    ("PER010", "C010"),
+    ("PER009", "C011");
+
 
 INSERT INTO
     EXTRAIRE
@@ -197,3 +200,4 @@ VALUES
     ("ESP008", "S008", "Ptéranodon"),
     ("ESP009", "S009", "Ankylosaure"),
     ("ESP010", "S010", "Spinosaure");
+

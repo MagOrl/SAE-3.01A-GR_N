@@ -74,7 +74,10 @@ CREATE TABLE
     );
 
 CREATE TABLE
-    SEQUENCE (IdSeq varchar(10) primary key);
+    SEQUENCE (
+        IdSeq varchar(10) primary key,
+        nomFichier varchar(20)
+    );
 
 CREATE TABLE
     EXTRAIRE (
@@ -105,7 +108,7 @@ delimiter |
 CREATE OR REPLACE TRIGGER bonneAbilite 
 BEFORE INSERT ON PARTICIPER FOR EACH ROW 
 begin 
-    IF (select IdHab from PERSONNEL natural join SPECIALISER_EN where IdPers = NEW.IdPers) == (select IdHab from CAMPAGNE natural join PLATEFORME natural join NECESSITER where IdPers = NEW.IdCamp)
+    IF ((select IdHab from PERSONNEL natural join SPECIALISER_EN where IdPers = NEW.IdPers) != (select IdHab from CAMPAGNE natural join PLATEFORME natural join NECESSITER where IdCamp = NEW.IdCamp))
     THEN 
         signal SQLSTATE '45000' set MESSAGE_TEXT = 'Pas la bonne habilité pour le personel.';
     END IF;
