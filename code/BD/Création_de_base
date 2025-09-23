@@ -130,24 +130,38 @@ CREATE OR REPLACE TRIGGER verifPersonnelAffecte
 BEFORE INSERT ON PARTICIPER FOR EACH ROW 
 begin 
     declare dateCamp date;
-    declare dureeCamp int ;
-    declare cursPersonnel CURSOR FOR
+    declare dureeCamp float;
     declare dateAjoute date;
+    declare dateFinCamp date;
+    declare fini boolean DEFAULT FALSE;
     
-    SELECT jma into dateAjoute FROM PARTICIPER natural join CAMPAGNE WHERE IdPers = NEW.IdPers and IdCamp = NEW.IdCamp;
-    SELECT jma,date FROM CAMPAGNE natural join PARTICIPER WHERE IdPers = NEW.IdPers;
+    declare cursPersonnel CURSOR FOR 
+        SELECT c.jma, c.duree 
+        FROM CAMPAGNE c 
+        NATURAL JOIN PARTICIPER p 
+        WHERE p.IdPers = NEW.IdPers;
     
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = TRUE;
-    IF ROW_COUNT(cursPersonnel) != 0 THEN
-    open cursPersonnel; 
-    while not fini do
-    fetch cursPersonnel into dureeCamp,dateCamp;
-        IF NOT fini then 
-            IF (DAYS(dateCamp+dureeCamp) < dateAjoute )
-        THEN 
-            signal SQLSTATE '45000' set MESSAGE_TEXT = 'Pas la bonne habilité pour le personel.';
+
+    SELECT jma INTO dateAjoute FROM CAMPAGNE WHERE IdCamp = NEW.IdCamp;
+
+    OPEN cursPersonnel; 
+    
+    read_loop: LOOP
+        FETCH cursPersonnel INTO dateCamp, dureeCamp;
+        
+        IF fini THEN
+            LEAVE read_loop;
+        END IF;        
+        
+        SET dateFinCamp = DATE_ADD(dateCamp, INTERVAL dureeCamp DAY);        
+        
+        IF (dateAjoute >= dateCamp AND dateAjoute <= dateFinCamp) THEN 
+            signal SQLSTATE '45000' set MESSAGE_TEXT = 'Le personnel est déjà affecté à une autre campagne pendant cette période.';
         END IF; 
-        END IF;
-    END IF;
+        
+    END LOOP;
+    
+    CLOSE cursPersonnel;
 end |
 delimiter ;
