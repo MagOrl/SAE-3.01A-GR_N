@@ -154,7 +154,8 @@ VALUES
     ("C007", "PLA007", "RiviereFossile", 3, '2025-06-22'),
     ("C008", "PLA008", "MontagnesDino", 2, '2025-05-14'),
     ("C009", "PLA009", "PlainePaleonto", 1, '2025-04-28'),
-    ("C010", "PLA010", "LacPrehistoire", 4, '2025-03-12');
+    ("C013", "PLA010", "LacPrehistoire", 2, '2025-03-12');
+    ("C012", "PLA010", "LacPrehistoire", 2, '2025-03-12');
 
 INSERT INTO
     PARTICIPER
