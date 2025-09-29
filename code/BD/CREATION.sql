@@ -101,7 +101,7 @@ CREATE TABLE
     ESPECE (
         id_esp VARCHAR(10) PRIMARY KEY,
         id_seq VARCHAR(10),
-        nom_esp VARCHAR(40)
+        nom_esp VARCHAR(40),
         FOREIGN KEY (id_seq) REFERENCES SEQUENCE (id_seq)
     );
 
