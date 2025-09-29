@@ -18,7 +18,7 @@ CREATE TABLE
         cout_exploi_jour FLOAT,
         inter_mainte INT,
         jours_av_mainte INT
-
+    );
 
 CREATE TABLE
     MATERIEL (
@@ -137,14 +137,14 @@ begin
     declare fini boolean DEFAULT FALSE;
     
     declare curs_personnel CURSOR FOR 
-        SELECT c.jma, c.duree 
+        SELECT c.date_deb_camp, c.duree 
         FROM CAMPAGNE c 
         NATURAL JOIN PARTICIPER p 
         WHERE p.id_pers = NEW.id_pers;
     
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = TRUE;
 
-    SELECT jma INTO date_ajoutee FROM CAMPAGNE WHERE id_camp = NEW.id_camp;
+    SELECT date_deb_camp INTO date_ajoutee FROM CAMPAGNE WHERE id_camp = NEW.id_camp;
 
     OPEN curs_personnel; 
     
@@ -178,7 +178,7 @@ begin
     declare fini boolean DEFAULT FALSE;
     
     declare curs_plateforme CURSOR FOR 
-        SELECT c.jma, c.duree 
+        SELECT c.date_deb_camp, c.duree 
         FROM CAMPAGNE c 
         WHERE c.id_pla = NEW.id_pla;
     
@@ -192,9 +192,9 @@ begin
         END IF;        
 
         SET date_fin_camp = DATE_ADD(date_camp, INTERVAL duree_camp DAY);        
-        SET nouv_date_fin =  DATE_ADD(NEW.jma, INTERVAL NEW.duree DAY); 
+        SET nouv_date_fin =  DATE_ADD(NEW.date_deb_camp, INTERVAL NEW.duree DAY); 
 
-        IF (NEW.jma >= date_camp AND NEW.jma <= date_fin_camp) OR (nouv_date_fin >= date_camp AND nouv_date_fin <= date_fin_camp) THEN 
+        IF (NEW.date_deb_camp >= date_camp AND NEW.date_deb_camp <= date_fin_camp) OR (nouv_date_fin >= date_camp AND nouv_date_fin <= date_fin_camp) THEN 
             signal SQLSTATE '45000' set MESSAGE_TEXT = 'La plateforme est déjà affecté à une autre campagne pendant cette période.';
         END IF; 
         
