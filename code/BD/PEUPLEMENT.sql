@@ -1,14 +1,30 @@
 --Insertions supplémentaires faites avec l'aide d'une IA
 DELETE FROM ESPECE;
+
 DELETE FROM EXTRAIRE;
+
 DELETE FROM PARTICIPER;
+
 DELETE FROM CAMPAGNE;
+
+DELETE FROM BUDGET;
+
 DELETE FROM ECHANTILLION;
+
 DELETE FROM SEQUENCE;
+
 DELETE FROM SPECIALISER_EN;
+
 DELETE FROM NECESSITER;
+
+DELETE FROM UTILISER;
+
+DELETE FROM MATERIEL;
+
 DELETE FROM PLATEFORME;
+
 DELETE FROM PERSONNEL;
+
 DELETE FROM HABILITATION;
 
 INSERT INTO
@@ -38,9 +54,6 @@ VALUES
     ("PER008", "DURAND"),
     ("PER009", "DUBOIS"),
     ("PER010", "MOREAU");
-
-
-
 
 INSERT INTO
     PLATEFORME
@@ -115,7 +128,7 @@ VALUES
     ("H010", "PER010");
 
 INSERT INTO
-    SEQUENCE (IdSeq, nomFichier)
+    SEQUENCE
 VALUES
     ("S001", "S001.fasta"),
     ("S002", "S002.fasta"),
@@ -143,19 +156,102 @@ VALUES
     ("ECH010", "S010", "Échantillon de Spinosaure");
 
 INSERT INTO
+    BUDGET
+VALUES
+    ("B001", 41999.99, '2025-09-25'),
+    ("B002", 35000.00, '2025-01-15'),
+    ("B003", 28500.50, '2025-02-10'),
+    ("B004", 52000.75, '2025-03-05'),
+    ("B005", 19999.99, '2025-04-20'),
+    ("B006", 67500.25, '2025-05-12'),
+    ("B007", 33250.80, '2025-06-18'),
+    ("B008", 45000.00, '2025-07-03'),
+    ("B009", 58750.45, '2025-08-14'),
+    ("B010", 22000.60, '2025-09-08');
+
+INSERT INTO
     CAMPAGNE
 VALUES
-    ("C001", "PLA001", "LaOuYaDino", 2, '2025-09-11'),
-    ("C002", "PLA002", "ValleeFossile", 3, '2025-10-15'),
-    ("C003", "PLA003", "CanyonPrehistoire", 1, '2025-11-20'),
-    ("C004", "PLA004", "CollineCretace", 4, '2025-08-05'),
-    ("C005", "PLA005", "DesertJurassique", 2, '2025-12-03'),
-    ("C006", "PLA006", "ForetTriassique", 5, '2025-07-18'),
-    ("C007", "PLA007", "RiviereFossile", 3, '2025-06-22'),
-    ("C008", "PLA008", "MontagnesDino", 2, '2025-05-14'),
-    ("C009", "PLA009", "PlainePaleonto", 1, '2025-04-28'),
-    ("C010", "PLA010", "LacPrehistoire", 4, '2025-03-12'),
-    ("C011", "PLA009", "PlainePaleonto", 3, '2025-03-11');
+    (
+        "C001",
+        "PLA001",
+        "LaOuYaDino",
+        2,
+        '2025-09-11',
+        "B001"
+    ),
+    (
+        "C002",
+        "PLA002",
+        "ValleeFossile",
+        3,
+        '2025-10-15',
+        "B002"
+    ),
+    (
+        "C003",
+        "PLA003",
+        "CanyonPrehistoire",
+        1,
+        '2025-11-20',
+        "B003"
+    ),
+    (
+        "C004",
+        "PLA004",
+        "CollineCretace",
+        4,
+        '2025-08-05',
+        "B004"
+    ),
+    (
+        "C005",
+        "PLA005",
+        "DesertJurassique",
+        2,
+        '2025-12-03',
+        "B005"
+    ),
+    (
+        "C006",
+        "PLA006",
+        "ForetTriassique",
+        5,
+        '2025-07-18',
+        "B006"
+    ),
+    (
+        "C007",
+        "PLA007",
+        "RiviereFossile",
+        3,
+        '2025-06-22',
+        "B007"
+    ),
+    (
+        "C008",
+        "PLA008",
+        "MontagnesDino",
+        2,
+        '2025-05-14',
+        "B008"
+    ),
+    (
+        "C009",
+        "PLA009",
+        "PlainePaleonto",
+        1,
+        '2025-04-28',
+        "B009"
+    ),
+    (
+        "C010",
+        "PLA010",
+        "LacPrehistoire",
+        4,
+        '2025-03-12',
+        "B010"
+    );
 
 INSERT INTO
     PARTICIPER
@@ -169,9 +265,7 @@ VALUES
     ("PER007", "C007"),
     ("PER008", "C008"),
     ("PER009", "C009"),
-    ("PER010", "C010"),
-    ("PER009", "C011");
-
+    ("PER010", "C010");
 
 INSERT INTO
     EXTRAIRE
@@ -200,4 +294,3 @@ VALUES
     ("ESP008", "S008", "Ptéranodon"),
     ("ESP009", "S009", "Ankylosaure"),
     ("ESP010", "S010", "Spinosaure");
-
