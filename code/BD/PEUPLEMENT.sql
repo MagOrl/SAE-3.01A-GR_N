@@ -168,7 +168,20 @@ VALUES
     ("B008", 45000.00, '2025-07-03'),
     ("B009", 58750.45, '2025-08-14'),
     ("B010", 22000.60, '2025-09-08');
-
+INSERT INTO
+    PARTICIPER
+VALUES
+    ("PER001", "C001"),
+    ("PER002", "C002"),
+    ("PER003", "C003"),
+    ("PER004", "C004"),
+    ("PER005", "C005"),
+    ("PER006", "C006"),
+    ("PER007", "C007"),
+    ("PER008", "C008"),
+    ("PER009", "C009"),
+    ("PER010", "C010");
+    
     INSERT INTO
         CAMPAGNE
     VALUES
@@ -263,19 +276,6 @@ VALUES
             "B010"
         );
 
-INSERT INTO
-    PARTICIPER
-VALUES
-    ("PER001", "C001"),
-    ("PER002", "C002"),
-    ("PER003", "C003"),
-    ("PER004", "C004"),
-    ("PER005", "C005"),
-    ("PER006", "C006"),
-    ("PER007", "C007"),
-    ("PER008", "C008"),
-    ("PER009", "C009"),
-    ("PER010", "C010");
 
 INSERT INTO
     EXTRAIRE
