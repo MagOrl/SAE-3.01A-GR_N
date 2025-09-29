@@ -1,14 +1,30 @@
 --Insertions supplémentaires faites avec l'aide d'une IA
 DELETE FROM ESPECE;
+
 DELETE FROM EXTRAIRE;
+
 DELETE FROM PARTICIPER;
+
 DELETE FROM CAMPAGNE;
+
+DELETE FROM BUDGET;
+
 DELETE FROM ECHANTILLION;
+
 DELETE FROM SEQUENCE;
+
 DELETE FROM SPECIALISER_EN;
+
 DELETE FROM NECESSITER;
+
+DELETE FROM UTILISER;
+
+DELETE FROM MATERIEL;
+
 DELETE FROM PLATEFORME;
+
 DELETE FROM PERSONNEL;
+
 DELETE FROM HABILITATION;
 
 INSERT INTO
@@ -38,9 +54,6 @@ VALUES
     ("PER008", "DURAND"),
     ("PER009", "DUBOIS"),
     ("PER010", "MOREAU");
-
-
-
 
 INSERT INTO
     PLATEFORME
@@ -117,16 +130,16 @@ VALUES
 INSERT INTO
     SEQUENCE
 VALUES
-    ("S001"),
-    ("S002"),
-    ("S003"),
-    ("S004"),
-    ("S005"),
-    ("S006"),
-    ("S007"),
-    ("S008"),
-    ("S009"),
-    ("S010");
+    ("S001", "S001.fasta"),
+    ("S002", "S002.fasta"),
+    ("S003", "S003.fasta"),
+    ("S004", "S004.fasta"),
+    ("S005", "S005.fasta"),
+    ("S006", "S006.fasta"),
+    ("S007", "S007.fasta"),
+    ("S008", "S008.fasta"),
+    ("S009", "S009.fasta"),
+    ("S010", "S010.fasta");
 
 INSERT INTO
     ECHANTILLION
@@ -143,18 +156,112 @@ VALUES
     ("ECH010", "S010", "Échantillon de Spinosaure");
 
 INSERT INTO
-    CAMPAGNE
+    BUDGET
 VALUES
-    ("C001", "PLA001", "LaOuYaDino", 2, '2025-09-11'),
-    ("C002", "PLA002", "ValleeFossile", 3, '2025-10-15'),
-    ("C003", "PLA003", "CanyonPrehistoire", 1, '2025-11-20'),
-    ("C004", "PLA004", "CollineCretace", 4, '2025-08-05'),
-    ("C005", "PLA005", "DesertJurassique", 2, '2025-12-03'),
-    ("C006", "PLA006", "ForetTriassique", 5, '2025-07-18'),
-    ("C007", "PLA007", "RiviereFossile", 3, '2025-06-22'),
-    ("C008", "PLA008", "MontagnesDino", 2, '2025-05-14'),
-    ("C009", "PLA009", "PlainePaleonto", 1, '2025-04-28'),
-    ("C010", "PLA010", "LacPrehistoire", 4, '2025-03-12');
+    ("B001", 41999.99, '2025-09-25'),
+    ("B002", 35000.00, '2025-01-15'),
+    ("B003", 28500.50, '2025-02-10'),
+    ("B004", 52000.75, '2025-03-05'),
+    ("B005", 19999.99, '2025-04-20'),
+    ("B006", 67500.25, '2025-05-12'),
+    ("B007", 33250.80, '2025-06-18'),
+    ("B008", 45000.00, '2025-07-03'),
+    ("B009", 58750.45, '2025-08-14'),
+    ("B010", 22000.60, '2025-09-08');
+
+    INSERT INTO
+        CAMPAGNE
+    VALUES
+        (
+            "C001",
+            "PLA001",
+            "LaOuYaDino",
+            2,
+            '2025-09-11',
+            "38500.75",
+            "B001"
+        ),
+        (
+            "C002",
+            "PLA002",
+            "ValleeFossile",
+            3,
+            '2025-10-15',
+            "32800.50",
+            "B002"
+        ),
+        (
+            "C003",
+            "PLA003",
+            "CanyonPrehistoire",
+            1,
+            '2025-11-20',
+            "25600.30",
+            "B003"
+        ),
+        (
+            "C004",
+            "PLA004",
+            "CollineCretace",
+            4,
+            '2025-08-05',
+            "54200.85",
+            "B004"
+        ),
+        (
+            "C005",
+            "PLA005",
+            "DesertJurassique",
+            2,
+            '2025-12-03',
+            "18750.40",
+            "B005"
+        ),
+        (
+            "C006",
+            "PLA006",
+            "ForetTriassique",
+            5,
+            '2025-07-18',
+            "71200.10",
+            "B006"
+        ),
+        (
+            "C007",
+            "PLA007",
+            "RiviereFossile",
+            3,
+            '2025-06-22',
+            "29900.65",
+            "B007"
+        ),
+        (
+            "C008",
+            "PLA008",
+            "MontagnesDino",
+            2,
+            '2025-05-14',
+            "42300.90",
+            "B008"
+        ),
+        (
+            "C009",
+            "PLA009",
+            "PlainePaleonto",
+            1,
+            '2025-04-28',
+            "61500.20",
+            "B009"
+        ),
+        (
+            "C010",
+            "PLA010",
+            "LacPrehistoire",
+            4,
+            '2025-03-12',
+            "20800.45",
+            "B010"
+        );
 
 INSERT INTO
     PARTICIPER
