@@ -216,3 +216,20 @@ begin
 
 end |
 delimiter ;
+
+delimiter |
+create or replace PROCEDURE maj_maintenance_plateform(laPlat varchar(10), maj_duree int) begin 
+declare duree_acc int;
+SELECT interMainte into duree_acc FROM PLATEFORME WHERE IdPla = laPlat;
+IF((duree_acc - maj_duree) <= 0) THEN
+    UPDATE PLATEFORME 
+    SET interMainte = duree_acc - maj_duree
+    WHERE IdPla = laPlat;
+ELSE 
+    UPDATE PLATEFORME 
+    SET interMainte =  interMainte + (duree_acc - maj_duree)*-1
+    WHERE IdPla = laPlat;
+END IF;
+
+end |
+delimiter ;
