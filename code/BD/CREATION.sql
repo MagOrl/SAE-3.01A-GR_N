@@ -115,7 +115,7 @@ CREATE TABLE
       
 -- Creation des Trigger
 
-delimiter //
+delimiter |
 CREATE OR REPLACE TRIGGER bonne_habilite 
 BEFORE INSERT ON PARTICIPER FOR EACH ROW 
 BEGIN 
@@ -123,7 +123,7 @@ BEGIN
     THEN 
         signal SQLSTATE '45000' SET MESSAGE_TEXT = 'Pas la bonne habilité pour le personel.';
     END IF;
-END //
+END |
 delimiter ;
 
 delimiter |
