@@ -1,22 +1,24 @@
--- Creation des tables
-
 CREATE TABLE
-    HABILITATION (id_hab varchar(10) primary key, nom_hab varchar(20));
+    HABILITATION (
+        id_hab VARCHAR(10) PRIMARY KEY, 
+        nom_hab VARCHAR(20)
+    );
 
 CREATE TABLE
     PERSONNEL (
-        id_pers varchar(10) primary key,
-        nom_pers varchar(20)
+        id_pers VARCHAR(10) PRIMARY KEY,
+        nom_pers VARCHAR(20)
     );
 
 CREATE TABLE
     PLATEFORME (
-        id_pla varchar(10) primary key,
-        nom_pla varchar(20),
-        nb_pers_nec int,
-        cout_exploi_jour decimal(10, 2),
-        inter_mainte int
-    );
+        id_pla VARCHAR(10) PRIMARY KEY,
+        nom_pla VARCHAR(20),
+        nb_pers_nec INT,
+        cout_exploi_jour FLOAT,
+        inter_mainte INT,
+        jours_av_mainte INT
+
 
 CREATE TABLE
     MATERIEL (
@@ -36,84 +38,81 @@ CREATE TABLE
     );
 
 CREATE TABLE
-    NECESSITER (
-        id_hab varchar(10),
-        id_pla varchar(10),
-        primary key (id_hab, id_pla),
+    NECESSITER ( 
+        id_hab VARCHAR(10),
+        id_pla VARCHAR(10),
+        PRIMARY KEY (id_hab, id_pla),
         FOREIGN KEY (id_hab) REFERENCES HABILITATION (id_hab),
         FOREIGN KEY (id_pla) REFERENCES PLATEFORME (id_pla)
     );
 
 CREATE TABLE
     SPECIALISER_EN (
-        id_hab varchar(10),
-        id_pers varchar(10),
-        primary key (id_hab, id_pers),
+        id_hab VARCHAR(10),
+        id_pers VARCHAR(10),
+        PRIMARY KEY (id_hab, id_pers),
         FOREIGN KEY (id_hab) REFERENCES HABILITATION (id_hab),
         FOREIGN KEY (id_pers) REFERENCES PERSONNEL (id_pers)
     );
 
 CREATE TABLE
     BUDGET (
-        id_budg varchar(10) primary key,
-        valeur float,
-        date_deb_mois date
+        id_budg VARCHAR(10) PRIMARY KEY,
+        valeur FLOAT,
+        date_deb_mois DATE
     );
 
 CREATE TABLE
     CAMPAGNE (
-        id_camp varchar(10),
-        id_pla varchar(10),
-        nom_lieu_fouille varchar(20),
-        duree float,
-        jma date,
-        cout_realisation float,
-        id_budg varchar(10),
-        primary key (id_camp),
+        id_camp VARCHAR(10) PRIMARY KEY,
+        duree INT,
+        date_deb_camp DATE,
+        id_pla VARCHAR(10),
+        id_budg VARCHAR(10),
         FOREIGN KEY (id_pla) REFERENCES PLATEFORME (id_pla),
         FOREIGN KEY (id_budg) REFERENCES BUDGET (id_budg)
     );
 
 CREATE TABLE
     PARTICIPER (
-        id_pers varchar(10),
-        id_camp varchar(10),
-        primary key (id_pers, id_camp),
+        id_pers VARCHAR(10),
+        id_camp VARCHAR(10),
+        PRIMARY KEY (id_pers, id_camp),
         FOREIGN KEY (id_pers) REFERENCES PERSONNEL (id_pers),
         FOREIGN KEY (id_camp) REFERENCES CAMPAGNE (id_camp)
     );
 
 CREATE TABLE
     SEQUENCE (
-        id_seq varchar(10) primary key,
-        nom_fichier varchar(20)
+        id_seq VARCHAR(10) PRIMARY KEY,
+        nom_fichier VARCHAR(40)
     );
 
 CREATE TABLE
     EXTRAIRE (
-        id_seq varchar(10),
-        id_camp varchar(10),
-        primary key (id_camp, id_seq),
+        id_seq VARCHAR(10),
+        id_camp VARCHAR(10),
+        PRIMARY KEY (id_camp, id_seq),
         FOREIGN KEY (id_camp) REFERENCES CAMPAGNE (id_camp),
         FOREIGN KEY (id_seq) REFERENCES SEQUENCE (id_seq)
     );
 
 CREATE TABLE
     ESPECE (
-        id_esp varchar(10) primary key,
-        id_seq varchar(10),
-        nom_esp varchar(40),
+        id_esp VARCHAR(10) PRIMARY KEY,
+        id_seq VARCHAR(10),
+        nom_esp VARCHAR(40)
         FOREIGN KEY (id_seq) REFERENCES SEQUENCE (id_seq)
     );
 
 CREATE TABLE
-    ECHANTILLION (
-        id_ech varchar(10) primary key,
-        id_seq varchar(10),
-        commentaire varchar(255),
+    ECHANTILLON (
+        id_ech VARCHAR(10) PRIMARY KEY,
+        id_seq VARCHAR(10),
+        commentaire VARCHAR(255),
         FOREIGN KEY (id_seq) REFERENCES SEQUENCE (id_seq)
     );
-
+      
 -- Creation des Trigger
 
 delimiter //
@@ -184,10 +183,7 @@ begin
         WHERE c.id_pla = NEW.id_pla;
     
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = TRUE;
-
-
     OPEN curs_plateforme; 
-    
     read_loop: LOOP
         FETCH curs_plateforme INTO date_camp, duree_camp;
         
@@ -246,3 +242,20 @@ begin
 call maj_maintenance_plateform(NEW.id_pla,NEW.duree);
 end |
 delimiter ;
+
+DELIMITER |
+CREATE OR REPLACE TRIGGER respectBudget BEFORE INSERT ON CAMPAGNE FOR EACH ROW
+BEGIN
+    declare mes VARCHAR(200);
+    declare cout_total_camp FLOAT;
+    declare budget FLOAT;
+    declare new_cout_jour FLOAT;
+
+    SELECT cout_exploi_jour into new_cout_jour FROM PLATEFORME WHERE id_pla = NEW.id_pla;
+    SELECT valeur into budget FROM BUDGET WHERE id_budg = NEW.id_budg; 
+    SELECT sum(cout_exploi_jour*duree) into cout_total_camp FROM CAMPAGNE Natural Join PLATEFORME WHERE id_budg = NEW.id_budg;
+    IF cout_total_camp + NEW.duree*new_cout_jour > budget then
+        set mes = concat("Insertion impossible, la campagne est hors budget. \n Budget couvert : ", cout_total_camp, "/", budget)
+        signal SQLSTATE '45000' set MESSAGE_TEXT = mes;
+    END IF;
+END |
