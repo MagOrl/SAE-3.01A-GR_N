@@ -208,15 +208,6 @@ end |
 delimiter ;
 
 
-
-delimiter |
-CREATE OR REPLACE TRIGGER verif_duree_plateforme
-BEFORE INSERT ON CAMPAGNE FOR EACH ROW 
-begin
-
-end |
-delimiter ;
-
 delimiter |
 create or replace PROCEDURE maj_maintenance_plateform(laPlat varchar(10), maj_duree int) begin 
 declare duree_acc int;
@@ -233,3 +224,12 @@ END IF;
 
 end |
 delimiter ;
+
+delimiter |
+CREATE OR REPLACE TRIGGER verif_duree_plateforme
+BEFORE INSERT ON CAMPAGNE FOR EACH ROW 
+begin
+call maj_maintenance_plateform(NEW.IdPla,NEW.duree);
+end |
+delimiter ;
+
