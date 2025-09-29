@@ -67,6 +67,7 @@ CREATE TABLE
         nom_lieu_fouille varchar(20),
         duree float,
         jma date,
+        cout_realisation float,
         id_budg varchar(10),
         primary key (id_camp),
         FOREIGN KEY (id_pla) REFERENCES PLATEFORME (id_pla),
@@ -124,4 +125,124 @@ BEGIN
         signal SQLSTATE '45000' SET MESSAGE_TEXT = 'Pas la bonne habilité pour le personel.';
     END IF;
 END //
+delimiter ;
+
+delimiter |
+CREATE OR REPLACE TRIGGER verif_personnel_affecte 
+BEFORE INSERT ON PARTICIPER FOR EACH ROW 
+begin 
+    declare date_camp date;
+    declare duree_camp float;
+    declare date_ajoutee date;
+    declare date_fin_camp date;
+    declare fini boolean DEFAULT FALSE;
+    
+    declare curs_personnel CURSOR FOR 
+        SELECT c.jma, c.duree 
+        FROM CAMPAGNE c 
+        NATURAL JOIN PARTICIPER p 
+        WHERE p.id_pers = NEW.id_pers;
+    
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = TRUE;
+
+    SELECT jma INTO date_ajoutee FROM CAMPAGNE WHERE id_camp = NEW.id_camp;
+
+    OPEN curs_personnel; 
+    
+    read_loop: LOOP
+        FETCH curs_personnel INTO date_camp, duree_camp;
+        
+        IF fini THEN
+            LEAVE read_loop;
+        END IF;        
+        
+        SET date_fin_camp = DATE_ADD(date_camp, INTERVAL duree_camp DAY);        
+        
+        IF (date_ajoutee >= date_camp AND date_ajoutee <= date_fin_camp) THEN 
+            signal SQLSTATE '45000' set MESSAGE_TEXT = 'Le personnel est déjà affecté à une autre campagne pendant cette période.';
+        END IF; 
+        
+    END LOOP;
+    
+    CLOSE curs_personnel;
+end |
+delimiter ;
+
+delimiter |
+CREATE OR REPLACE TRIGGER verif_plateforme_affecte 
+BEFORE INSERT ON CAMPAGNE FOR EACH ROW 
+begin 
+    declare date_camp date;
+    declare duree_camp float;
+    declare date_fin_camp date;
+    declare nouv_date_fin date;
+    declare fini boolean DEFAULT FALSE;
+    
+    declare curs_plateforme CURSOR FOR 
+        SELECT c.jma, c.duree 
+        FROM CAMPAGNE c 
+        WHERE c.id_pla = NEW.id_pla;
+    
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = TRUE;
+
+
+    OPEN curs_plateforme; 
+    
+    read_loop: LOOP
+        FETCH curs_plateforme INTO date_camp, duree_camp;
+        
+        IF fini THEN
+            LEAVE read_loop;
+        END IF;        
+
+        SET date_fin_camp = DATE_ADD(date_camp, INTERVAL duree_camp DAY);        
+        SET nouv_date_fin =  DATE_ADD(NEW.jma, INTERVAL NEW.duree DAY); 
+
+        IF (NEW.jma >= date_camp AND NEW.jma <= date_fin_camp) OR (nouv_date_fin >= date_camp AND nouv_date_fin <= date_fin_camp) THEN 
+            signal SQLSTATE '45000' set MESSAGE_TEXT = 'La plateforme est déjà affecté à une autre campagne pendant cette période.';
+        END IF; 
+        
+    END LOOP;
+    
+    CLOSE curs_plateforme;
+end |
+delimiter ;
+
+delimiter |
+create or replace TRIGGER verif_nb_pers BEFORE INSERT 
+ON CAMPAGNE FOR EACH ROW 
+begin 
+    declare nb_pers int;
+    SELECT count(*) into nb_pers FROM PARTICIPER WHERE id_camp = NEW.id_camp;
+    IF nb_pers < (SELECT nb_pers_nec FROM CAMPAGNE natural join PLATEFORME WHERE id_camp = NEW.id_camp) 
+    THEN
+    signal SQLSTATE '45000' set MESSAGE_TEXT = 'Le nombre de personne essayant de participer est trop faible'; 
+    END IF;
+end |
+delimiter ;
+
+
+delimiter |
+create or replace PROCEDURE maj_maintenance_plateform(la_plat varchar(10), maj_duree int) begin 
+declare duree_acc int;
+SELECT inter_mainte into duree_acc FROM PLATEFORME WHERE id_pla = la_plat;
+IF((duree_acc - maj_duree) <= 0) THEN
+    UPDATE PLATEFORME 
+    SET inter_mainte = duree_acc - maj_duree
+    WHERE id_pla = la_plat;
+ELSE 
+    UPDATE PLATEFORME 
+    SET inter_mainte =  inter_mainte + (duree_acc - maj_duree)*-1
+    WHERE id_pla = la_plat;
+END IF;
+
+end |
+delimiter ;
+
+delimiter |
+CREATE OR REPLACE TRIGGER verif_duree_plateforme
+BEFORE INSERT ON CAMPAGNE FOR EACH ROW 
+begin
+call maj_maintenance_plateform(NEW.id_pla,NEW.duree);
+end |
 delimiter ;
