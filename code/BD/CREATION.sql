@@ -15,7 +15,7 @@ CREATE TABLE
         id_pla VARCHAR(10) PRIMARY KEY,
         nom_pla VARCHAR(20),
         nb_pers_nec INT,
-        cout_exploi_jour INT,
+        cout_exploi_jour FLOAT,
         inter_mainte INT,
         jours_av_mainte INT
     );
@@ -50,7 +50,6 @@ CREATE TABLE
         id_camp VARCHAR(10) PRIMARY KEY,
         duree INT,
         date_deb_camp DATE,
-        cout_realisation FLOAT
         id_pla VARCHAR(10),
         id_budg VARCHAR(10),
         FOREIGN KEY (id_pla) REFERENCES PLATEFORME (id_pla),
@@ -103,10 +102,12 @@ BEGIN
     declare mes VARCHAR(200);
     declare cout_total_camp FLOAT;
     declare budget FLOAT;
+    declare new_cout_jour FLOAT;
 
+    SELECT cout_exploi_jour into new_cout_jour FROM PLATEFORME WHERE id_pla = NEW.id_pla;
     SELECT valeur into budget FROM BUDGET WHERE id_budg = NEW.id_budg; 
-    SELECT sum(cout_realisation) into cout_total_camp FROM CAMPAGNE WHERE id_budg = NEW.id_budg;
-    IF cout_total_camp + NEW.cout_realisation > budget then
+    SELECT sum(cout_exploi_jour*duree) into cout_total_camp FROM CAMPAGNE Natural Join PLATEFORME WHERE id_budg = NEW.id_budg;
+    IF cout_total_camp + NEW.duree*new_cout_jour > budget then
         set mes = concat("Insertion impossible, la campagne est hors budget. \n Budget couvert : ", cout_total_camp, "/", budget)
         signal SQLSTATE '45000' set MESSAGE_TEXT = mes;
     END IF;
