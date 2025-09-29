@@ -101,7 +101,7 @@ CREATE TABLE
     ESPECE (
         id_esp VARCHAR(10) PRIMARY KEY,
         id_seq VARCHAR(10),
-        nom_esp VARCHAR(40)
+        nom_esp VARCHAR(40),
         FOREIGN KEY (id_seq) REFERENCES SEQUENCE (id_seq)
     );
 
@@ -243,7 +243,7 @@ call maj_maintenance_plateform(NEW.id_pla,NEW.duree);
 end |
 delimiter ;
 
-DELIMITER |
+delimiter |
 CREATE OR REPLACE TRIGGER respectBudget BEFORE INSERT ON CAMPAGNE FOR EACH ROW
 BEGIN
     declare mes VARCHAR(200);
@@ -255,7 +255,8 @@ BEGIN
     SELECT valeur into budget FROM BUDGET WHERE id_budg = NEW.id_budg; 
     SELECT sum(cout_exploi_jour*duree) into cout_total_camp FROM CAMPAGNE Natural Join PLATEFORME WHERE id_budg = NEW.id_budg;
     IF cout_total_camp + NEW.duree*new_cout_jour > budget then
-        set mes = concat("Insertion impossible, la campagne est hors budget. \n Budget couvert : ", cout_total_camp, "/", budget)
+        set mes = concat("Insertion impossible, la campagne est hors budget. \n Budget couvert : ", cout_total_camp, "/", budget);
         signal SQLSTATE '45000' set MESSAGE_TEXT = mes;
     END IF;
 END |
+delimiter ;
