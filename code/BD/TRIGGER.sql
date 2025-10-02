@@ -4,21 +4,24 @@ delimiter |
 CREATE OR REPLACE TRIGGER bonne_habilite 
 BEFORE INSERT ON PARTICIPER FOR EACH ROW 
 BEGIN     
-    IF (((SELECT id_hab FROM PERSONNEL NATURAL JOIN SPECIALISER_EN WHERE id_pers = NEW.id_pers INTERSECT SELECT id_hab FROM CAMPAGNE NATURAL JOIN PLATEFORME NATURAL JOIN NECESSITER WHERE id_camp = NEW.id_camp)= '')) THEN
-        signal SQLSTATE '45000' SET MESSAGE_TEXT = 'Pas la bonne habilité pour le personel.';
-    IF ((SELECT id_hab FROM PERSONNEL NATURAL JOIN SPECIALISER_EN WHERE id_pers = NEW.id_pers INTERSECT SELECT id_hab FROM CAMPAGNE NATURAL JOIN PLATEFORME NATURAL JOIN NECESSITER WHERE id_camp = NEW.id_camp EXCEPT SELECT id_hab FROM PERSONNEL NATURAL JOIN SPECIALISER_EN WHERE id_pers = NEW.id_pers != '' )) THEN
-        signal SQLSTATE '45000' SET MESSAGE_TEXT = 'Pas la bonne habilité pour le personel.';
-       END IF;
-    END IF;
+DECLARE habCamp VARCHAR(10);
+DECLARE fini boolean DEFAULT FALSE;
+DECLARE cursCamp CURSOR FOR SELECT id_hab FROM CAMPAGNE natural join PLATEFORME natural join NECESSITER WHERE id_camp = NEW.id_camp;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = TRUE;
+OPEN cursCamp;
+read_loop : LOOP
+    FETCH cursCamp into habCamp; 
+    IF fini THEN
+        LEAVE read_loop;
+    END IF;     
+    IF(habCamp not in(SELECT id_hab FROM SPECIALISER_EN WHERE id_pers = new.id_pers)) THEN
+        signal SQLSTATE '45000' set MESSAGE_TEXT = "Le personel ne possède pas l'une des habilitation requise pour la plateforme."; 
+    END IF; 
+END LOOP;
 end|
 delimiter ;
 
-MariaDB [DBarsamerzoev]> INSERT INTO
-    ->     PARTICIPER
-    -> VALUES
-    ->     ("PER009", "C010");
-Query OK, 1 row affected (0,023 sec)
-delimiter |
+
 CREATE OR REPLACE TRIGGER verif_personnel_affecte 
 BEFORE INSERT ON PARTICIPER FOR EACH ROW 
 begin 
