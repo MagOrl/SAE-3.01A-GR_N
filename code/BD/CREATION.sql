@@ -112,3 +112,5 @@ CREATE TABLE
         commentaire VARCHAR(255),
         FOREIGN KEY (id_seq) REFERENCES SEQUENCE (id_seq)
     );
+
+

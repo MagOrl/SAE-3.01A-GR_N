@@ -103,7 +103,9 @@ INSERT INTO
     NECESSITER
 VALUES
     ("H001", "PLA001"),
+    ("H001", "PLA002"),
     ("H002", "PLA002"),
+    ("H002", "PLA001"),
     ("H003", "PLA003"),
     ("H004", "PLA004"),
     ("H005", "PLA005"),
@@ -117,6 +119,8 @@ INSERT INTO
     SPECIALISER_EN
 VALUES
     ("H001", "PER001"),
+    ("H002", "PER001"),
+    ("H001", "PER002"),
     ("H002", "PER002"),
     ("H003", "PER003"),
     ("H004", "PER004"),
