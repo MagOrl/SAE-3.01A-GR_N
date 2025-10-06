@@ -19,8 +19,6 @@ read_loop : LOOP
     END IF; 
 END LOOP;
 end|
-delimiter ;
-
 
 CREATE OR REPLACE TRIGGER verif_personnel_affecte 
 BEFORE INSERT ON PARTICIPER FOR EACH ROW 
@@ -60,9 +58,7 @@ begin
     
     CLOSE curs_personnel;
 end |
-delimiter ;
 
-delimiter |
 CREATE OR REPLACE TRIGGER verif_plateforme_affecte 
 BEFORE INSERT ON CAMPAGNE FOR EACH ROW 
 begin 
@@ -97,9 +93,7 @@ begin
     
     CLOSE curs_plateforme;
 end |
-delimiter ;
 
-delimiter |
 create or replace TRIGGER verif_nb_pers BEFORE INSERT 
 ON CAMPAGNE FOR EACH ROW 
 begin 
@@ -110,10 +104,7 @@ begin
     signal SQLSTATE '45000' set MESSAGE_TEXT = 'Le nombre de personne essayant de participer est trop faible'; 
     END IF;
 end |
-delimiter ;
 
-
-delimiter |
 create or replace PROCEDURE maj_maintenance_plateform(la_plat varchar(10), maj_duree int) begin 
 declare duree_acc int;
 SELECT jours_av_mainte into duree_acc FROM PLATEFORME WHERE id_pla = la_plat;
@@ -128,30 +119,35 @@ ELSE
 END IF;
 
 end |
-delimiter ;
 
-delimiter |
 CREATE OR REPLACE TRIGGER verif_duree_plateforme
 BEFORE INSERT ON CAMPAGNE FOR EACH ROW 
 begin
 call maj_maintenance_plateform(NEW.id_pla,NEW.duree);
 end |
-delimiter ;
 
-delimiter |
 CREATE OR REPLACE TRIGGER respectBudget BEFORE INSERT ON CAMPAGNE FOR EACH ROW
 BEGIN
     declare mes VARCHAR(200);
-    declare cout_total_camp FLOAT;
+    declare cout_total_camp FLOAT DEFAULT 0;
     declare budget FLOAT;
     declare new_cout_jour FLOAT;
 
     SELECT cout_exploi_jour into new_cout_jour FROM PLATEFORME WHERE id_pla = NEW.id_pla;
     SELECT valeur into budget FROM BUDGET WHERE id_budg = NEW.id_budg; 
-    SELECT sum(cout_exploi_jour*duree) into cout_total_camp FROM CAMPAGNE Natural Join PLATEFORME WHERE id_budg = NEW.id_budg;
+
+    SELECT sum(cout_exploi_jour*duree) into cout_total_camp 
+    FROM CAMPAGNE c JOIN PLATEFORME p ON c.id_pla = p.id_pla 
+    WHERE c.id_budg = NEW.id_budg;
+    
+    IF cout_total_camp IS NULL THEN
+        SET cout_total_camp = 0;
+    END IF;
+    
     IF cout_total_camp + NEW.duree*new_cout_jour > budget then
-        set mes = concat("Insertion impossible, la campagne est hors budget. \n Budget couvert : ", cout_total_camp, "/", budget);
+        set mes = concat("Insertion impossible, la campagne est hors budget. Budget couvert : ", cout_total_camp, "/", budget);
         signal SQLSTATE '45000' set MESSAGE_TEXT = mes;
     END IF;
 END |
+
 delimiter ;
