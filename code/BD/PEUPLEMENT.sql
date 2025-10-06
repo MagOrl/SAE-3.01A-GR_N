@@ -58,16 +58,16 @@ VALUES
 INSERT INTO
     PLATEFORME
 VALUES
-    ("PLA001", "LesDino", 20, 100.50, 1),
-    ("PLA002", "FossilLab", 15, 85.25, 2),
-    ("PLA003", "DinoCenter", 25, 120.75, 1),
-    ("PLA004", "PaleoStation", 18, 95.00, 3),
-    ("PLA005", "JurassicLab", 22, 110.30, 2),
-    ("PLA006", "CretaceousHub", 30, 140.80, 1),
-    ("PLA007", "TriassicBase", 12, 75.60, 4),
-    ("PLA008", "MesozoicCenter", 28, 135.20, 2),
-    ("PLA009", "DinoTech", 16, 88.90, 3),
-    ("PLA010", "FossilWorks", 24, 115.45, 1);
+    ("PLA001", "LesDino", 20, 100.50, 1, 30),
+    ("PLA002", "FossilLab", 15, 85.25, 2, 60),
+    ("PLA003", "DinoCenter", 25, 120.75, 1, 30),
+    ("PLA004", "PaleoStation", 18, 95.00, 3, 90),
+    ("PLA005", "JurassicLab", 22, 110.30, 2, 60),
+    ("PLA006", "CretaceousHub", 30, 140.80, 1, 30),
+    ("PLA007", "TriassicBase", 12, 75.60, 4, 120),
+    ("PLA008", "MesozoicCenter", 28, 135.20, 2, 60),
+    ("PLA009", "DinoTech", 16, 88.90, 3, 90),
+    ("PLA010", "FossilWorks", 24, 115.45, 1, 30);
 
 INSERT INTO
     MATERIEL
@@ -103,7 +103,9 @@ INSERT INTO
     NECESSITER
 VALUES
     ("H001", "PLA001"),
+    ("H001", "PLA002"),
     ("H002", "PLA002"),
+    ("H002", "PLA001"),
     ("H003", "PLA003"),
     ("H004", "PLA004"),
     ("H005", "PLA005"),
@@ -117,6 +119,8 @@ INSERT INTO
     SPECIALISER_EN
 VALUES
     ("H001", "PER001"),
+    ("H002", "PER001"),
+    ("H001", "PER002"),
     ("H002", "PER002"),
     ("H003", "PER003"),
     ("H004", "PER004"),
@@ -170,6 +174,20 @@ VALUES
     ("B010", 22000.60, '2025-09-08');
 
 INSERT INTO
+    CAMPAGNE
+VALUES
+    ("C001", 2, '2025-09-11', "PLA001", "B001"),
+    ("C002", 3, '2025-10-15', "PLA002", "B002"),
+    ("C003", 1, '2025-11-20', "PLA003", "B003"),
+    ("C004", 4, '2025-08-05', "PLA004", "B004"),
+    ("C005", 2, '2025-12-03', "PLA005", "B005"),
+    ("C006", 5, '2025-07-18', "PLA006", "B006"),
+    ("C007", 3, '2025-06-22', "PLA007", "B007"),
+    ("C008", 2, '2025-05-14', "PLA008", "B008"),
+    ("C009", 1, '2025-04-28', "PLA009", "B009"),
+    ("C010", 4, '2025-03-12', "PLA010", "B010");
+
+INSERT INTO
     PARTICIPER
 VALUES
     ("PER001", "C001"),
@@ -182,100 +200,6 @@ VALUES
     ("PER008", "C008"),
     ("PER009", "C009"),
     ("PER010", "C010");
-    
-    INSERT INTO
-        CAMPAGNE
-    VALUES
-        (
-            "C001",
-            "PLA001",
-            "LaOuYaDino",
-            2,
-            '2025-09-11',
-            "38500.75",
-            "B001"
-        ),
-        (
-            "C002",
-            "PLA002",
-            "ValleeFossile",
-            3,
-            '2025-10-15',
-            "32800.50",
-            "B002"
-        ),
-        (
-            "C003",
-            "PLA003",
-            "CanyonPrehistoire",
-            1,
-            '2025-11-20',
-            "25600.30",
-            "B003"
-        ),
-        (
-            "C004",
-            "PLA004",
-            "CollineCretace",
-            4,
-            '2025-08-05',
-            "54200.85",
-            "B004"
-        ),
-        (
-            "C005",
-            "PLA005",
-            "DesertJurassique",
-            2,
-            '2025-12-03',
-            "18750.40",
-            "B005"
-        ),
-        (
-            "C006",
-            "PLA006",
-            "ForetTriassique",
-            5,
-            '2025-07-18',
-            "71200.10",
-            "B006"
-        ),
-        (
-            "C007",
-            "PLA007",
-            "RiviereFossile",
-            3,
-            '2025-06-22',
-            "29900.65",
-            "B007"
-        ),
-        (
-            "C008",
-            "PLA008",
-            "MontagnesDino",
-            2,
-            '2025-05-14',
-            "42300.90",
-            "B008"
-        ),
-        (
-            "C009",
-            "PLA009",
-            "PlainePaleonto",
-            1,
-            '2025-04-28',
-            "61500.20",
-            "B009"
-        ),
-        (
-            "C010",
-            "PLA010",
-            "LacPrehistoire",
-            4,
-            '2025-03-12',
-            "20800.45",
-            "B010"
-        );
 
 
 INSERT INTO
