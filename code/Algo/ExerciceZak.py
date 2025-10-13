@@ -74,3 +74,11 @@ def mutation_par_deletion(sequence: str, p: float) -> str:
             nvl_seq += base  # On garde la base avec probabilité 1-p
         # Sinon, on supprime la base (on ne l'ajoute pas à nvl_seq)
     return nvl_seq
+
+
+def cree_especes_hypothetiques():
+
+    return None
+
+def manipuler_especes_hypothetiques():
+    return None
