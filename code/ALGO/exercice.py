@@ -86,3 +86,33 @@ class Espece():
     def __repr__(self):
         """Représentation pour le débogage"""
         return f"Espece('{self.nom_espece}', '{self.sequence}', {len(self.especes_filles)} filles)"
+ 
+    # Question 11
+    def calcul_distance(self, espece_cible):
+        """Distance moyenne entre self (hypothétique) et espece_cible (avérée ou hypothétique).
+        Retourne None si self n'est pas hypothétique ou si aucune comparaison valide.
+        """
+        if self.est_averee():
+            return None
+
+        total_dist = 0
+        cpt = 0
+        if espece_cible.est_averee():
+            for e in self.especes_filles:
+                dist = estimation_distance_mutation(e.sequence, espece_cible.sequence)
+                if dist is None:
+                    return None
+                total_dist += dist
+                cpt += 1
+        else:
+            for e in self.especes_filles:
+                for f in espece_cible.especes_filles:
+                    dist = estimation_distance_mutation(e.sequence, f.sequence)
+                    if dist is None:
+                        return None
+                    total_dist += dist
+                    cpt += 1
+        if cpt:
+            return total_dist / cpt
+        else:
+            return None
