@@ -1,8 +1,5 @@
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pytest
-from exploitation_sequence import mutation_par_remplacement,mutation_par_insertion,mutation_par_deletion
+from exercice import mutation_par_remplacement,mutation_par_insertion,mutation_par_deletion
 
 sequence_test= "ATCGGCTAATGCCGTAACGTTAGC" #séquence ADN test
 p = 0.4 #taux de mutation test
