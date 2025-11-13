@@ -13,16 +13,15 @@ def test_mutation_par_remplacement():
 
 #Question3
 
-def mutation_par_insertion():
+def test_mutation_par_insertion():
     #sequence_test = genere_adn(15)
     res = mutation_par_insertion(sequence_test,p)
     assert len(res)>=len(sequence_test)
 
-def mutation_par_deletion():
+def test_mutation_par_deletion():
     #sequence_test = genere_adn(30)
     res = mutation_par_deletion(sequence_test,p)
     assert len(res)<=len(sequence_test)
-from exercice import *
 
 
 def test_estimation_distance_mutation():
