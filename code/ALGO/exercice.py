@@ -57,7 +57,7 @@ class Espece():
         else:
             self.especes_filles = []
             self.sequence = sequence
-            
+
     def est_hypothetique(self):
         """Vérifie si l'espèce est hypothétique
         
@@ -84,6 +84,7 @@ class Espece():
 
     def __str__(self):
         """Représentation textuelle de l'espèce"""
+        res= ""
         if self.est_hypothetique():
             type_espece = "hypothétique"
             res += f"Séquence: {self.sequence}\n"
@@ -99,53 +100,53 @@ class Espece():
 
     def __repr__(self):
         """Représentation pour le débogage"""
+        return self.nom_espece
 
 
 # Question 12
+
 
 def arbre_phylogenetic(nb_espece, taille_seq):
     list_esp = []
     for i in range(nb_espece):
         list_esp.append(Espece(f'Dino {i}', genere_adn(taille_seq)))
-        
-    def calcule_distance(esp1:Espece,esp2:Espece):
+
+    def calcule_distance(esp1: Espece, esp2: Espece):
         if esp1.est_averee or esp2.est_averee:
-            return sequence_levenshtein(esp1.sequence,esp2.sequence)
+            return sequence_levenshtein(esp1.sequence, esp2.sequence)
         res = 0
         if esp1.est_hypothetique:
             for enf in esp1.especes_filles:
                 if enf.est_hypothetique:
-                    res+=calcule_distance(enf,esp2)
+                    res += calcule_distance(enf, esp2)
                 else:
-                    res+=1/2*(sequence_levenshtein(enf,esp1))
+                    res += 1 / 2 * (sequence_levenshtein(enf, esp1))
         if esp2.est_hypothetique:
             for enf in esp2.especes_filles:
                 if enf.est_hypothetique:
-                    res+=calcule_distance(esp1,enf)
+                    res += calcule_distance(esp1, enf)
                 else:
-                    res+=1/2*(sequence_levenshtein(enf,esp2))
+                    res += 1 / 2 * (sequence_levenshtein(enf, esp2))
         return res
 
     while len(list_esp) > 1:
         min = taille_seq + 1
-        esp1_min = None 
+        esp1_min = None
         esp2_min = None
         for esp1 in list_esp:
             for esp2 in list_esp:
-                if esp1!=esp2:
-                    dis = calcule_distance(esp1,esp2)
-                    if min>dis:
-                        min = dis 
+                if esp1 != esp2:
+                    dis = calcule_distance(esp1, esp2)
+                    if min > dis:
+                        min = dis
                         esp1_min = esp1
                         esp2_min = esp2
         list_esp.remove(esp1_min)
         list_esp.remove(esp2_min)
-        nouv_esp = Espece(f"{esp2_min.nom_espece} + {esp2_min.nom_espece}",[esp1_min,esp2_min])
+        nouv_esp = Espece(f"{esp1_min.nom_espece} + {esp2_min.nom_espece}", "",
+                          [esp1_min, esp2_min])
         list_esp.append(nouv_esp)
     return list_esp[0]
-    
-print(arbre_phylogenetic(6,4))    
-    
-    
-#d(A+B,x) = 1/2(d(A,x),d(B,x)) calcule moyenne de distance 
 
+
+print(arbre_phylogenetic(6, 4))
