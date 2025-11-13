@@ -1,6 +1,30 @@
 from exercice import *
 
 
+def test_str():
+    # Test pour une espèce avérée
+    tyrannosaure = Espece("Tyrannosaure", "CAGTACGGTTTAGCAT")
+    str_tyrannosaure = "Espèce avérée: Tyrannosaure\nSéquence: CAGTACGGTTTAGCAT\n"
+    assert str(tyrannosaure) == str_tyrannosaure
+    
+    # Test pour une espèce hypothétique
+    velociraptor = Espece("Vélociraptor", "CAGTACGGTTTAGCTT")
+    ancetre_commun = Espece("Ancêtre Théropode", "", [tyrannosaure, velociraptor])
+    str_ancetre = "Espèce hypothétique: Ancêtre Théropode\nSéquence: \nEspèces filles: Tyrannosaure, Vélociraptor"
+    assert str(ancetre_commun) == str_ancetre
+
+def test_repr():
+    # Test pour une espèce avérée
+    tyrannosaure = Espece("Tyrannosaure", "CAGTACGGTTTAGCAT")
+    repr_tyrannosaure = "Espece('Tyrannosaure', 'CAGTACGGTTTAGCAT', 0 filles)"
+    assert repr(tyrannosaure) == repr_tyrannosaure
+    
+    # Test pour une espèce hypothétique
+    velociraptor = Espece("Vélociraptor", "CAGTACGGTTTAGCTT")
+    ancetre_commun = Espece("Ancêtre Théropode", "", [tyrannosaure, velociraptor])
+    repr_ancetre = "Espece('Ancêtre Théropode', '', 2 filles)"
+    assert repr(ancetre_commun) == repr_ancetre
+
 def test_estimation_distance_mutation():
     ech1 = "ATCTACTAGCT"
     ech2 = "ACCTACAGGGT"
@@ -13,12 +37,13 @@ def test_estimation_distance_mutation():
 
 def test_est_hypothetique():
     t_rex = Espece("t-rex", "CAGTACGGTTTAGCAT")
-    velociraptor = Espece("velociraptor", "CAGTACGGTTTAGCTT")
+    velociraptor = Espece("velociraptor", "CAGTACGGTTTAGCTT", [])
     assert t_rex.est_hypothetique() == False
     assert velociraptor.est_hypothetique() == False
     ancetre_commun = Espece("ancêtre-théropode", "",
                             [t_rex, velociraptor])
     assert ancetre_commun.est_hypothetique() == True
+
 
 
 def test_est_averee():
@@ -70,3 +95,8 @@ def test_calcul_distance():
     # Distances entre filles: t_rex vs triceratops (4), velociraptor vs triceratops (3)
     # Moyenne: (4 + 3) / 2 = 3.5
     assert ancetre_commun.calcul_distance(ancetre2) == 3.5
+
+def test_calcul_distance_none():
+    t_rex = Espece("t-rex", "CAGTACGGTTTAGCAT")
+    velociraptor = Espece("velociraptor", "CAGTACGGTTTAGCTT")
+    assert t_rex.calcul_distance(velociraptor) == None

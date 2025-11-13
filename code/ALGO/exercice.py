@@ -50,7 +50,7 @@ class Espece():
         Returns:
             bool: True si l'espèce a des espèces filles, False sinon
         """
-        if self.especes_filles is None:
+        if self.especes_filles is None or not self.especes_filles:
             return False
         return len(self.especes_filles) > 0
 
@@ -113,8 +113,6 @@ class Espece():
                     cpt += 1
         if cpt:
             return total_dist / cpt
-        else:
-            return None
 
 
 def estimation_distance(sequence1, sequence2):
