@@ -1,9 +1,11 @@
 import random as r
-# Exercice 1
+
 # Ensemble des bases azotées de l'ADN
 BASE = {"A", "T", "C", "G"}
 
-
+# =============================================
+# Question 1
+# =============================================
 def genere_adn(longueur: int) -> str:
     """
     Génère une séquence ADN aléatoire de longueur donnée.
@@ -26,49 +28,12 @@ def genere_adn(longueur: int) -> str:
     return sequence
 
 
-# Exercice 6
-def sequence_levenshtein(seq_a: str, seq_b: str) -> int:
-    """
-    Calcule la distance de Levenshtein entre deux séquences.
-    Args:
-        seq_a (str): Première séquence
-        seq_b (str): Deuxième séquence
-
-    Returns:
-        int: Distance de Levenshtein entre les deux séquences
-    """
-    if seq_a == seq_b:
-        return 0
-    elif len(seq_a) == 0:
-        return len(seq_b)
-    elif len(seq_b) == 0:
-        return len(seq_a)
-    else:
-        dis = [[0] * (len(seq_b) + 1) for _ in range(len(seq_a) + 1)]
-
-        for i in range(len(seq_a) + 1):
-            dis[i][0] = i
-        for j in range(len(seq_b) + 1):
-            dis[0][j] = j
-
-        for i in range(1, len(seq_a) + 1):
-            for j in range(1, len(seq_b) + 1):
-                cout = 0 if seq_a[i - 1] == seq_b[j - 1] else 1
-                dis[i][j] = min(
-                    dis[i - 1][j] + 1,  
-                    dis[i][j - 1] + 1,  
-                    dis[i - 1][j - 1] + cout  
-                )
-
-        return dis[-1][-1]
-BASE = {'A', 'T', 'C', 'G'}
-
+# =============================================
 # Question 2
-
+# =============================================
 def mutation_par_remplacement(sequence: str, p: float) -> str:
     """    
     La fonction permet de simuler une mutation en remplaçant une base par une autre aleatoirement.
-
 
     Args:
         sequence (str): une séquence ADN 
@@ -90,12 +55,12 @@ def mutation_par_remplacement(sequence: str, p: float) -> str:
     return nvl_seq 
 
 
+# =============================================
 # Question 3
-
+# =============================================
 def mutation_par_insertion(sequence: str, p: float) -> str:
     """    
     La fonction permet de simuler une mutation en ajoutant une base aleatoirement.
-
 
     Args:
         sequence (str): une séquence ADN 
@@ -138,10 +103,10 @@ def mutation_par_deletion(sequence: str, p: float) -> str:
         # Sinon, on supprime la base (on ne l'ajoute pas à nvl_seq)
     return nvl_seq
 
-# ========== 2 Calcul de similarité ==========
 
-
+# =============================================
 # Question 4
+# =============================================
 def estimation_distance_mutation(echantillon1: str,
                                  echantillon2: str) -> int | None:
     """Renvoie une estimation de manière naïve d'une distance de mutation pour deux échantillons avec permutation seulement
@@ -161,12 +126,47 @@ def estimation_distance_mutation(echantillon1: str,
             distance += 1
     return distance
 
+# =============================================
+# Question 6 (facultative)
+# =============================================
+def sequence_levenshtein(seq_a: str, seq_b: str) -> int:
+    """
+    Calcule la distance de Levenshtein entre deux séquences.
+    Args:
+        seq_a (str): Première séquence
+        seq_b (str): Deuxième séquence
 
-# ========== 3.2 Les espèces hypothétiques ==========
+    Returns:
+        int: Distance de Levenshtein entre les deux séquences
+    """
+    if seq_a == seq_b:
+        return 0
+    elif len(seq_a) == 0:
+        return len(seq_b)
+    elif len(seq_b) == 0:
+        return len(seq_a)
+    else:
+        dis = [[0] * (len(seq_b) + 1) for _ in range(len(seq_a) + 1)]
 
+        for i in range(len(seq_a) + 1):
+            dis[i][0] = i
+        for j in range(len(seq_b) + 1):
+            dis[0][j] = j
 
+        for i in range(1, len(seq_a) + 1):
+            for j in range(1, len(seq_b) + 1):
+                cout = 0 if seq_a[i - 1] == seq_b[j - 1] else 1
+                dis[i][j] = min(
+                    dis[i - 1][j] + 1,  
+                    dis[i][j - 1] + 1,  
+                    dis[i - 1][j - 1] + cout  
+                )
+
+        return dis[-1][-1]
+    
+# =============================================
 # Question 10
-
+# =============================================
 class Espece():
 
     def __init__(self, nom, sequence, especes_filles=None):
@@ -201,16 +201,7 @@ class Espece():
             bool: True si l'espèce n'a pas d'espèces filles, False sinon
         """
         return not self.est_hypothetique()
-    def est_hypothetique(self):
-        """Vérifie si l'espèce est hypothétique
         
-        Returns:
-            bool: True si l'espèce a des espèces filles, False sinon
-        """
-        if self.especes_filles is None or not self.especes_filles:
-            return False
-        return len(self.especes_filles) > 0        
-      
     def ajouter_espece_fille(self, espece) -> None:
         """
         Ajoute une espèce fille à cette espèce.
@@ -220,13 +211,6 @@ class Espece():
         """
         self.especes_filles.append(espece)
 
-    def ajouter_espece_fille(self, espece):
-        """Ajoute une espèce fille à cette espèce
-        
-        Args:
-            espece (Espece): l'espèce fille à ajouter
-        """
-        self.especes_filles.append(espece)
     def calcul_distance(self, espece_cible):
         """Distance moyenne entre self (hypothétique) et espece_cible (avérée ou hypothétique).
         Retourne None si self n'est pas hypothétique ou si aucune comparaison valide.
@@ -269,8 +253,9 @@ class Espece():
         return f"Espece('{self.nom_espece}', '{self.sequence}', {len(self.especes_filles)} filles)"
 
 
-
+# =============================================
 # Question 11
+# =============================================
 def estimation_distance(sequence1, sequence2):
     """
     Calcule une estimation de la distance entre deux séquences en comptant les différences
@@ -294,7 +279,10 @@ def estimation_distance(sequence1, sequence2):
     diff += len(seq_reste) - longueur_equi
     return diff
 
+
+# =============================================
 # Question 12
+# =============================================
 def arbre_phylogenetic(nb_espece: int, taille_seq: int) -> Espece:
     """
     Construit un arbre phylogénétique à partir d'espèces générées aléatoirement.
@@ -338,7 +326,9 @@ def arbre_phylogenetic(nb_espece: int, taille_seq: int) -> Espece:
 
     return list_esp[0]
 
+# =============================================
+# Test final
+# =============================================
 if __name__ == "__main__":
     arbre = arbre_phylogenetic(6, 4)
     print(arbre)
-
