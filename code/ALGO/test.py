@@ -152,7 +152,6 @@ def test_estimation_distance():
 
 
 def test_calcul_distance():
-    # Test avec une espèce avérée (devrait retourner None)
     t_rex = Espece("t-rex", "CAGTACGGTTTAGCAT")
     velociraptor = Espece("velociraptor", "CAGTACGGTTTAGCTT")
     
