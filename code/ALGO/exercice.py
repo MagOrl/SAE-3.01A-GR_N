@@ -169,18 +169,16 @@ def sequence_levenshtein(seq_a: str, seq_b: str) -> int:
 # =============================================
 class Espece():
 
-    def __init__(self, nom, sequence, especes_filles=None):
-        """Initialise une espèce (avérée ou hypothétique)
-        
-        Args:
-            nom (str): nom de l'espèce
-            sequence (str): séquence ADN de l'espèce
-            especes_filles (list[Espece], optional): liste des espèces filles si hypothétique
+    def __init__(self, nom, sequence="", especes_filles=None):
+        """
+        Initialise une espèce.
+        - Si especes_filles est None → espèce avérée avec sequence
+        - Sinon → espèce hypothétique avec filles, sequence ignorée
         """
         self.nom_espece = nom
-        if especes_filles is not None or especes_filles:
+        if especes_filles is not None:
             self.especes_filles = especes_filles
-            self.sequence = ""
+            self.sequence = ""  # pas de séquence pour hypothétique
         else:
             self.especes_filles = []
             self.sequence = sequence
@@ -200,7 +198,7 @@ class Espece():
         Returns:
             bool: True si l'espèce n'a pas d'espèces filles, False sinon
         """
-        return not self.est_hypothetique()
+        return len(self.especes_filles) == 0
         
     def ajouter_espece_fille(self, espece) -> None:
         """
@@ -327,8 +325,114 @@ def arbre_phylogenetic(nb_espece: int, taille_seq: int) -> Espece:
     return list_esp[0]
 
 # =============================================
-# Test final
+# Menu Simple Executable
 # =============================================
 if __name__ == "__main__":
-    arbre = arbre_phylogenetic(6, 4)
-    print(arbre)
+    import os
+    os.system('cls' if os.name == 'nt' else 'clear')  # Nettoie l'écran
+
+    while True:
+        print("\n" + "="*50)
+        print("   MENU ADN   ")
+        print("="*50)
+        print("1. Générer une séquence ADN")
+        print("2. Mutation par remplacement")
+        print("3. Mutation par insertion")
+        print("4. Mutation par suppression")
+        print("5. Distance naïve (même longueur)")
+        print("6. Distance de Levenshtein")
+        print("7. Distance estimée (insertions/suppressions)")
+        print("8. Construire un arbre phylogénétique")
+        print("0. Quitter")
+        print("-"*50)
+
+        choix = input("Choisissez une option (0-8) : ").strip()
+
+        # Quitter
+        if choix == "0":
+            print("Au revoir !")
+            break
+
+        # 1. Générer ADN
+        elif choix == "1":
+            try:
+                n = int(input("Longueur de la séquence : "))
+                seq = genere_adn(n)
+                print(f"Séquence générée : {seq}")
+            except Exception as e:
+                print(f"Erreur : {e}")
+
+        # 2. Mutation remplacement
+        elif choix == "2":
+            seq = input("Séquence ADN : ").upper()
+            try:
+                p = float(input("Taux de mutation (0 à 1) : "))
+                result = mutation_par_remplacement(seq, p)
+                if result is not None:
+                    print(f"Après mutation : {result}")
+            except Exception as e:
+                print(f"Erreur : {e}")
+
+        # 3. Mutation insertion
+        elif choix == "3":
+            seq = input("Séquence ADN : ").upper()
+            try:
+                p = float(input("Taux d'insertion (0 à 1) : "))
+                result = mutation_par_insertion(seq, p)
+                if result is not None:
+                    print(f"Après insertion : {result}")
+            except Exception as e:
+                print(f"Erreur : {e}")
+
+        # 4. Mutation suppression
+        elif choix == "4":
+            seq = input("Séquence ADN : ").upper()
+            try:
+                p = float(input("Taux de suppression (0 à 1) : "))
+                result = mutation_par_deletion(seq, p)
+                if result is not None:
+                    print(f"Après suppression : {result}")
+            except Exception as e:
+                print(f"Erreur : {e}")
+
+        # 5. Distance naïve
+        elif choix == "5":
+            s1 = input("Séquence 1 : ").upper()
+            s2 = input("Séquence 2 : ").upper()
+            dist = estimation_distance_mutation(s1, s2)
+            if dist is None:
+                print("Erreur : les séquences doivent avoir la même longueur !")
+            else:
+                print(f"Distance naïve : {dist}")
+
+        # 6. Levenshtein
+        elif choix == "6":
+            s1 = input("Séquence 1 : ").upper()
+            s2 = input("Séquence 2 : ").upper()
+            dist = sequence_levenshtein(s1, s2)
+            print(f"Distance de Levenshtein : {dist}")
+
+        # 7. Distance estimée (Q11)
+        elif choix == "7":
+            s1 = input("Séquence 1 : ").upper()
+            s2 = input("Séquence 2 : ").upper()
+            dist = estimation_distance(s1, s2)
+            print(f"Distance estimée : {dist}")
+
+        # 8. Arbre phylogénétique
+        elif choix == "8":
+            try:
+                nb = int(input("Nombre d'espèces (min 2) : "))
+                taille = int(input("Taille des séquences ADN : "))
+                print("Construction de l'arbre en cours...")
+                arbre = arbre_phylogenetic(nb, taille)
+                print("\nArbre phylogénétique construit !")
+                print(arbre)
+            except Exception as e:
+                print(f"Erreur : {e}")
+
+        else:
+            print("Option invalide !")
+        
+        input("\nAppuyez sur Entrée pour continuer...")
+        os.system('cls' if os.name == 'nt' else 'clear')
