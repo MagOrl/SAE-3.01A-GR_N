@@ -227,6 +227,27 @@ class Espece():
             espece (Espece): l'espèce fille à ajouter
         """
         self.especes_filles.append(espece)
+    def calcul_distance(self, espece_cible):
+        """Distance moyenne entre self (hypothétique) et espece_cible (avérée ou hypothétique).
+        Retourne None si self n'est pas hypothétique ou si aucune comparaison valide.
+        """
+        if self.est_averee():
+            return estimation_distance(self.sequence,espece_cible.sequence)
+        total_dist = 0
+        cpt = 0
+        if espece_cible.est_averee():
+            for e in self.especes_filles:
+                dist = estimation_distance(e.sequence, espece_cible.sequence)
+                total_dist += dist
+                cpt += 1
+        else:
+            for e in self.especes_filles:
+                for f in espece_cible.especes_filles:
+                    dist = estimation_distance(e.sequence, f.sequence)
+                    total_dist += dist
+                    cpt += 1
+        if cpt:
+            return total_dist / cpt
 
     def __str__(self):
         """Représentation textuelle de l'espèce"""
@@ -248,28 +269,6 @@ class Espece():
         return f"Espece('{self.nom_espece}', '{self.sequence}', {len(self.especes_filles)} filles)"
 
 
-    def calcul_distance(self, espece_cible):
-        """Distance moyenne entre self (hypothétique) et espece_cible (avérée ou hypothétique).
-        Retourne None si self n'est pas hypothétique ou si aucune comparaison valide.
-        """
-        if self.est_averee():
-            return None
-
-        total_dist = 0
-        cpt = 0
-        if espece_cible.est_averee():
-            for e in self.especes_filles:
-                dist = estimation_distance(e.sequence, espece_cible.sequence)
-                total_dist += dist
-                cpt += 1
-        else:
-            for e in self.especes_filles:
-                for f in espece_cible.especes_filles:
-                    dist = estimation_distance(e.sequence, f.sequence)
-                    total_dist += dist
-                    cpt += 1
-        if cpt:
-            return total_dist / cpt
 
 # Question 11
 def estimation_distance(sequence1, sequence2):
@@ -283,7 +282,6 @@ def estimation_distance(sequence1, sequence2):
         int: Le nombre total de différences, incluant les positions non communes.
     """
     diff = 0
-    print(sequence1)
     if len(sequence1) > len(sequence2):
         longueur_equi = len(sequence2)
         seq_reste = sequence1
@@ -317,37 +315,7 @@ def arbre_phylogenetic(nb_espece: int, taille_seq: int) -> Espece:
     list_esp = []
     for i in range(nb_espece):
         list_esp.append(Espece(f"Dino {i}", genere_adn(taille_seq)))
-
-    def calcule_distance(esp1: Espece, esp2: Espece) -> float:
-        """
-        Calcule la distance entre deux espèces (avérées ou hypothétiques).
-        
-        Args:
-            esp1 (Espece): Première espèce
-            esp2 (Espece): Deuxième espèce
-
-        Returns:
-            float: Distance entre les deux espèces
-        """
-        if esp1.est_averee() and esp2.est_averee():
-            return sequence_levenshtein(esp1.sequence, esp2.sequence)
-        elif esp1.est_averee() and esp2.est_hypothetique():
-            distances = [
-                calcule_distance(esp1, fille) for fille in esp2.especes_filles
-            ]
-            return sum(distances) / len(distances)
-        elif esp1.est_hypothetique() and esp2.est_averee():
-            distances = [
-                calcule_distance(fille, esp2) for fille in esp1.especes_filles
-            ]
-            return sum(distances) / len(distances)
-        else:
-            distances = []
-            for fille1 in esp1.especes_filles:
-                for fille2 in esp2.especes_filles:
-                    distances.append(calcule_distance(fille1, fille2))
-            return sum(distances) / len(distances)
-
+   
     while len(list_esp) > 1:
         min_distance = taille_seq + 1
         esp1_min = None
@@ -355,7 +323,7 @@ def arbre_phylogenetic(nb_espece: int, taille_seq: int) -> Espece:
         for i, esp1 in enumerate(list_esp):
             for j, esp2 in enumerate(list_esp):
                 if i != j:
-                    distance = calcule_distance(esp1, esp2)
+                    distance = esp1.calcul_distance(esp2)
                     if distance < min_distance:
                         min_distance = distance
                         esp1_min = esp1
@@ -369,8 +337,6 @@ def arbre_phylogenetic(nb_espece: int, taille_seq: int) -> Espece:
         list_esp.append(nouvelle_espece)
 
     return list_esp[0]
-
-    
 
 if __name__ == "__main__":
     arbre = arbre_phylogenetic(6, 4)
