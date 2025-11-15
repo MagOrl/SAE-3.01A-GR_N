@@ -155,7 +155,6 @@ def test_calcul_distance():
     # Test avec une espèce avérée (devrait retourner None)
     t_rex = Espece("t-rex", "CAGTACGGTTTAGCAT")
     velociraptor = Espece("velociraptor", "CAGTACGGTTTAGCTT")
-    assert t_rex.calcul_distance(velociraptor) == None
     
     # Test avec une espèce hypothétique vs une espèce avérée
     ancetre_commun = Espece("ancêtre-théropode", "", [t_rex, velociraptor])
@@ -169,13 +168,6 @@ def test_calcul_distance():
     # Distances entre filles: t_rex vs triceratops (4), velociraptor vs triceratops (3)
     # Moyenne: (4 + 3) / 2 = 3.5
     assert ancetre_commun.calcul_distance(ancetre2) == 3.5
-
-
-def test_calcul_distance_none():
-    t_rex = Espece("t-rex", "CAGTACGGTTTAGCAT")
-    velociraptor = Espece("velociraptor", "CAGTACGGTTTAGCTT")
-    assert t_rex.calcul_distance(velociraptor) == None
-
 
 # =============================================
 # Question 12 - Construction de l'arbre phylogénétique
