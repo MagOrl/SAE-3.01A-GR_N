@@ -116,7 +116,7 @@ class Espece():
             especes_filles (list[Espece], optional): liste des espèces filles si hypothétique
         """
         self.nom_espece = nom
-        if especes_filles is not None:
+        if especes_filles is not None or especes_filles:
             self.especes_filles = especes_filles
             self.sequence = ""
         else:
@@ -129,6 +129,8 @@ class Espece():
         Returns:
             bool: True si l'espèce a des espèces filles, False sinon
         """
+        if self.especes_filles is None or not self.especes_filles:
+            return False
         return len(self.especes_filles) > 0
 
     def est_averee(self):
@@ -165,3 +167,53 @@ class Espece():
     def __repr__(self):
         """Représentation pour le débogage"""
         return f"Espece('{self.nom_espece}', '{self.sequence}', {len(self.especes_filles)} filles)"
+
+    # Question 11
+
+    def calcul_distance(self, espece_cible):
+        """Distance moyenne entre self (hypothétique) et espece_cible (avérée ou hypothétique).
+        Retourne None si self n'est pas hypothétique ou si aucune comparaison valide.
+        """
+        if self.est_averee():
+            return None
+
+        total_dist = 0
+        cpt = 0
+        if espece_cible.est_averee():
+            for e in self.especes_filles:
+                dist = estimation_distance(e.sequence, espece_cible.sequence)
+                total_dist += dist
+                cpt += 1
+        else:
+            for e in self.especes_filles:
+                for f in espece_cible.especes_filles:
+                    dist = estimation_distance(e.sequence, f.sequence)
+                    total_dist += dist
+                    cpt += 1
+        if cpt:
+            return total_dist / cpt
+
+
+def estimation_distance(sequence1, sequence2):
+    """
+    Calcule une estimation de la distance entre deux séquences en comptant les différences
+    dans les positions communes et en ajoutant la longueur de la partie restante de la séquence la plus longue.
+    Args:
+        sequence1 (str or list): La première séquence à comparer.
+        sequence2 (str or list): La deuxième séquence à comparer.
+    Returns:
+        int: Le nombre total de différences, incluant les positions non communes.
+    """
+    diff = 0
+    print(sequence1)
+    if len(sequence1) > len(sequence2):
+        longueur_equi = len(sequence2)
+        seq_reste = sequence1
+    else:
+        longueur_equi = len(sequence1)
+        seq_reste = sequence2
+    for i in range(longueur_equi):
+        if sequence1[i] != sequence2[i]:
+            diff += 1
+    diff += len(seq_reste) - longueur_equi
+    return diff
