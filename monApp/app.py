@@ -1,11 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-app = Flask ( __name__ )
+from flask_login import LoginManager
 
-# Config options - Make sure you created a 'config.py' file.
+app = Flask(__name__)
 app.config.from_object('config')
-# To get one variable, tape app.config['MY_VARIABLE']
-
-# Create database connection object
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 db.init_app(app)
+login_manager = LoginManager(app)
