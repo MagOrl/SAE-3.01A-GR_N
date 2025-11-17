@@ -324,6 +324,7 @@ def arbre_phylogenetic(nb_espece: int, taille_seq: int) -> Espece:
 
     return list_esp[0]
 
+
 # =============================================
 # Menu Simple Executable
 # =============================================
