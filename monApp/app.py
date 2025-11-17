@@ -7,3 +7,7 @@ app.config.from_object('config')
 db = SQLAlchemy()
 db.init_app(app)
 login_manager = LoginManager(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return None
