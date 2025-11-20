@@ -10,5 +10,9 @@ def index():
 def admin():
     return render_template("home_admin.html")
 
+@app.route("/technicien/")
+def technicien():
+    return render_template("accueil_technicien.html")
+
 if __name__ == "__main__":
     app.run()
