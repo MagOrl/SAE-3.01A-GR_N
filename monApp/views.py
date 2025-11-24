@@ -1,5 +1,6 @@
 from flask import Flask,render_template
 from .app import app
+from .models import personnel
 
 @app.route('/')
 @app.route('/index/')
@@ -21,9 +22,15 @@ def chercheur_echantillon():
 @app.route('/chercheur/sequence/')
 def chercheur_sequence():
     return render_template("Chercheur_Sequence.html")
+
 @app.route("/admin/")
 def admin():
     return render_template("home_admin.html")
+
+@app.route("/admin/gerer_personnel")
+def admin_gerer_personnel():
+    personnels = personnel.query.all()
+    return render_template("gerer_personnel_admin.html", personnels=personnels)
 
 if __name__ == "__main__":
     app.run()
