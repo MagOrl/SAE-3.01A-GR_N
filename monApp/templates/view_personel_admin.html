@@ -1,0 +1,26 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<div class="bloc-entier-admin">
+  <div class="boite-bonjour-admin">
+    <h1>Détails du Personnel</h1>
+  </div>
+  <div class="boite-choix-menu">
+    <p><strong>ID Personnel:</strong> {{ personnel.id_pers }}</p>
+    <p><strong>Nom Personnel:</strong> {{ personnel.nom_pers }}</p>
+    <h3>Habilitations:</h3>
+    <ul>
+      {% for spec in specialisations %}
+      <li>{{ spec.id_hab }} - {{ spec.nom_hab }}</li>
+      {% endfor %}
+    </ul>
+    <h3>Campagnes Participées:</h3>
+    <ul>
+      {% for part in participations %}
+      <li>{{ part.id_camp }}</li>
+      {% endfor %}
+    </ul>
+    <button class="btn-retour" onclick="history.back()">Retour</button>
+  </div>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
-from flask import Flask,render_template
+from flask import Flask, render_template
 from .app import app
+from .models import *
 
 @app.route('/')
 @app.route('/index/')
@@ -24,6 +25,13 @@ def chercheur_sequence():
 @app.route("/admin/")
 def admin():
     return render_template("home_admin.html")
+
+@app.route('/admin/gerer_personnel/<id_pers>')
+def gerer_personnel_detail(id_pers):
+    pers = personnel.query.get_or_404(id_pers)
+    specialisations = SpecialiserEn.query.filter_by(id_pers=id_pers).all()
+    participations = Participer.query.filter_by(id_pers=id_pers).all()
+    return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
 
 if __name__ == "__main__":
     app.run()
