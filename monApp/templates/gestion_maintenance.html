@@ -1,0 +1,42 @@
+{% extends "nav_bar.html" %} {% block content %}
+<div class="bloc-entier-admin">
+<div class="boite-bonjour-admin">
+    <h1>Gestion des maintenances</h1>
+</div>
+<div class="boite-choix-menu">
+    <table class="">
+        <thread>
+            <tr>
+                <th>ID plateforme</th>
+                <th>Plateforme</th>
+                <th>Jours avant maintenance</th>
+                <th>Actions possibles</th>
+            </tr>
+        </thread>
+        <tbody>
+-            {% for id_pla,nom_pla,jours_av_mainte in plateformes %}
++            {% if plateformes %}
++            {% for id_pla, nom_pla, jours_av_mainte in plateformes %}
+             <tr>
+                 <td>{{ id_pla }}</td>
+                 <td>{{ nom_pla }}</td>
+                 <td>{{ jours_av_mainte }} jours</td>
+                 <td>
+                     <button class="bouton-action-valider">valider</button>
+                     <button class="bouton-action-supprimer">Supprimer</button>
+                 </td>
+             </tr>
+-            {% endfor %}
++            {% endfor %}
++            {% else %}
++            <tr><td colspan="4">Aucune plateforme enregistrée.</td></tr>
++            {% endif %}
+             </tbody>
+    </table>
+</div>
+<div class="box-retour">
+    <button class="bouton-retour" onclick="history.back();">Retour</button>
+</div>
+
+{% endblock %}
+    

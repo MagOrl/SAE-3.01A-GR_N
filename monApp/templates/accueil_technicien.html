@@ -4,8 +4,8 @@
     <h1>Bonjour Technicien "NOM Prenom" !!</h1>
 </div>
 <div class="boite-choix-menu">
-    <input type="button" class="bouton-gerer-materiel" value="Gérer les opérations de maintenance">
-    <input type="button" class="bouton-gerer-personnel" value="Gérer les changements">
+    <a type="button" class="bouton-gerer-materiel" href="{{ url_for('gestion_maintenance') }}">Gérer les opérations de maintenance</a>
+    <a type="button" class="bouton-gerer-personnel" href="{{ url_for('gestion_changement_technicien') }}">Gérer les changements</a>
 </div>
 </div>
 {% endblock %}
