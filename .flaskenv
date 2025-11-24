@@ -1,2 +1,2 @@
-FLASK_APP= views.py
+FLASK_APP= monApp.app
 FLASK_ENV= development
