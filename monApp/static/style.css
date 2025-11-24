@@ -7,8 +7,8 @@
     --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.navbar-brand {
-  font-size: 200%;
+.navbar-brand{
+    font-size: 200%;
 }
 
 .navbar-nav .nav-link[href="#"] {
@@ -20,8 +20,8 @@
 }
 
 .navbar-nav .nav-link[href="#"]:hover {
-  background-color: #0056b3;
-  color: white;
+    background-color: #0056b3;
+    color: white;
 }
 
 /* ADMINISTRATEUR */
@@ -33,7 +33,6 @@
 .bloc-entier-admin {
     border-radius: 10px;
     box-shadow: var(--shadow);
-    color: black;
 }
 
 .bouton-gerer-materiel,
