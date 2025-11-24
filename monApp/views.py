@@ -1,5 +1,6 @@
 from flask import Flask,render_template
 from .app import app
+from .models import Materiel, habilitation
 
 @app.route('/')
 @app.route('/index/')
@@ -28,7 +29,9 @@ def admin():
 
 @app.route("/admin/gerer_materiel")
 def admin_gerer_materiel():
-    return render_template("gerer_materiel_admin.html")
+    materiels = Materiel.query.join(habilitation, Materiel.id_hab == habilitation.id_hab).add_columns(habilitation.nom_hab).all()
+    return render_template("gerer_materiel_admin.html", materiels=materiels)
+
 
 if __name__ == "__main__":
     app.run()

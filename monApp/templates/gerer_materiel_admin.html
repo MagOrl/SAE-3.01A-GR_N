@@ -14,16 +14,18 @@
         </tr>
       </thead>
       <tbody>
+        {% for mat, hab_nom in materiels %}
         <tr>
-          <td>1</td>
-          <td>Habilitation A</td>
-          <td>Matériel 1</td>
+          <td>{{ mat.id_mat }}</td>
+          <td>{{ hab_nom }}</td>
+          <td>{{ mat.nom_mat }}</td>
           <td>
             <button class="btn-voir">Voir</button>
             <button class="btn-editer">Éditer</button>
             <button class="btn-supprimer">Supprimer</button>
           </td>
         </tr>
+        {% endfor %}
       </tbody>
     </table>
     <button class="btn-retour" onclick="history.back()">Retour</button>
