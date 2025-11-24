@@ -1,0 +1,24 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<body>
+    <section class="bloc-entier-admin">
+        <div class="boite-bonjour-admin">
+            <p>Bienvenue sur ADN'O NOM PRENOM.</p>
+            <p>Que souhaitez-vous faire aujourd'hui ?</p>
+        </div>
+        <div class="boite-choix-menu">
+            <form action="{{ url_for('chercheur_campagne') }}" class="bouton-gerer-personnel"\>
+                <p>Planifier une campagne</p>
+            </form>   
+            <form action="{{ url_for('chercheur_echantillon') }}" class="bouton-gerer-personnel"\>
+                <p>Analyser des échantillons</p>
+            </form>   
+            <form action="{{ url_for('chercheur_sequence') }}" class="bouton-gerer-personnel"\>
+                <p>Téléverser les séquences</p>
+            </form>   
+        </div>
+    </section>
+    
+</body>
+{% endblock %}
