@@ -21,6 +21,9 @@ def chercheur_echantillon():
 @app.route('/chercheur/sequence/')
 def chercheur_sequence():
     return render_template("Chercheur_Sequence.html")
+@app.route("/admin/")
+def admin():
+    return render_template("home_admin.html")
 
 if __name__ == "__main__":
     app.run()

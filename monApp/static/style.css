@@ -12,11 +12,11 @@
 }
 
 .navbar-nav .nav-link[href="#"] {
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
 }
 
 .navbar-nav .nav-link[href="#"]:hover {
