@@ -1,5 +1,6 @@
 from flask import Flask,render_template
 from .app import app
+from .models import Personnel,Plateforme
 
 @app.route('/')
 @app.route('/index/')
@@ -12,7 +13,9 @@ def chercheur_accueil():
 
 @app.route('/chercheur/campagne/')
 def chercheur_campagne():
-    return render_template("Chercheur_Campagne.html")
+    plateformes = Plateforme.query.all()
+    personnels = Personnel.query.all()
+    return render_template("Chercheur_Planifier_Camp.html", lesPlateformes = plateformes, lesPersonnels = personnels)
 
 @app.route('/chercheur/echantillon/')
 def chercheur_echantillon():
