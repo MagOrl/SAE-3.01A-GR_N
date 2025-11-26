@@ -1,5 +1,5 @@
-from flask import Flask, render_template
-from .app import app
+from flask import Flask, render_template, request, redirect, url_for
+from .app import app, db
 from .models import *
 
 @app.route('/')
@@ -26,10 +26,17 @@ def chercheur_sequence():
 def admin():
     return render_template("home_admin.html")
 
-@app.route('/admin/gerer_personnel/<id_pers>')
+@app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
 def gerer_personnel_detail(id_pers):
     pers = personnel.query.get_or_404(id_pers)
-    specialisations = SpecialiserEn.query.filter_by(id_pers=id_pers).all()
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'update_name':
+            pers.nom_pers = request.form['nom_pers']
+            db.session.commit()
+        return redirect(url_for('gerer_personnel_detail', id_pers=id_pers))
+    
+    specialisations = db.session.query(habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
     participations = Participer.query.filter_by(id_pers=id_pers).all()
     return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
 

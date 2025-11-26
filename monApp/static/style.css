@@ -70,3 +70,50 @@
     padding: 1rem;
     margin: 1rem;
 }
+
+.boite-choix-menu p {
+    background-color: var(--light-primary);
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin: 8px 0;
+}
+
+.boite-choix-menu h3 {
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+.boite-choix-menu ul {
+    background-color: var(--light-primary);
+    padding: 10px 15px;
+    border-radius: 5px;
+    list-style-type: none;
+    margin-left: 0;
+}
+
+.boite-choix-menu li {
+    padding: 4px 0;
+}
+
+.boite-choix-menu li:last-child {
+    border-bottom: none;
+}
+
+/* Styles pour les boutons d'action */
+.btn-update, .btn-remove, .btn-add {
+    padding: 5px 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-update {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-update:hover {
+    background-color: #218838;
+}
