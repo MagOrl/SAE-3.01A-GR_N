@@ -1,4 +1,6 @@
 from .app import db
+from datetime import timedelta
+from sqlalchemy import func
 
 class Habilitation(db.Model):
     id_hab = db.Column(db.String(10), primary_key=True)
@@ -30,18 +32,44 @@ class Plateforme(db.Model):
     nb_pers_nec = db.Column(db.Integer)
     cout_exploi_jour = db.Column(db.Float)
     inter_mainte = db.Column(db.Integer)
-    jours_av_mainte = db.Column(db.Integer)
     
-    def __init__(self, id_pla, nom_pla, nb_pers_nec, cout_exploi_jour, inter_mainte,jours_av_mainte):
+    def __init__(self, id_pla, nom_pla, nb_pers_nec, cout_exploi_jour, inter_mainte):
         self.id_pla = id_pla
         self.nom_pla = nom_pla
         self.nb_pers_nec = nb_pers_nec
         self.cout_exploi_jour = cout_exploi_jour
         self.inter_mainte = inter_mainte
-        self.jours_av_mainte = jours_av_mainte
     
     def __repr__(self):
         return "<Plateforme (%s) %s>" % (self.id_pla, self.nom_pla)
+
+class Maintenance(db.Model):
+    id_maint = db.Column(db.String(10), primary_key=True)
+    id_pla = db.Column(db.String(10), db.ForeignKey('plateforme.id_pla'))
+    date_deb_maint = db.Column(db.Date)
+    date_fin_maint = db.Column(db.Date)
+    
+    def __init__(self, id_maint, id_pla, date_deb_maint, date_fin_maint):
+        self.id_maint = id_maint
+        self.id_pla = id_pla
+        self.date_deb_maint = date_deb_maint
+        self.date_fin_maint = date_fin_maint
+    
+    def __repr__(self):
+        return "<Maintenance (%s) %s>" % (self.id_maint, self.id_pla)
+
+class OperationMaintenance(db.Model):
+    id_op_maint = db.Column(db.String(10), primary_key=True)
+    id_pla = db.Column(db.String(10), db.ForeignKey('plateforme.id_pla'))
+    date_maintenance = db.Column(db.Date)
+    
+    def __init__(self, id_op_maint, id_pla, date_maintenance):
+        self.id_op_maint = id_op_maint
+        self.id_pla = id_pla
+        self.date_maintenance = date_maintenance
+    
+    def __repr__(self):
+        return "<OperationMaintenance (%s) %s>" % (self.id_op_maint, self.id_pla)
 
 class Materiel(db.Model):
     id_mat = db.Column(db.String(10), primary_key=True)
