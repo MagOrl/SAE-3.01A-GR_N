@@ -1,0 +1,59 @@
+{% extends "nav_bar.html" %}
+{% block content %}
+<div class="bloc-entier-admin">
+    <div class="boite-bonjour-admin">
+        {% if id_pla %}
+        <h1>Ajouter une maintenance pour {{ id_pla }}</h1>
+        {% else %}
+        <h1>Ajouter une maintenance</h1>
+        {% endif %}
+    </div>
+    <div class="boite-choix-menu">
+        <form action="{{ url_for('ajouter_maintenance', id_pla=id_pla) if id_pla else url_for('ajouter_maintenance') }}" method="post">
+            {% if not id_pla %}
+            <label for="id_pla">Plateforme :</label>
+            <select id="id_pla" name="id_pla" required onchange="updateDates()">
+                {% for p in plateformes %}
+                <option value="{{ p.id_pla }}" data-start="{{ p.next_start }}" data-end="{{ p.next_end }}">{{ p.nom_pla }} ({{ p.id_pla }})</option>
+                {% endfor %}
+            </select><br><br>
+            {% endif %}
+
+            <label for="id_maint">ID Maintenance :</label>
+            <input type="text" id="id_maint" name="id_maint" required><br><br>
+
+            <label for="date_deb_maint">Date de début :</label>
+            <input type="date" id="date_deb_maint" name="date_deb_maint" required><br><br>
+
+            <label for="date_fin_maint">Date de fin :</label>
+            <input type="date" id="date_fin_maint" name="date_fin_maint" required><br><br>
+
+            <input class="bouton_val" type="submit" value="Ajouter" class="bouton-action-valider">
+        </form>
+    </div>
+    <div class="box-retour">
+        <button class="bouton-retour" onclick="history.back();">Retour</button>
+    </div>
+</div>
+
+
+<! Génerer par IA afin de remplir automatiquement les dates de début et de fin en fonction de la plateforme sélectionnée>
+<script>
+    function updateDates() {
+        var select = document.getElementById("id_pla");
+        var selectedOption = select.options[select.selectedIndex];
+        var startDate = selectedOption.getAttribute("data-start");
+        var endDate = selectedOption.getAttribute("data-end");
+        
+        if (startDate) {
+            document.getElementById("date_deb_maint").value = startDate;
+        }
+        if (endDate) {
+            document.getElementById("date_fin_maint").value = endDate;
+        }
+    }
+    
+    // Initialiser les dates au chargement de la page
+    window.onload = updateDates;
+</script>
+{% endblock %}
