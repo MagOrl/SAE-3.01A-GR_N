@@ -7,7 +7,7 @@ from monApp.models import User
 @app.route('/index')
 @app.route("/login/", methods=("GET", "POST"))
 def login():
-    if session["user"] is None:
+    if "user" not in session or session["user"] is None :
         unForm = LoginForm()
         unUser = None
         if not unForm.is_submitted():
@@ -25,6 +25,7 @@ def login():
 @app.route ("/logout/")
 def logout():
     logout_user()
+    session["user"] = None
     return redirect ( url_for ('login'))
 @app.route('/chercheur/')
 @app.errorhandler(401)
