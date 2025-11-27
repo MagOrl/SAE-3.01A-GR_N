@@ -23,7 +23,12 @@
   background-color: #0056b3;
   color: white;
 }
-
+.nav-link{
+  color: red;
+}
+.nav-link:hover{
+  color: rgb(255, 105, 105);
+}
 /* LOGIN */
 
 .form-login {
