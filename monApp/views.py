@@ -1,6 +1,8 @@
-from flask import render_template
-from .app import app
+from flask import render_template, url_for, redirect, request
+from .app import app, db
 from .models import *
+import random
+from datetime import date, datetime, timedelta
 
 @app.route('/')
 @app.route('/index/')
