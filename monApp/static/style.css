@@ -1,14 +1,14 @@
 :root {
-    --primary-color: #007bff;
-    --light-primary: #cce5ff;
-    --hover-primary: #66b3ff;
-    --bg: #f8f9fa;
-    --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.15);
+  --primary-color: #007bff;
+  --light-primary: #cce5ff;
+  --hover-primary: #66b3ff;
+  --bg: #f8f9fa;
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.navbar-brand{
-    font-size: 200%;
+.navbar-brand {
+  font-size: 200%;
 }
 
 .navbar-nav .nav-link[href="#"] {
@@ -20,8 +20,49 @@
 }
 
 .navbar-nav .nav-link[href="#"]:hover {
-    background-color: #0056b3;
-    color: white;
+  background-color: #0056b3;
+  color: white;
+}
+
+/* LOGIN */
+
+.form-login {
+  width: 800px;
+  border-radius: 5px;
+  padding: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5%;
+  background-color: var(--primary-color);
+}
+
+.form-login h1 {
+  color: var(--bg);
+  text-align: center;
+}
+.form-login label {
+  color: var(--bg);
+  font-weight: bold;
+}
+.block {
+  margin-left: 15%;
+  margin-right: 15%;
+  margin: 2%;
+}
+.btn-voir {
+  background-color: var(--light-primary);
+  border-radius: 2em;
+  color: rgb(124, 124, 124);
+  border: none;
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+  width: 500px;
+  margin-left: 130px;
+
+}
+.btn-voir:hover {
+  background-color: var(--hover-primary);
 }
 
 /* ADMINISTRATEUR */
@@ -31,42 +72,42 @@
 .bouton-gerer-materiel,
 .bouton-gerer-personnel,
 .bloc-entier-admin {
-    border-radius: 10px;
-    box-shadow: var(--shadow);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
 }
 
 .bouton-gerer-materiel,
 .bouton-gerer-personnel {
-    text-align: center;
-    padding: 0.5rem 1rem;
-    margin: 0.5rem;
-    background-color: var(--light-primary);
-    transition: 250ms all;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: var(--light-primary);
+  transition: 250ms all;
 }
 
 .bouton-gerer-materiel:hover,
 .bouton-gerer-personnel:hover {
-    background-color: var(--hover-primary);
-    box-shadow: var(--shadow-hover);
+  background-color: var(--hover-primary);
+  box-shadow: var(--shadow-hover);
 }
 
 .boite-bonjour-admin {
-    text-align: center;
-    background-color: var(--primary-color);
-    margin: 1em 2rem 1em 2rem;
-    padding: 0.5rem 1rem;
+  text-align: center;
+  background-color: var(--primary-color);
+  margin: 1em 2rem 1em 2rem;
+  padding: 0.5rem 1rem;
 }
 
 .boite-choix-menu {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--primary-color);
-    padding: 0.5rem 1rem;
-    margin: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
 }
 
 .bloc-entier-admin {
-    background-color: var(--bg);
-    padding: 1rem;
-    margin: 1rem;
+  background-color: var(--bg);
+  padding: 1rem;
+  margin: 1rem;
 }
