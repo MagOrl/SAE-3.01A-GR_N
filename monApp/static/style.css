@@ -74,6 +74,7 @@
 }
 
 
+/* TECHNICIEN */
 .bouton-retour {
    text-align: center;
     padding: 0.5rem 1rem;
@@ -83,7 +84,44 @@
     color: white;
 }
 
-.bouton-retour:hover {
+.bouton-retour:hover, 
+.bouton_val:hover,
+.bouton-supprimer:hover,
+.bouton_ajout:hover {
     background-color: var(--hover-primary);
     box-shadow: var(--shadow-hover);
+}
+
+.bouton_ajout{
+    padding: 0.5rem 1rem;
+    margin: 0.5rem;
+    background-color: lightslategray;
+    flex-direction: column;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    border-radius: 5px;
+}
+
+.bouton_val{
+    padding: 0.5rem 1rem;
+    margin: 0.5rem;
+    background-color: yellowgreen;
+    flex-direction: column;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+}
+
+.bouton-supprimer{
+    display: flex;
+    padding: 0.5rem 1rem;
+    margin: 5px;
+    color: white;
+    background-color: red;
+    flex-direction: column;
+    text-align: center;
+    position: center;
+    border-radius: 10px;
+    text-decoration: none;
 }
