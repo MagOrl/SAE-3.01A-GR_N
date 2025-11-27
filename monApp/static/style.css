@@ -82,6 +82,7 @@
     background-color: red;
     transition: 250ms all;
     color: white;
+    text-decoration: none;
 }
 
 .bouton-retour:hover, 
