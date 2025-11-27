@@ -104,15 +104,6 @@
   margin: 2px;
   cursor: pointer;
 }
-.btn-editer {
-  background-color: blue;
-  border-radius: 2em;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  margin: 2px;
-  cursor: pointer;
-}
 .btn-supprimer {
   background-color: red;
   border-radius: 2em;
