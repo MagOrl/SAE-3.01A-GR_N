@@ -21,6 +21,11 @@ def chercheur_echantillon():
 @app.route('/chercheur/sequence/')
 def chercheur_sequence():
     return render_template("Chercheur_Sequence.html")
+
+@app.route('/directeur/budget/')
+def directeur_budget():
+    return render_template("Directeur_Fixer_Budget.html")
+
 @app.route("/admin/")
 def admin():
     return render_template("home_admin.html")
