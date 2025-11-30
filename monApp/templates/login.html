@@ -1,0 +1,28 @@
+{% extends "nav_bar.html" %} {% block content %}
+  <form
+    role="form"
+    class="form-login"
+    method="POST"
+    action="{{ url_for('login') }}"
+  >
+    {{ form.hidden_tag() }}
+    <h1>Login</h1>
+    <div class="block">
+      <label for="nom"> 1. Identifiant </label>
+      <div class="form-group">
+      {{ form.Login(size=10, class_="form-control") }} 
+      </div>
+    </div>
+    <div class="block">
+      <label for="mot-de-passe">
+        2. Mot de passe 
+      </label>
+      <div class="form-group mb-3">
+        {{ form.Password(size=10, class_="form-control")}}
+      </div>
+      <div class="ctn-btn">
+      <input type="submit" value="Enregistrer" class="btn-voir">
+      </div>
+    </form>
+</html>
+{% endblock %}
