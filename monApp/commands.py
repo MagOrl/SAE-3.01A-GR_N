@@ -4,7 +4,6 @@ from .app import app, db
 from sqlalchemy import text
 from .models import *
 
-
 lg = logging.getLogger(__name__)    
 
 @app.cli.command()

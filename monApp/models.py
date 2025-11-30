@@ -1,6 +1,7 @@
 from .app import db
 from sqlalchemy.orm import validates
 from datetime import timedelta
+from sqlalchemy import func
 from flask_login import UserMixin
 from .app import login_manager
 
@@ -27,7 +28,7 @@ class User(db.Model, UserMixin):
         return f"<User {self.Login}>"
 
 
-class habilitation(db.Model):
+class Habilitation(db.Model):
     id_hab = db.Column(db.String(10), primary_key=True)
     nom_hab = db.Column(db.String(20))
 
@@ -39,7 +40,7 @@ class habilitation(db.Model):
         return "<habilitation (%s) %s>" % (self.id_hab, self.nom_hab)
 
 
-class personnel(db.Model):
+class Personnel(db.Model):
     id_pers = db.Column(db.String(10), primary_key=True)
     nom_pers = db.Column(db.String(20))
 
