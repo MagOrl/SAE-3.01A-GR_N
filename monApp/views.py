@@ -1,9 +1,10 @@
 from flask import render_template, url_for, redirect, request,Response, session
+from monApp.forms import LoginForm
 from .app import app, db
 from .models import *
 import random
 from datetime import date, datetime, timedelta
-from monApp.models import User,Personnel,Plateforme
+from monApp.models import Plateforme
 from flask_login import login_user,login_required,logout_user
 
 @app.route('/')
