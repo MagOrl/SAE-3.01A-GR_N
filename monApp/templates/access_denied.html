@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<div class ="erreur">
+<h1> Erreur  <span class="red">{{ error }}</span> </h1>
+<h2>{{ reason }} </h2>
+<img src="{{ (url_for('static',filename='images/errors_img.png')) }}">
+</div>
+<style>
+    .erreur{
+        text-align: center;
+        }
+    .erreur img{
+        width: 350px;
+        height: 550px;
+    }
+    .red{
+        color: red;
+    }
+</style>
+</html>
