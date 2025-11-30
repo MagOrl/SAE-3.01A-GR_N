@@ -2,23 +2,16 @@
 
 {% block content %}
 <body>
-    <section class="bloc-entier-admin">
-        <div class="boite-bonjour-admin">
+    <section class="bloc-entier">
+        <div class="boite-bonjour">
             <p>Bienvenue sur ADN'O NOM PRENOM.</p>
             <p>Que souhaitez-vous faire aujourd'hui ?</p>
         </div>
         <div class="boite-choix-menu">
-            <form action="{{ url_for('chercheur_campagne') }}" class="bouton-gerer-personnel"\>
-                <p>Planifier une campagne</p>
-            </form>   
-            <form action="{{ url_for('chercheur_echantillon') }}" class="bouton-gerer-personnel"\>
-                <p>Analyser des échantillons</p>
-            </form>   
-            <form action="{{ url_for('chercheur_sequence') }}" class="bouton-gerer-personnel"\>
-                <p>Téléverser les séquences</p>
-            </form>   
+            <a href="{{ url_for('chercheur_campagne') }}" class="bouton-gerer-personnel">Planifier une campagne</a>
+            <a href="" class="bouton-gerer-personnel">Analyser des échantillons</a>
+            <a href="" class="bouton-gerer-personnel">Téléverser les séquences</a>
         </div>
     </section>
-    
 </body>
 {% endblock %}

@@ -3,7 +3,7 @@ from .app import app, db
 from .models import *
 import random
 from datetime import date, datetime, timedelta
-from monApp.models import User
+from monApp.models import User,Personnel,Plateforme
 from flask_login import login_user,login_required,logout_user
 
 @app.route('/')
@@ -45,7 +45,9 @@ def chercheur_accueil():
 def chercheur_campagne():
     if session["user"].Role != 'chercheur':
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
-    return render_template("Chercheur_Campagne.html")
+    plateformes = Plateforme.query.all()
+    personnels = Personnel.query.all()
+    return render_template("Chercheur_Planifier_Camp.html", lesPlateformes = plateformes, lesPersonnels = personnels)
 
 @app.route('/chercheur/echantillon/')
 @app.errorhandler(401)

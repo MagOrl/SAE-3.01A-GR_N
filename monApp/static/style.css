@@ -70,10 +70,17 @@
   background-color: var(--hover-primary);
 }
 
-/* ADMINISTRATEUR */
+/* Page type A - Accueils*/
 
 .boite-bonjour,
 .boite-choix-menu,
+.bouton-A,
+.bloc-entier {
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+}
+
+.bouton-A 
 .bouton-gerer-materiel,
 .bouton-gerer-personnel,
 .bloc-entier-admin {
@@ -129,6 +136,7 @@
     text-decoration: none;
 }
 
+.bouton-A:hover,
 .bouton-retour:hover, 
 .bouton_val:hover,
 .bouton-supprimer:hover,
@@ -141,7 +149,9 @@
     padding: 0.5rem 1rem;
     margin: 0.5rem;
     background-color: lightslategray;
-    flex-direction: column;
+  flex-direction: column;
+  }
+  .boite-bonjour {
     text-align: center;
     text-decoration: none;
     color: black;
@@ -185,6 +195,102 @@
     justify-content: center;
 }
 
+.bloc-entier {
+    background-color: var(--bg);
+    padding: 1rem;
+    margin: 1rem;
+}
+
+/* Page B - Planifier une campagne */
+
+
+.boite-action {
+    text-align: center;
+    background-color: var(--primary-color);
+    margin-left: 10%;
+    margin-bottom: 3%;
+    padding: 0.5rem 1rem;
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+}
+
+#boite-cree-campagne {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    margin-left: 10%;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    align-items: center;
+    width: 80%;
+}
+
+.boite-camp {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--light-primary);
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    margin-left: 25%;
+    flex-basis: 50%;
+    box-shadow: var(--shadow);
+}
+
+#boite-duree-camp {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: baseline;
+}
+
+#sect-pers-affecte {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.perso-select {
+    margin: 2%;
+    flex-basis: 16%;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.check-perso {
+    margin-right: 2%;
+}
+
+.boite-inter-campagne {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: baseline;
+    flex-basis: 44%;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+
+.sb-infos-camp {
+    margin: 3%;
+}
+
+#boite-camp-2-1 {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.campagne-childs {
+    margin-left: 5%;
+    flex-basis: 90%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.duree-childs {
+    margin-left: 2%;
+    margin-right: 2%;
 .boite-infos-budget {
     display: flex;
     flex-wrap: nowrap;
