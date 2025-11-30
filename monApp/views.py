@@ -78,6 +78,10 @@ def admin_accueil():
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("home_admin.html")
 
+@app.route("/admin/gerer_personnel")
+def admin_gerer_personnel():
+    personnels = personnel.query.all()
+    return render_template("gerer_personnel_admin.html", personnels=personnels)
 @app.route("/admin/gerer_materiel")
 def admin_gerer_materiel():
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
