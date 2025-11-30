@@ -18,6 +18,10 @@ DROP TABLE IF EXISTS NECESSITER;
 
 DROP TABLE IF EXISTS UTILISER;
 
+DROP TABLE IF EXISTS OPERATION_MAINTENANCE;
+
+DROP TABLE IF EXISTS MAINTENANCE;
+
 DROP TABLE IF EXISTS MATERIEL;
 
 DROP TABLE IF EXISTS PLATEFORME;
@@ -44,8 +48,24 @@ CREATE TABLE
         nom_pla VARCHAR(20),
         nb_pers_nec INT,
         cout_exploi_jour FLOAT,
-        inter_mainte INT,
-        jours_av_mainte INT
+        inter_mainte INT /*intervalle de maintenance en jours*/
+    );
+
+CREATE TABLE
+    MAINTENANCE (
+        id_maint VARCHAR(10) PRIMARY KEY,
+        id_pla VARCHAR(10),
+        date_deb_maint DATE,
+        date_fin_maint DATE,
+        FOREIGN KEY (id_pla) REFERENCES PLATEFORME (id_pla)
+    );
+
+CREATE TABLE
+    OPERATION_MAINTENANCE (
+        id_op_maint VARCHAR(10) PRIMARY KEY,
+        id_pla VARCHAR(10),
+        date_maintenance DATE,
+        FOREIGN KEY (id_pla) REFERENCES PLATEFORME (id_pla)
     );
 
 CREATE TABLE
