@@ -72,7 +72,7 @@
 
 /* ADMINISTRATEUR */
 
-.boite-bonjour-admin,
+.boite-bonjour,
 .boite-choix-menu,
 .bouton-gerer-materiel,
 .bouton-gerer-personnel,
@@ -96,11 +96,11 @@
   box-shadow: var(--shadow-hover);
 }
 
-.boite-bonjour-admin {
-  text-align: center;
-  background-color: var(--primary-color);
-  margin: 1em 2rem 1em 2rem;
-  padding: 0.5rem 1rem;
+.boite-bonjour {
+    text-align: center;
+    background-color: var(--primary-color);
+    margin: 1em 2rem 1em 2rem;
+    padding: 0.5rem 1rem;
 }
 
 .boite-choix-menu {
@@ -111,8 +111,46 @@
   margin: 0.5rem;
 }
 
-.bloc-entier-admin {
-  background-color: var(--bg);
-  padding: 1rem;
-  margin: 1rem;
+.bloc-entier {
+    background-color: var(--bg);
+    padding: 1rem;
+    margin: 1rem;
+}
+
+/* DIRECTEUR - FIXER BUDGET */
+
+.boite-glob-infos-budget {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    background-color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    padding-left: 30%;
+    padding-right: 30%;
+    flex-basis: 40%;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    justify-content: center;
+}
+
+.boite-infos-budget {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: baseline;
+}
+
+.info-budget-text {
+    flex-basis: 20%;
+}
+
+.info-budget-field {
+    border-radius: 10px;
+    margin-left: 5%;
+    flex-basis: 55%;
+}
+
+.submit-budget {
+    margin-left: 30%;
+    flex-basis: 40%;
+    border-radius: 10px;
 }

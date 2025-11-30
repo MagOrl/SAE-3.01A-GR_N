@@ -60,6 +60,10 @@ def chercheur_sequence():
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("Chercheur_Sequence.html")
 
+@app.route('/directeur/budget/')
+def directeur_budget():
+    return render_template("Directeur_Fixer_Budget.html")
+
 @app.route("/admin/")
 @app.errorhandler(401)
 @login_required
