@@ -87,27 +87,6 @@ BEGIN
     END IF;
 END;
 
-CREATE OR REPLACE PROCEDURE maj_maintenance_plateform(la_plat VARCHAR(10), maj_duree INT)
-BEGIN
-    DECLARE duree_acc INT;
-    SELECT jours_av_mainte INTO duree_acc FROM PLATEFORME WHERE id_pla = la_plat;
-    IF duree_acc >= maj_duree THEN
-        UPDATE PLATEFORME
-        SET jours_av_mainte = jours_av_mainte - maj_duree
-        WHERE id_pla = la_plat;
-    ELSE
-        UPDATE PLATEFORME
-        SET jours_av_mainte = inter_mainte - maj_duree
-        WHERE id_pla = la_plat;
-    END IF;
-END;
-
-CREATE OR REPLACE TRIGGER verif_duree_plateforme
-BEFORE INSERT ON CAMPAGNE FOR EACH ROW
-BEGIN
-    CALL maj_maintenance_plateform(NEW.id_pla, NEW.duree);
-END;
-
 CREATE OR REPLACE TRIGGER respectBudget
 BEFORE INSERT ON CAMPAGNE FOR EACH ROW
 BEGIN
@@ -124,5 +103,27 @@ BEGIN
     IF cout_total_camp + NEW.duree * new_cout_jour > budget THEN
         SET mes = CONCAT('Insertion impossible, la campagne est hors budget. Budget couvert : ', cout_total_camp, '/', budget);
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = mes;
+    END IF;
+END;
+
+CREATE OR REPLACE TRIGGER verif_maintenance_campagne
+BEFORE INSERT ON CAMPAGNE FOR EACH ROW
+BEGIN
+    DECLARE nb_conflits INT;
+    DECLARE date_fin_camp DATE;
+    
+    SET date_fin_camp = DATE_ADD(NEW.date_deb_camp, INTERVAL NEW.duree DAY);
+    
+    SELECT COUNT(*) INTO nb_conflits
+    FROM MAINTENANCE
+    WHERE id_pla = NEW.id_pla
+    AND (
+        (date_deb_maint BETWEEN NEW.date_deb_camp AND date_fin_camp)
+        OR (date_fin_maint BETWEEN NEW.date_deb_camp AND date_fin_camp)
+        OR (NEW.date_deb_camp BETWEEN date_deb_maint AND date_fin_maint)
+    );
+    
+    IF nb_conflits > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La campagne chevauche une période de maintenance.';
     END IF;
 END;

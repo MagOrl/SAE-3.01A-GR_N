@@ -1,0 +1,48 @@
+{% extends "nav_bar.html" %} {% block content %}
+<div class="bloc-entier-admin">
+<div class="boite-bonjour-admin">
+    <h1>Gestion des maintenances</h1>
+</div>
+<br>
+<a href="{{ url_for('ajouter_maintenance') }}" class="bouton_ajout">Ajouter une maintenance</a>
+<div class="boite-choix-menu">
+    <table class="">
+        <thread>
+            <tr>
+                <th>ID Maintenance</th>
+                <th>ID plateforme</th>
+                <th>Plateforme</th>
+                <th>Debut maintenance</th>
+                <th>Fin maintenance</th>
+                <th>Jours avant maintenance</th>
+                <th>Actions possibles</th>
+            </tr>
+        </thread>
+        <tbody>
+            {% if plateformes %}
+            {% for id_maint, id_pla, nom_pla, date_deb, date_fin, jours_av_mainte in plateformes %}
+             <tr>
+                 <td>{{ id_maint }}</td>
+                 <td>{{ id_pla }}</td>
+                 <td>{{ nom_pla }}</td>
+                 <td>{{ date_deb }}</td>
+                 <td>{{ date_fin }}</td>
+                 <td>{{ jours_av_mainte }} jours</td>
+                 <td>
+                     <a href="{{ url_for('supprimer_maintenance', id_maint=id_maint) }}" class="bouton-supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette maintenance ?');">Supprimer</a>
+                 </td>
+             </tr>
+            {% endfor %}
+            {% else %}
+            <tr><td colspan="7">Aucune maintenance enregistrée.</td></tr>
+            {% endif %}
+             </tbody>
+    </table>
+    <br>
+</div>
+<div class="box-retour">
+    <a class="bouton-retour" href="{{ url_for('technicien') }}">Retour</a>
+</div>
+
+{% endblock %}
+    

@@ -1,5 +1,3 @@
-monApp.db
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,3 +125,4 @@ ehthumbs.db
 Thumbs.db
 
 monApp.db
+flask_session
