@@ -23,12 +23,15 @@
   background-color: #0056b3;
   color: white;
 }
-.nav-link{
+
+.nav-link {
   color: red;
 }
-.nav-link:hover{
+
+.nav-link:hover {
   color: rgb(255, 105, 105);
 }
+
 /* LOGIN */
 
 .form-login {
@@ -45,15 +48,18 @@
   color: var(--bg);
   text-align: center;
 }
+
 .form-login label {
   color: var(--bg);
   font-weight: bold;
 }
+
 .block {
   margin-left: 15%;
   margin-right: 15%;
   margin: 2%;
 }
+
 .btn-voir {
   background-color: var(--light-primary);
   border-radius: 2em;
@@ -66,13 +72,14 @@
   margin-left: 130px;
 
 }
+
 .btn-voir:hover {
   background-color: var(--hover-primary);
 }
 
-/* ADMINISTRATEUR */
+/* Page type A - Accueils*/
 
-.boite-bonjour-admin,
+.boite-bonjour,
 .boite-choix-menu,
 .bouton-gerer-materiel,
 .bouton-gerer-personnel,
@@ -81,8 +88,23 @@
   box-shadow: var(--shadow);
 }
 
+.bouton-A,
+.bloc-entier {
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.bouton-A .bouton-gerer-materiel,
+.bouton-gerer-personnel,
+.bloc-entier-admin {
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
 .bouton-gerer-materiel,
 .bouton-gerer-personnel {
+  color: black;
+  text-decoration: none;
   text-align: center;
   padding: 0.5rem 1rem;
   margin: 0.5rem;
@@ -97,6 +119,13 @@
 }
 
 .boite-bonjour-admin {
+  text-align: center;
+  background-color: var(--primary-color);
+  margin: 1em 2rem 1em 2rem;
+  padding: 0.5rem 1rem;
+}
+
+.boite-bonjour {
   text-align: center;
   background-color: var(--primary-color);
   margin: 1em 2rem 1em 2rem;
@@ -141,7 +170,194 @@
   margin: 0.5rem;
 }
 
-.bloc-entier-directeur {
+
+.tableau {
+  margin: 0 auto;
+  width: fit-content;
+  border-collapse: collapse;
+  border: 4px solid var(--primary-color);
+  box-shadow: var(--shadow);
+  background-color: #f0f0f0; 
+}
+
+.tableau th,
+.tableau td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.tableau th {
+  background-color: var(--light-primary);
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.btn-voir {
+  background-color: gray;
+  border-radius: 2em;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+.btn-supprimer {
+  background-color: red;
+  border-radius: 2em;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+.btn-retour {
+  background-color: var(--light-primary);
+  border: none;
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+
+.boite-creer-personnel {
+  background-color: var(--bg);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+.bloc-entier {
+  background-color: var(--bg);
+  padding: 1rem;
+  margin: 1rem;
+}
+
+
+/* TECHNICIEN */
+.bouton-retour {
+  text-align: center;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: red;
+  transition: 250ms all;
+  color: white;
+  text-decoration: none;
+}
+
+.boite-choix-menu p {
+    background-color: var(--light-primary);
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin: 8px 0;
+}
+
+.boite-choix-menu h3 {
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+.boite-choix-menu ul {
+    background-color: var(--light-primary);
+    padding: 10px 15px;
+    border-radius: 5px;
+    list-style-type: none;
+    margin-left: 0;
+}
+
+.boite-choix-menu li {
+    padding: 4px 0;
+}
+
+.boite-choix-menu li:last-child {
+    border-bottom: none;
+}
+
+/* Styles pour les boutons d'action */
+.btn-update, .btn-remove, .btn-add {
+    padding: 5px 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-update {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-update:hover {
+    background-color: #218838;
+}
+.bouton-A:hover,
+.bouton-retour:hover,
+.bouton_val:hover,
+.bouton-supprimer:hover,
+.bouton_ajout:hover {
+  background-color: var(--hover-primary);
+  box-shadow: var(--shadow-hover);
+}
+
+.bouton_ajout {
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: lightslategray;
+  flex-direction: column;
+}
+
+.boite-bonjour {
+  text-align: center;
+  text-decoration: none;
+  color: black;
+  border-radius: 5px;
+}
+
+.bouton_val {
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: yellowgreen;
+  flex-direction: column;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 10px;
+}
+
+.bouton-supprimer {
+  display: flex;
+  padding: 0.5rem 1rem;
+  margin: 5px;
+  color: white;
+  background-color: red;
+  flex-direction: column;
+  text-align: center;
+  position: center;
+  border-radius: 10px;
+  text-decoration: none;
+  /* DIRECTEUR - FIXER BUDGET */
+}
+
+.boite-glob-infos-budget {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  padding-left: 30%;
+  padding-right: 30%;
+  flex-basis: 40%;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  justify-content: center;
+}
+
+.bloc-entier-directeur,
+.bloc-entier {
   background-color: var(--bg);
   padding: 1rem;
   margin: 1rem;
@@ -166,4 +382,118 @@
 .boite-bonjour-directeur p{
   font-weight: bold;
   font-size: large;
+}
+  
+/* Page B - Planifier une campagne */
+
+
+.boite-action {
+  text-align: center;
+  background-color: var(--primary-color);
+  margin-left: 10%;
+  margin-bottom: 3%;
+  padding: 0.5rem 1rem;
+  width: 80%;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+#boite-cree-campagne {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  margin-left: 10%;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  align-items: center;
+  width: 80%;
+}
+
+.boite-camp {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--light-primary);
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  margin-left: 25%;
+  flex-basis: 50%;
+  box-shadow: var(--shadow);
+}
+
+#boite-duree-camp {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+}
+
+#sect-pers-affecte {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.perso-select {
+  margin: 2%;
+  flex-basis: 16%;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.check-perso {
+  margin-right: 2%;
+}
+
+.boite-inter-campagne {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: baseline;
+  flex-basis: 44%;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+.sb-infos-camp {
+  margin: 3%;
+}
+
+#boite-camp-2-1 {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.campagne-childs {
+  margin-left: 5%;
+  flex-basis: 90%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+.duree-childs {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.boite-infos-budget {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+}
+
+.info-budget-text {
+  flex-basis: 20%;
+}
+
+.info-budget-field {
+  border-radius: 10px;
+  margin-left: 5%;
+  flex-basis: 55%;
+}
+
+.submit-budget {
+  margin-left: 30%;
+  flex-basis: 40%;
+  border-radius: 10px;
 }
