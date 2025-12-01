@@ -1,0 +1,33 @@
+{% extends "nav_bar.html" %} {% block content %}
+<div class="bloc-entier-admin">
+  <div class="boite-bonjour-admin">
+    <h1>Gestion du matériel</h1>
+  </div>
+  <div class="boite-choix-menu">
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>ID Matériel</th>
+          <th>Habilitation affectée</th>
+          <th>Nom</th>
+          <th>Action Possible</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mat, hab_nom in materiels %}
+        <tr>
+          <td>{{ mat.id_mat }}</td>
+          <td>{{ hab_nom }}</td>
+          <td>{{ mat.nom_mat }}</td>
+          <td>
+            <button class="btn-voir">Voir</button>
+            <button class="btn-supprimer">Supprimer</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button class="btn-retour" onclick="history.back()">Retour</button>
+  </div>
+</div>
+{% endblock %}
