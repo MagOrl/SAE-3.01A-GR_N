@@ -85,17 +85,27 @@ def admin_gerer_materiel():
 
 
 # Page d'accueil technicien
+@app.errorhandler(401)
+@login_required
 @app.route("/technicien/")
-def technicien():
+def Technicien_accueil():
+    if session["user"].Role != 'Technicien':
+            return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("accueil_technicien.html")
 
 # Page de menu gestion des changements de technicien
-@app.route("/gestion_changement_technicien/")
+@app.route("/technicien/gestion_changement_technicien/")
 def gestion_changement_technicien():
     return render_template("gestion_changement_technicien.html")
 
+# Page de gestion du matériel du technicien
+@app.route("/technicien/gestion_changement_technicien/gerer_materiel")
+def gerer_materiel():
+    materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
+    return render_template("gerer_materiel_admin.html", materiels=materiels)
+
 # Page de gestion des maintenances
-@app.route("/gestion_maintenance/")
+@app.route("/technicien/gestion_maintenance/")
 def gestion_maintenance():
     # Supprimer les maintenances passées
     maintenances_passees = Maintenance.query.filter(Maintenance.date_fin_maint < date.today()).all()
@@ -116,7 +126,7 @@ def gestion_maintenance():
     return render_template("gestion_maintenance.html", plateformes=donnees_plateformes)
 
 # Méthode pour ajouter une Maintenance
-@app.route("/maintenance/ajouter/", methods=["GET", "POST"])
+@app.route("/technicien/gestion_maintenance/ajouter/", methods=["GET", "POST"])
 def ajouter_maintenance():
     if request.method == "POST":
         id_pla = request.form.get("id_pla")
@@ -158,7 +168,7 @@ def ajouter_maintenance():
     return render_template("ajouter_maintenance.html", plateformes=plateformes)
 
 # Méthode pour supprimer une Maintenance
-@app.route("/maintenance/supprimer/<id_maint>")
+@app.route("/technicien/gestion_maintenance/supprimer/<id_maint>")
 def supprimer_maintenance(id_maint):
     # Supprime la maintenance
     maintenance_a_supprimer = Maintenance.query.get(id_maint)
