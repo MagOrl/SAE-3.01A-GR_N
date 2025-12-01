@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, HiddenField
-from wtforms import PasswordField
+from wtforms import StringField, HiddenField, IntegerField, DateField, PasswordField
+from wtforms.validators import DataRequired
 from . models import User
 from hashlib import sha256
 
@@ -18,3 +18,9 @@ class LoginForm(FlaskForm):
         return unUser if passwd == unUser.Password else None
     
 # Roles : Chercheur, Technicien, Admin, Direction. 
+
+class FormCamp(FlaskForm):
+    idCamp = HiddenField('id_camp')
+    debCamp = DateField('date_deb_camp', validators =[DataRequired()])
+    dureeCamp = IntegerField('duree', validators =[DataRequired()])
+    

@@ -84,7 +84,7 @@ def directeur_accueil():
 @app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
 
 def gerer_personnel_detail(id_pers):
-    pers = personnel.query.get_or_404(id_pers)
+    pers = Personnel.query.get_or_404(id_pers)
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'update_name':
@@ -97,7 +97,7 @@ def gerer_personnel_detail(id_pers):
     return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
 @app.route("/admin/gerer_personnel")
 def admin_gerer_personnel():
-    personnels = personnel.query.all()
+    personnels = Personnel.query.all()
     return render_template("gerer_personnel_admin.html", personnels=personnels)
 @app.route("/admin/gerer_materiel")
 def admin_gerer_materiel():
