@@ -92,6 +92,7 @@ def directeur_budget():
     return render_template("directeur_budget.html",user=session["user"],form=budgForm)
 
 @app.route('/directeur/budget/cree_budget',methods=("POST",))
+@login_required
 def insert_budget():
     budgForm = BudgetForm(request.form)
     if budgForm.validate_on_submit():
