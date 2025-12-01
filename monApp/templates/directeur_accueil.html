@@ -1,0 +1,15 @@
+{% extends "nav_bar.html" %}
+{% block content %}
+<section class="bloc-entier-directeur">
+    <div class="boite-bonjour-directeur">
+        <p>Directeur : {{ user.Nom }} {{ user.Prenom }}.</p>
+        <p>Que souhaitez-vous faire aujourd'hui ?</p>
+    </div>
+    <div class="boite-choix-menu">
+        <a href="{{ (url_for('login')) }}" class="bouton-planifier-camp" \>
+            <p>Planifier une campagne</p>
+        </a>
+    </div>
+</section>
+
+{% endblock %}

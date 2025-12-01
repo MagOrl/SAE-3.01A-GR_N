@@ -78,7 +78,11 @@ def admin_accueil():
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("home_admin.html")
 
+@app.route("/directeur/")
+def directeur_accueil():
+    return render_template("directeur_accueil.html",user=session["user"])        
 @app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
+
 def gerer_personnel_detail(id_pers):
     pers = personnel.query.get_or_404(id_pers)
     if request.method == 'POST':
