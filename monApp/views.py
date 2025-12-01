@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, request,Response, session
+from flask import Flask,render_template, url_for, redirect, request,Response, session
 from monApp.forms import LoginForm
 from .app import app, db
 from .models import *
@@ -78,6 +78,27 @@ def admin_accueil():
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("home_admin.html")
 
+@app.route("/directeur/")
+def directeur_accueil():
+    return render_template("directeur_accueil.html",user=session["user"])        
+@app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
+
+def gerer_personnel_detail(id_pers):
+    pers = personnel.query.get_or_404(id_pers)
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'update_name':
+            pers.nom_pers = request.form['nom_pers']
+            db.session.commit()
+        return redirect(url_for('gerer_personnel_detail', id_pers=id_pers))
+    
+    specialisations = db.session.query(habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
+    participations = Participer.query.filter_by(id_pers=id_pers).all()
+    return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
+@app.route("/admin/gerer_personnel")
+def admin_gerer_personnel():
+    personnels = personnel.query.all()
+    return render_template("gerer_personnel_admin.html", personnels=personnels)
 @app.route("/admin/gerer_materiel")
 def admin_gerer_materiel():
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()

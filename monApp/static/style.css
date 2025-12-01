@@ -145,6 +145,31 @@
   padding: 1rem;
   margin: 1rem;
 }
+/* Directeur */
+
+
+.boite-bonjour-directeur,
+.boite-choix-menu,
+.bloc-entier-directeur {
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.boite-bonjour-directeur {
+  text-align: center;
+  background-color: var(--primary-color);
+  margin: 1em 2rem 1em 2rem;
+  padding: 0.5rem 1rem;
+}
+
+.boite-choix-menu {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+}
+
 
 .tableau {
   margin: 0 auto;
@@ -152,7 +177,7 @@
   border-collapse: collapse;
   border: 4px solid var(--primary-color);
   box-shadow: var(--shadow);
-  background-color: #f0f0f0;
+  background-color: #f0f0f0; 
 }
 
 .tableau th,
@@ -196,6 +221,16 @@
   cursor: pointer;
 }
 
+
+.boite-creer-personnel {
+  background-color: var(--bg);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
 .bloc-entier {
   background-color: var(--bg);
   padding: 1rem;
@@ -214,6 +249,52 @@
   text-decoration: none;
 }
 
+.boite-choix-menu p {
+    background-color: var(--light-primary);
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin: 8px 0;
+}
+
+.boite-choix-menu h3 {
+    margin-top: 15px;
+    margin-bottom: 8px;
+}
+
+.boite-choix-menu ul {
+    background-color: var(--light-primary);
+    padding: 10px 15px;
+    border-radius: 5px;
+    list-style-type: none;
+    margin-left: 0;
+}
+
+.boite-choix-menu li {
+    padding: 4px 0;
+}
+
+.boite-choix-menu li:last-child {
+    border-bottom: none;
+}
+
+/* Styles pour les boutons d'action */
+.btn-update, .btn-remove, .btn-add {
+    padding: 5px 10px;
+    margin: 5px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-update {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-update:hover {
+    background-color: #218838;
+}
 .bouton-A:hover,
 .bouton-retour:hover,
 .bouton_val:hover,
@@ -275,12 +356,34 @@
   justify-content: center;
 }
 
+.bloc-entier-directeur,
 .bloc-entier {
   background-color: var(--bg);
   padding: 1rem;
   margin: 1rem;
 }
 
+.bouton-planifier-camp{
+    text-align: center;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: var(--light-primary);
+  transition: 250ms all;
+  text-decoration: none;
+  color: black;
+
+}
+.bouton-planifier-camp:hover {
+  background-color: var(--hover-primary);
+  box-shadow: var(--shadow-hover);
+}
+
+
+.boite-bonjour-directeur p{
+  font-weight: bold;
+  font-size: large;
+}
+  
 /* Page B - Planifier une campagne */
 
 
