@@ -1,5 +1,5 @@
 from flask import Flask,render_template, url_for, redirect, request,Response, session
-from monApp.forms import LoginForm
+from monApp.forms import LoginForm, gererBudget
 from .app import app, db
 from .models import *
 import random
@@ -66,10 +66,6 @@ def chercheur_sequence():
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("Chercheur_Sequence.html")
 
-@app.route('/directeur/budget/')
-def directeur_budget():
-    return render_template("Directeur_Fixer_Budget.html")
-
 @app.route("/admin/")
 @app.errorhandler(401)
 @login_required
@@ -79,10 +75,23 @@ def admin_accueil():
     return render_template("home_admin.html")
 
 @app.route("/directeur/")
+@app.errorhandler(401)
+@login_required
 def directeur_accueil():
+    if session["user"].Role != 'directeur':
+            return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("directeur_accueil.html",user=session["user"])        
-@app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
 
+@app.route('/directeur/budget/')
+@app.errorhandler(401)
+@login_required
+def directeur_budget():
+    if session["user"].Role != 'directeur':
+            return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
+    budgForm = gererBudget()
+    return render_template("directeur_budget.html",user=session["user"],form=budgForm)
+
+@app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
 def gerer_personnel_detail(id_pers):
     pers = personnel.query.get_or_404(id_pers)
     if request.method == 'POST':

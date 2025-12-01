@@ -1,0 +1,25 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<body>
+    <section class="bloc-entier-directeur">
+        <div class="boite-bonjour-directeur">
+            <p>Directeur {{ user.Nom }} {{ user.Prenom }}.</p>
+        </div>
+        <div class="boite-glob-infos-budget">
+            <form action="">
+                {{ form.hidden_tag() }}
+                <div class="boite-infos-budget">
+                    <p class="info-budget-text">Budget:</p>
+                    {{ form.valeur(size=50, class_="form-control") }}
+                </div>
+                <div class="boite-infos-budget">
+                    <p class="info-budget-text">Mois:</p>
+                    {{ form.dat_deb(size=50, class_="form-control") }}
+                </div>
+                <input class="submit-budget" type="submit" value="Enregistrer">
+            </form>
+        </div>
+    </section>
+</body>
+{% endblock %}
