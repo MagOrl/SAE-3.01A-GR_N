@@ -124,5 +124,5 @@ dmypy.json
 ehthumbs.db
 Thumbs.db
 
-#BD
 monApp.db
+flask_session
