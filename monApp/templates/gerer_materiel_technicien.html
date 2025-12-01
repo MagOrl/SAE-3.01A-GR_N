@@ -1,0 +1,33 @@
+{% extends "nav_bar.html" %} {% block content %}
+<div class="bloc-entier-admin">
+  <div class="boite-bonjour-admin">
+    <h1>Gestion du matériel</h1>
+  </div>
+  <div class="boite-choix-menu">
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>ID Matériel</th>
+          <th>Habilitation affectée</th>
+          <th>Nom</th>
+          <th>Action Possible</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mat, hab_nom in materiels %}
+        <tr>
+          <td>{{ mat.id_mat }}</td>
+          <td>{{ hab_nom }}</td>
+          <td>{{ mat.nom_mat }}</td>
+          <td>
+            <a href="{{ url_for('technicien_gerer_materiel_detail', id_mat=mat.id_mat) }}" class="btn-voir">Voir</a>
+            <a href="{{ url_for('technicien_supprimer_materiel', id_mat=mat.id_mat) }}" class="btn-supprimer">Supprimer</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a class="bouton-retour" href="{{ url_for('gestion_changement_technicien') }}">Retour</a>
+  </div>
+</div>
+{% endblock %}

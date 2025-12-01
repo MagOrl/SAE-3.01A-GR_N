@@ -201,6 +201,10 @@
   padding: 5px 10px;
   margin: 2px;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-supprimer {
@@ -211,6 +215,7 @@
   padding: 5px 10px;
   margin: 2px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .btn-retour {
@@ -243,7 +248,27 @@
   text-align: center;
   padding: 0.5rem 1rem;
   margin: 0.5rem;
+  background-color: var(--light-primary);
+  transition: 250ms all;
+  color: black;
+  text-decoration: none;
+}
+
+.bouton-retour-z {
+  text-align: center;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
   background-color: red;
+  transition: 250ms all;
+  color: white;
+  text-decoration: none;
+}
+
+.bouton-ajout-maintenance {
+  text-align: center;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: lightslategray;
   transition: 250ms all;
   color: white;
   text-decoration: none;
@@ -297,19 +322,16 @@
 }
 .bouton-A:hover,
 .bouton-retour:hover,
+.bouton-retour-z:hover,
 .bouton_val:hover,
 .bouton-supprimer:hover,
-.bouton_ajout:hover {
+.bouton-ajout-maintenance:hover,
+.btn-supprimer:hover {
   background-color: var(--hover-primary);
   box-shadow: var(--shadow-hover);
 }
 
-.bouton_ajout {
-  padding: 0.5rem 1rem;
-  margin: 0.5rem;
-  background-color: lightslategray;
-  flex-direction: column;
-}
+
 
 .boite-bonjour {
   text-align: center;

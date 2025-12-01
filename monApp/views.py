@@ -1,4 +1,4 @@
-from flask import Flask,render_template, url_for, redirect, request,Response, session
+from flask import Flask,render_template, url_for, redirect, request,Response, session, flash
 from monApp.forms import LoginForm
 from .app import app, db
 from .models import *
@@ -84,7 +84,7 @@ def directeur_accueil():
 @app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
 
 def gerer_personnel_detail(id_pers):
-    pers = personnel.query.get_or_404(id_pers)
+    pers = Personnel.query.get_or_404(id_pers)
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'update_name':
@@ -92,18 +92,19 @@ def gerer_personnel_detail(id_pers):
             db.session.commit()
         return redirect(url_for('gerer_personnel_detail', id_pers=id_pers))
     
-    specialisations = db.session.query(habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
+    specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
     participations = Participer.query.filter_by(id_pers=id_pers).all()
     return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
 @app.route("/admin/gerer_personnel")
 def admin_gerer_personnel():
-    personnels = personnel.query.all()
+    personnels = Personnel.query.all()
     return render_template("gerer_personnel_admin.html", personnels=personnels)
 @app.route("/admin/gerer_materiel")
 def admin_gerer_materiel():
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
     return render_template("gerer_materiel_admin.html", materiels=materiels)
 
+#------------------------------------------------------------------------------------------------------------------------------------------
 
 # Page d'accueil technicien
 @app.errorhandler(401)
@@ -114,16 +115,99 @@ def Technicien_accueil():
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("accueil_technicien.html")
 
+#-----------------------------------------------------------------
+
 # Page de menu gestion des changements de technicien
 @app.route("/technicien/gestion_changement_technicien/")
 def gestion_changement_technicien():
     return render_template("gestion_changement_technicien.html")
 
+#------------------------------
+
 # Page de gestion du matériel du technicien
 @app.route("/technicien/gestion_changement_technicien/gerer_materiel")
-def gerer_materiel():
+def technicien_gerer_materiel():
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
-    return render_template("gerer_materiel_admin.html", materiels=materiels)
+    return render_template("gerer_materiel_technicien.html", materiels=materiels)
+
+#------------------------------
+# Page de gestion du personnel du technicien
+
+@app.route("/technicien/gestion_changement_technicien/gerer_personnel/")
+def technicien_gerer_personnel():
+    personnels = Personnel.query.all()
+    return render_template("gerer_personnel_technicien.html", personnels=personnels)
+
+#--------------
+
+@app.route("/technicien/gestion_changement_technicien/gerer_personnel/<id_pers>", methods=['GET', 'POST'])
+def technicien_gerer_personnel_detail(id_pers):
+    pers = Personnel.query.get_or_404(id_pers)
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'update_name':
+            pers.nom_pers = request.form['nom_pers']
+            db.session.commit()
+            flash('Nom du personnel mis à jour avec succès.', 'success')
+        return redirect(url_for('technicien_gerer_personnel_detail', id_pers=id_pers))
+    
+    specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
+    participations = Participer.query.filter_by(id_pers=id_pers).all()
+    return render_template('view_personnel_technicien.html', personnel=pers, specialisations=specialisations, participations=participations)
+
+#--------------
+
+@app.route('/technicien/gestion_changement_technicien/gerer_personnel/<id_pers>/supprimer', methods=['POST'])
+def technicien_supprimer_personnel(id_pers):
+    pers = Personnel.query.get_or_404(id_pers)
+    SpecialiserEn.query.filter_by(id_pers=id_pers).delete(synchronize_session=False)
+    Participer.query.filter_by(id_pers=id_pers).delete(synchronize_session=False)
+    db.session.delete(pers)
+    db.session.commit()
+    return redirect(url_for('technicien_gerer_personnel'))
+
+#--------------
+
+@app.route('/technicien/gestion_changement_technicien/gerer_materiel/<id_mat>', methods=['GET', 'POST'])
+def technicien_gerer_materiel_detail(id_mat):
+    materiel = Materiel.query.get_or_404(id_mat)
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'update_name':
+            materiel.nom_mat = request.form['nom_mat']
+            flash('Nom du matériel mis à jour avec succès.', 'success')
+        elif action == 'update_hab':
+            nouvelle_hab = request.form.get('id_hab')
+            if nouvelle_hab and Habilitation.query.get(nouvelle_hab):
+                materiel.id_hab = nouvelle_hab
+                flash("Habilitation du matériel mise à jour avec succès.", 'success')
+        db.session.commit()
+        return redirect(url_for('technicien_gerer_materiel_detail', id_mat=id_mat))
+
+    habilitation = Habilitation.query.get(materiel.id_hab)
+    toutes_habilitations = Habilitation.query.all()
+    plateformes = db.session.query(Plateforme).join(Utiliser, Utiliser.id_pla == Plateforme.id_pla).filter(Utiliser.id_mat == id_mat).all()
+    return render_template(
+        'view_materiel_technicien.html',
+        materiel=materiel,
+        habilitation=habilitation,
+        habilitations=toutes_habilitations,
+        plateformes=plateformes,
+    )
+
+#--------------
+    
+@app.route('/technicien/gestion_changement_technicien/gerer_materiel/<id_mat>/supprimer', methods=['POST'])
+def technicien_supprimer_materiel(id_mat):
+    materiel = Materiel.query.get_or_404(id_mat)
+    Utiliser.query.filter_by(id_mat=id_mat).delete(synchronize_session=False)
+    db.session.delete(materiel)
+    db.session.commit()
+    return redirect(url_for('technicien_gerer_materiel'))
+
+
+
+#-----------------------------------------------------------------
 
 # Page de gestion des maintenances
 @app.route("/technicien/gestion_maintenance/")
@@ -146,6 +230,8 @@ def gestion_maintenance():
             
     return render_template("gestion_maintenance.html", plateformes=donnees_plateformes)
 
+#------------------------------
+
 # Méthode pour ajouter une Maintenance
 @app.route("/technicien/gestion_maintenance/ajouter/", methods=["GET", "POST"])
 def ajouter_maintenance():
@@ -162,9 +248,11 @@ def ajouter_maintenance():
         # Création et ajout de la nouvelle maintenance
         nouvelle_maintenance = Maintenance(id_maint, id_pla, date_deb, date_fin)
         db.session.add(nouvelle_maintenance)
-        db.session.commit()
         
-        return redirect(url_for('gestion_maintenance'))
+        db.session.commit()
+        flash("Maintenance ajoutée avec succès.", 'success')
+        return redirect(url_for('ajouter_maintenance'))
+    
     
     plateformes = []
     for p in Plateforme.query.all():
@@ -188,6 +276,8 @@ def ajouter_maintenance():
         
     return render_template("ajouter_maintenance.html", plateformes=plateformes)
 
+#------------------------------
+
 # Méthode pour supprimer une Maintenance
 @app.route("/technicien/gestion_maintenance/supprimer/<id_maint>")
 def supprimer_maintenance(id_maint):
@@ -197,6 +287,8 @@ def supprimer_maintenance(id_maint):
         db.session.delete(maintenance_a_supprimer)
         db.session.commit()
     return redirect(url_for('gestion_maintenance'))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     app.run()

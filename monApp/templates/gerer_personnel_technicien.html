@@ -1,0 +1,40 @@
+{% extends "nav_bar.html" %} {% block content %}
+<div class="bloc-entier-admin">
+  <div class="boite-bonjour-admin">
+    <h1>Gestion du matériel</h1>
+  </div>
+  <div class="boite-choix-menu">
+    <div class="boite-creer-personnel">
+      <h2>Créer un personnel</h2>
+      <form>
+        <label for="nom_personnel">Nom du personnel:</label>
+        <input type="text" id="nom_personnel" name="nom_personnel" required />
+        <button type="submit">Créer</button>
+      </form>
+    </div>
+    <table class="tableau"> 
+    <table class="tableau" >
+      <thead>
+        <tr>
+          <th>ID Personnel</th>
+          <th>Nom Personnel</th>
+          <th>Action Possible</th>  
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in personnels %}
+        <tr>
+          <td>{{ p.id_pers }}</td>
+          <td>{{ p.nom_pers }}</td>
+          <td>
+            <a href={{url_for('technicien_gerer_personnel_detail', id_pers=p.id_pers)}} class="btn-voir">Voir</a>
+            <a href="{{ url_for('technicien_supprimer_personnel', id_pers=p.id_pers) }}" class="btn-supprimer">Supprimer</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a class="bouton-retour" href="{{ url_for('gestion_changement_technicien') }}">Retour</a>
+  </div>
+</div>
+{% endblock %}
