@@ -1,0 +1,73 @@
+{% extends "nav_bar.html" %} {% block content %}
+<section class="bloc-entier">
+  <div class="boite-action">
+    <p>Bienvenue sur ADN'O {{ user.Nom }} {{ user.Prenom }}.</p>
+    <p>Veuillez renseigner les informations de votre campagne</p>
+  </div>
+  <form action="">
+    <div id="boite-cree-campagne">
+      <div id="boite-camp-1" class="boite-camp">
+        <fieldset id="select-perso-field">
+          <legend>Choisissez le personnel mobilisé :</legend>
+          <section id="sect-pers-affecte">
+            {% for personnel in lesPersonnels %}
+            <div class="perso-select">
+              <input
+                type="checkbox"
+                class="check-perso"
+                name="{{ personnel.id_pers }}"
+              />
+              <label for="{{ personnel.id_pers }}"> {{ personnel.nom_pers }}</label>
+            </div>
+            {% endfor %}
+          </section>
+        </fieldset>
+      </div>
+      <div id="boite-camp-2" class="boite-camp">
+        <div id="boite-camp-2-1" class="campagne-childs">
+          <div class="boite-inter-campagne">
+            <div class="sb-infos-camp">
+              <p>Plateforme affectée</p>
+              <select name="camp-plateforme">
+                {% for plateforme in lesPlateformes %}
+                <option value="{{ plateforme.id_pla }}">
+                  {{ plateforme.nom_pla }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="sb-infos-camp">
+              <p>Début de la campagne</p>
+              <input type="date" name="deb_campagne" />
+            </div>
+          </div>
+          <div class="boite-inter-campagne">
+            <div class="sb-infos-camp">
+              <p>Lieu de fouilles</p>
+              <input
+                type="text"
+                name="lieu_campagne"
+                placeholder="Entrez le lieu de fouilles"
+              />
+            </div>
+            <div class="sb-infos-camp">
+              <p>Durée de la campagne</p>
+              <div id="boite-duree-camp">
+                <input
+                  type="number"
+                  name="nb_jours_campagne"
+                  min="1"
+                  class="duree-childs"
+                  size="5"
+                />
+                <p class="duree-childs">jour(s)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="submit" value="Enregistrer" class="campagne-childs" />
+      </div>
+    </div>
+  </form>
+</section>
+{% endblock %}

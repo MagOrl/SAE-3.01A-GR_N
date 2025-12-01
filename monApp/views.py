@@ -38,7 +38,7 @@ def chercheur_accueil():
     if session["user"].Role != 'chercheur':
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
 
-    return render_template("Chercheur_Accueil.html")
+    return render_template("chercheur_accueil.html",user=session["user"])
 
 @app.route('/chercheur/campagne/')
 @app.errorhandler(401)
@@ -48,7 +48,8 @@ def chercheur_campagne():
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     plateformes = Plateforme.query.all()
     personnels = Personnel.query.all()
-    return render_template("Chercheur_Planifier_Camp.html", lesPlateformes = plateformes, lesPersonnels = personnels)
+    return render_template("chercheur_planifier_camp.html", user=session["user"],
+                           lesPlateformes=plateformes,lesPersonnels=personnels)
 
 @app.route('/chercheur/echantillon/')
 @app.errorhandler(401)
