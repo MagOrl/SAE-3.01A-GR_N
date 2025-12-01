@@ -1,5 +1,5 @@
 from flask import Flask,render_template, url_for, redirect, request,Response, session
-from monApp.forms import LoginForm, gererBudget
+from monApp.forms import LoginForm, BudgetForm
 from .app import app, db
 from .models import *
 import random
@@ -88,7 +88,21 @@ def directeur_accueil():
 def directeur_budget():
     if session["user"].Role != 'directeur':
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
-    budgForm = gererBudget()
+    budgForm = BudgetForm()
+    return render_template("directeur_budget.html",user=session["user"],form=budgForm)
+
+@app.route('/directeur/budget/cree_budget',methods=("POST",))
+def insert_budget():
+    budgForm = BudgetForm(request.form)
+    if budgForm.validate_on_submit():
+        print(budgForm.dat_deb.data)
+        budgId = Budget.query.count()
+        insert_budget = Budget(id_budg=budgId,valeur=budgForm.valeur.data, date_deb_mois=budgForm.dat_deb.data)
+        db.session.add(insert_budget)
+        db.session.commit()
+        return redirect(url_for('directeur_budget'))  
+    else:
+        print(budgForm.errors)  
     return render_template("directeur_budget.html",user=session["user"],form=budgForm)
 
 @app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])

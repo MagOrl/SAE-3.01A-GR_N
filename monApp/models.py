@@ -29,7 +29,7 @@ class User(db.Model, UserMixin):
 
 
 class Habilitation(db.Model):
-    id_hab = db.Column(db.String(10), primary_key=True)
+    id_hab = db.Column(db.Integer, primary_key=True)
     nom_hab = db.Column(db.String(20))
 
     def __init__(self, id_hab, nom_hab):
@@ -41,7 +41,7 @@ class Habilitation(db.Model):
 
 
 class Personnel(db.Model):
-    id_pers = db.Column(db.String(10), primary_key=True)
+    id_pers = db.Column(db.Integer, primary_key=True)
     nom_pers = db.Column(db.String(20))
 
     def __init__(self, id_pers, nom_pers):
@@ -53,7 +53,7 @@ class Personnel(db.Model):
 
 
 class Plateforme(db.Model):
-    id_pla = db.Column(db.String(10), primary_key=True)
+    id_pla = db.Column(db.Integer, primary_key=True)
     nom_pla = db.Column(db.String(20))
     nb_pers_nec = db.Column(db.Integer)
     cout_exploi_jour = db.Column(db.Float)
@@ -72,8 +72,8 @@ class Plateforme(db.Model):
         return "<Plateforme (%s) %s>" % (self.id_pla, self.nom_pla)
 
 class Maintenance(db.Model):
-    id_maint = db.Column(db.String(10), primary_key=True)
-    id_pla = db.Column(db.String(10), db.ForeignKey('plateforme.id_pla'))
+    id_maint = db.Column(db.Integer, primary_key=True)
+    id_pla = db.Column(db.Integer, db.ForeignKey('plateforme.id_pla'))
     date_deb_maint = db.Column(db.Date)
     date_fin_maint = db.Column(db.Date)
     
@@ -87,8 +87,8 @@ class Maintenance(db.Model):
         return "<Maintenance (%s) %s>" % (self.id_maint, self.id_pla)
 
 class OperationMaintenance(db.Model):
-    id_op_maint = db.Column(db.String(10), primary_key=True)
-    id_pla = db.Column(db.String(10), db.ForeignKey('plateforme.id_pla'))
+    id_op_maint = db.Column(db.Integer, primary_key=True)
+    id_pla = db.Column(db.Integer, db.ForeignKey('plateforme.id_pla'))
     date_maintenance = db.Column(db.Date)
     
     def __init__(self, id_op_maint, id_pla, date_maintenance):
@@ -100,8 +100,8 @@ class OperationMaintenance(db.Model):
         return "<OperationMaintenance (%s) %s>" % (self.id_op_maint, self.id_pla)
 
 class Materiel(db.Model):
-    id_mat = db.Column(db.String(10), primary_key=True)
-    id_hab = db.Column(db.String(10), db.ForeignKey('habilitation.id_hab'))
+    id_mat = db.Column(db.Integer, primary_key=True)
+    id_hab = db.Column(db.Integer, db.ForeignKey('habilitation.id_hab'))
     nom_mat = db.Column(db.String(20))
 
     def __init__(self, id_mat, id_hab, nom_mat):
@@ -115,10 +115,10 @@ class Materiel(db.Model):
 
 
 class Utiliser(db.Model):
-    id_mat = db.Column(db.String(10),
+    id_mat = db.Column(db.Integer,
                        db.ForeignKey('materiel.id_mat'),
                        primary_key=True)
-    id_pla = db.Column(db.String(10),
+    id_pla = db.Column(db.Integer,
                        db.ForeignKey('plateforme.id_pla'),
                        primary_key=True)
 
@@ -131,10 +131,10 @@ class Utiliser(db.Model):
 
 
 class Necessiter(db.Model):
-    id_hab = db.Column(db.String(10),
+    id_hab = db.Column(db.Integer,
                        db.ForeignKey('habilitation.id_hab'),
                        primary_key=True)
-    id_pla = db.Column(db.String(10),
+    id_pla = db.Column(db.Integer,
                        db.ForeignKey('plateforme.id_pla'),
                        primary_key=True)
 
@@ -147,10 +147,10 @@ class Necessiter(db.Model):
 
 
 class SpecialiserEn(db.Model):
-    id_hab = db.Column(db.String(10),
+    id_hab = db.Column(db.Integer,
                        db.ForeignKey('habilitation.id_hab'),
                        primary_key=True)
-    id_pers = db.Column(db.String(10),
+    id_pers = db.Column(db.Integer,
                         db.ForeignKey('personnel.id_pers'),
                         primary_key=True)
 
@@ -163,14 +163,10 @@ class SpecialiserEn(db.Model):
 
 
 class Budget(db.Model):
-    id_budg = db.Column(db.String(10), primary_key=True)
+    id_budg = db.Column(db.Integer, primary_key=True)
     valeur = db.Column(db.Float)
     date_deb_mois = db.Column(db.Date)
 
-    def __init__(self, id_budg, valeur, date_deb_mois):
-        self.id_budg = id_budg
-        self.valeur = valeur
-        self.date_deb_mois = date_deb_mois
 
     def __repr__(self):
         return "<Budget (%s, %s, %s)>" % (self.id_budg, self.valeur,
@@ -178,11 +174,11 @@ class Budget(db.Model):
 
 
 class Campagne(db.Model):
-    id_camp = db.Column(db.String(10), primary_key=True)
+    id_camp = db.Column(db.Integer, primary_key=True)
     duree = db.Column(db.Integer)
     date_deb_camp = db.Column(db.Date)
-    id_pla = db.Column(db.String(10), db.ForeignKey('plateforme.id_pla'))
-    id_budg = db.Column(db.String(10), db.ForeignKey('budget.id_budg'))
+    id_pla = db.Column(db.Integer, db.ForeignKey('plateforme.id_pla'))
+    id_budg = db.Column(db.Integer, db.ForeignKey('budget.id_budg'))
     nom_lieu_fouille = db.Column(db.String(40))
 
     def __init__(self, id_camp, duree, date_deb_camp, id_pla, id_budg):
@@ -272,10 +268,10 @@ class Campagne(db.Model):
 
 
 class Participer(db.Model):
-    id_pers = db.Column(db.String(10),
+    id_pers = db.Column(db.Integer,
                         db.ForeignKey('personnel.id_pers'),
                         primary_key=True)
-    id_camp = db.Column(db.String(10),
+    id_camp = db.Column(db.Integer,
                         db.ForeignKey('campagne.id_camp'),
                         primary_key=True)
 
@@ -355,7 +351,7 @@ class Participer(db.Model):
 
 
 class Sequence(db.Model):
-    id_seq = db.Column(db.String(10), primary_key=True)
+    id_seq = db.Column(db.Integer, primary_key=True)
     nom_fichier = db.Column(db.String(40))
 
     def __init__(self, id_seq, nom_fichier):
@@ -367,10 +363,10 @@ class Sequence(db.Model):
 
 
 class Extraire(db.Model):
-    id_camp = db.Column(db.String(10),
+    id_camp = db.Column(db.Integer,
                         db.ForeignKey('campagne.id_camp'),
                         primary_key=True)
-    id_seq = db.Column(db.String(10),
+    id_seq = db.Column(db.Integer,
                        db.ForeignKey('sequence.id_seq'),
                        primary_key=True)
 
@@ -383,8 +379,8 @@ class Extraire(db.Model):
 
 
 class Espece(db.Model):
-    id_esp = db.Column(db.String(10), primary_key=True)
-    id_seq = db.Column(db.String(10), db.ForeignKey('sequence.id_seq'))
+    id_esp = db.Column(db.Integer, primary_key=True)
+    id_seq = db.Column(db.Integer, db.ForeignKey('sequence.id_seq'))
     nom_esp = db.Column(db.String(40))
 
     def __init__(self, id_esp, id_seq, nom_esp):
@@ -397,8 +393,8 @@ class Espece(db.Model):
 
 
 class Echantillon(db.Model):
-    id_ech = db.Column(db.String(10), primary_key=True)
-    id_seq = db.Column(db.String(10), db.ForeignKey('sequence.id_seq'))
+    id_ech = db.Column(db.Integer, primary_key=True)
+    id_seq = db.Column(db.Integer, db.ForeignKey('sequence.id_seq'))
     commentaire = db.Column(db.String(255))
 
     def __init__(self, id_ech, id_seq, commentaire):

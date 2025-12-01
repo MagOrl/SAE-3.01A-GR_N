@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, HiddenField,IntegerField,DateField
-from wtforms import PasswordField
+from wtforms import PasswordField,StringField, HiddenField,IntegerField,DateField
+from wtforms.validators import DataRequired
 from . models import User
 from hashlib import sha256
 
@@ -17,9 +17,9 @@ class LoginForm(FlaskForm):
         passwd = m.hexdigest()
         return unUser if passwd == unUser.Password else None
     
-class gererBudget(FlaskForm):
+class BudgetForm(FlaskForm):
     id_budget = HiddenField("id_budg")
-    valeur = IntegerField('Valeur')
-    dat_deb = DateField('date_deb_mois', format='%Y-%m')
+    valeur = IntegerField('Valeur',validators =[DataRequired()])
+    dat_deb = DateField('date_deb_mois', validators =[DataRequired()],format='%Y-%m-%d')
     
 # Roles : Chercheur, Technicien, Admin, Direction. 
