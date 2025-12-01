@@ -76,11 +76,11 @@ def directeur_budget():
 def admin_accueil():
     if session["user"].Role != 'admin':
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
-    return render_template("home_admin.html")
+    return render_template("home_admin.html", admin=session.get("user"))
 
 @app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
 def gerer_personnel_detail(id_pers):
-    pers = personnel.query.get_or_404(id_pers)
+    pers = Personnel.query.get_or_404(id_pers)
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'update_name':
@@ -88,12 +88,57 @@ def gerer_personnel_detail(id_pers):
             db.session.commit()
         return redirect(url_for('gerer_personnel_detail', id_pers=id_pers))
     
-    specialisations = db.session.query(habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
+    specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
     participations = Participer.query.filter_by(id_pers=id_pers).all()
     return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
+
+
+@app.route('/admin/gerer_personnel/<id_pers>/supprimer', methods=['POST'])
+def supprimer_personnel(id_pers):
+    pers = Personnel.query.get_or_404(id_pers)
+    SpecialiserEn.query.filter_by(id_pers=id_pers).delete(synchronize_session=False)
+    Participer.query.filter_by(id_pers=id_pers).delete(synchronize_session=False)
+    db.session.delete(pers)
+    db.session.commit()
+    return redirect(url_for('admin_gerer_personnel'))
+
+
+@app.route('/admin/gerer_materiel/<id_mat>', methods=['GET', 'POST'])
+def gerer_materiel_detail(id_mat):
+    materiel = Materiel.query.get_or_404(id_mat)
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'update_name':
+            materiel.nom_mat = request.form['nom_mat']
+        elif action == 'update_hab':
+            nouvelle_hab = request.form.get('id_hab')
+            if nouvelle_hab and Habilitation.query.get(nouvelle_hab):
+                materiel.id_hab = nouvelle_hab
+        db.session.commit()
+        return redirect(url_for('gerer_materiel_detail', id_mat=id_mat))
+
+    habilitation = Habilitation.query.get(materiel.id_hab)
+    toutes_habilitations = Habilitation.query.all()
+    plateformes = db.session.query(Plateforme).join(Utiliser, Utiliser.id_pla == Plateforme.id_pla).filter(Utiliser.id_mat == id_mat).all()
+    return render_template(
+        'view_materiel_admin.html',
+        materiel=materiel,
+        habilitation=habilitation,
+        habilitations=toutes_habilitations,
+        plateformes=plateformes,
+    )
+
+
+@app.route('/admin/gerer_materiel/<id_mat>/supprimer', methods=['POST'])
+def supprimer_materiel(id_mat):
+    materiel = Materiel.query.get_or_404(id_mat)
+    Utiliser.query.filter_by(id_mat=id_mat).delete(synchronize_session=False)
+    db.session.delete(materiel)
+    db.session.commit()
+    return redirect(url_for('admin_gerer_materiel'))
 @app.route("/admin/gerer_personnel")
 def admin_gerer_personnel():
-    personnels = personnel.query.all()
+    personnels = Personnel.query.all()
     return render_template("gerer_personnel_admin.html", personnels=personnels)
 @app.route("/admin/gerer_materiel")
 def admin_gerer_materiel():

@@ -68,9 +68,8 @@
   padding: 5px 10px;
   margin: 2px;
   cursor: pointer;
-  width: 500px;
-  margin-left: 130px;
-
+  width: auto;
+  margin-left: 0;
 }
 
 .btn-voir:hover {
@@ -176,6 +175,10 @@
   padding: 5px 10px;
   margin: 2px;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-supprimer {
@@ -186,6 +189,18 @@
   padding: 5px 10px;
   margin: 2px;
   cursor: pointer;
+}
+
+.form-inline {
+  display: inline-flex;
+  margin: 0;
+}
+
+.form-inline .btn-supprimer {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-retour {
