@@ -5,6 +5,17 @@
   <div class="boite-bonjour-admin">
     <h1>Détails du Personnel</h1>
   </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="alert-container">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'success' if category == 'success' else category }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
   <div class="boite-choix-menu">
     <form method="POST" action="{{ url_for('gerer_personnel_detail', id_pers=personnel.id_pers) }}">
       <p><strong>ID Personnel:</strong> {{ personnel.id_pers }}</p>

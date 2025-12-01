@@ -1,4 +1,4 @@
-from flask import Flask,render_template, url_for, redirect, request,Response, session
+from flask import Flask,render_template, url_for, redirect, request,Response, session, flash
 from monApp.forms import LoginForm
 from .app import app, db
 from .models import *
@@ -86,6 +86,7 @@ def gerer_personnel_detail(id_pers):
         if action == 'update_name':
             pers.nom_pers = request.form['nom_pers']
             db.session.commit()
+            flash('Nom du personnel mis à jour avec succès.', 'success')
         return redirect(url_for('gerer_personnel_detail', id_pers=id_pers))
     
     specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
@@ -110,10 +111,12 @@ def gerer_materiel_detail(id_mat):
         action = request.form.get('action')
         if action == 'update_name':
             materiel.nom_mat = request.form['nom_mat']
+            flash('Nom du matériel mis à jour avec succès.', 'success')
         elif action == 'update_hab':
             nouvelle_hab = request.form.get('id_hab')
             if nouvelle_hab and Habilitation.query.get(nouvelle_hab):
                 materiel.id_hab = nouvelle_hab
+                flash("Habilitation du matériel mise à jour avec succès.", 'success')
         db.session.commit()
         return redirect(url_for('gerer_materiel_detail', id_mat=id_mat))
 

@@ -7,7 +7,7 @@
 <a href="{{ url_for('ajouter_maintenance') }}" class="bouton_ajout">Ajouter une maintenance</a>
 <div class="boite-choix-menu">
     <table class="">
-        <thread>
+        <thead>
             <tr>
                 <th>ID Maintenance</th>
                 <th>ID plateforme</th>
@@ -17,7 +17,7 @@
                 <th>Jours avant maintenance</th>
                 <th>Actions possibles</th>
             </tr>
-        </thread>
+        </thead>
         <tbody>
             {% if plateformes %}
             {% for id_maint, id_pla, nom_pla, date_deb, date_fin, jours_av_mainte in plateformes %}
