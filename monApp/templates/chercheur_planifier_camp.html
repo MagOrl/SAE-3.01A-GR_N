@@ -1,0 +1,48 @@
+{% extends "nav_bar.html" %} {% block content %}
+<section class="bloc-entier">
+  <div class="boite-action">
+    <p>Veuillez renseigner les informations de votre campagne</p>
+  </div>
+  <form role="form" action="{{ url_for('insert_campagne') }}" method="POST">
+    {{ form.hidden_tag() }}
+    <div id="boite-cree-campagne">
+      <div id="boite-camp-1" class="boite-camp">
+        <fieldset id="select-perso-field">
+          <legend>Choisissez le personnel mobilisé :</legend>
+          <section id="sect-pers-affecte">
+            {{ form.pers }}
+          </section>
+        </fieldset>
+      </div>
+      <div id="boite-camp-2" class="boite-camp">
+        <div id="boite-camp-2-1" class="campagne-childs">
+          <div class="boite-inter-campagne">
+            <div class="sb-infos-camp">
+              <p>Plateforme affectée</p>
+              {{ form.plateform_affecte(size=1, class_="form-control") }}
+            </div>
+            <div class="sb-infos-camp">
+              <p>Début de la campagne</p>
+              {{ form.dat_deb(size=1, class_="form-control") }}
+            </div>
+          </div>
+          <div class="boite-inter-campagne">
+            <div class="sb-infos-camp">
+              <p>Lieu de fouilles</p>
+              {{ form.lieu_fouille(size=50, class_="form-control") }}
+            </div>
+            <div class="sb-infos-camp">
+              <p>Durée de la campagne</p>
+              <div id="boite-duree-camp">
+                {{ form.duree_camp(size=50, class_="form-control") }}
+                <p class="duree-childs">jour(s)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="submit" value="Enregistrer" class="campagne-childs" />
+      </div>
+    </div>
+  </form>
+</section>
+{% endblock %}

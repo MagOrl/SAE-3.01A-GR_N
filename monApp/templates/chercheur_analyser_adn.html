@@ -1,0 +1,49 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<body>
+    <section class="bloc-entier">
+        <div class="boite-bonjour">
+            <h2>Analyser la séquence ADN</h2>
+            <p>Campagne: {{ campagne.nom_lieu_fouille }} - Échantillon #{{ echantillon.id_ech }}</p>
+        </div>
+
+        <div class="boite-action">
+            <h3>Séquence actuelle</h3>
+            <div class="boite-choix-menu">
+                <p><strong>Nom du fichier :</strong> {{ sequence.nom_fichier if sequence else 'N/A' }}</p>
+                <p><strong>Longueur :</strong> {{ echantillon.sequence_adn|length }} bases</p>
+                <div class="sequence-preview">
+                    <code>{{ echantillon.sequence_adn[:100] }}{% if echantillon.sequence_adn|length > 100 %}...{% endif %}</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="boite-action">
+            <h3>Paramètres d'analyse</h3>
+            <div class="boite-inter-campagne">
+                <form method="POST" class="formulaire-analyse">
+                    {{ form.hidden_tag() }}
+                    {{ form.id_ech }}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.type_analyse.id }}">{{ form.type_analyse.label }}</label>
+                        {{ form.type_analyse(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.taux_mutation.id }}">{{ form.taux_mutation.label }}</label>
+                        {{ form.taux_mutation(class="form-control") }}
+                        <small class="form-text">Valeur entre 0 et 100 (pourcentage de probabilité de mutation par base)</small>
+                    </div>
+                    
+                    <div class="ctn-btn">
+                        <button type="submit" class="btn-success">Lancer l'analyse</button>
+                        <a href="{{ url_for('chercheur_detail_campagne', id_camp=campagne.id_camp) }}" class="btn-annuler">Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+{% endblock %}

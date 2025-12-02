@@ -36,7 +36,7 @@
       <tbody>
         {% for p in personnels %}
         <tr>
-          <td>{{ p.id_pers }}</td>
+          <td>{{ p.Id_pers }}</td>
           <td>{{ p.nom_pers }}</td>
           <td>
             <a class="btn-voir" href="{{ url_for('gerer_personnel_detail', id_pers=p.id_pers) }}">Voir</a>

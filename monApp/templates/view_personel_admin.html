@@ -17,8 +17,8 @@
   {% endif %}
   {% endwith %}
   <div class="boite-choix-menu">
-    <form method="POST" action="{{ url_for('gerer_personnel_detail', id_pers=personnel.id_pers) }}">
-      <p><strong>ID Personnel:</strong> {{ personnel.id_pers }}</p>
+    <form method="POST" action="{{ url_for('gerer_personnel_detail', Id_pers=personnel.Id_pers) }}">
+      <p><strong>ID Personnel:</strong> {{ personnel.Id_pers }}</p>
       <p>
         <label for="nom_pers"><strong>Nom Personnel:</strong></label>
         <input type="text" id="nom_pers" name="nom_pers" value="{{ personnel.nom_pers }}" required>
