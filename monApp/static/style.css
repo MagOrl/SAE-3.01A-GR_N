@@ -70,7 +70,7 @@
   cursor: pointer;
   width: 500px;
   margin-left: 130px;
-
+  
 }
 
 .btn-voir:hover {
@@ -132,6 +132,9 @@
   padding: 0.5rem 1rem;
 }
 
+.ctn-btn{
+  text-align: center;
+}
 .boite-choix-menu {
   display: flex;
   flex-direction: column;

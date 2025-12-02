@@ -1,7 +1,6 @@
 {% extends "nav_bar.html" %} {% block content %}
 <section class="bloc-entier">
   <div class="boite-action">
-    <p>Bienvenue sur ADN'O {{ user.Nom }} {{ user.Prenom }}.</p>
     <p>Veuillez renseigner les informations de votre campagne</p>
   </div>
   <form action="">
@@ -28,13 +27,7 @@
           <div class="boite-inter-campagne">
             <div class="sb-infos-camp">
               <p>Plateforme affectée</p>
-              <select name="camp-plateforme">
-                {% for plateforme in lesPlateformes %}
-                <option value="{{ plateforme.id_pla }}">
-                  {{ plateforme.nom_pla }}
-                </option>
-                {% endfor %}
-              </select>
+              {{ form.plateform_affecte }}
             </div>
             <div class="sb-infos-camp">
               <p>Début de la campagne</p>
@@ -44,22 +37,12 @@
           <div class="boite-inter-campagne">
             <div class="sb-infos-camp">
               <p>Lieu de fouilles</p>
-              <input
-                type="text"
-                name="lieu_campagne"
-                placeholder="Entrez le lieu de fouilles"
-              />
+              {{ form.lieu_fouille }}
             </div>
             <div class="sb-infos-camp">
               <p>Durée de la campagne</p>
               <div id="boite-duree-camp">
-                <input
-                  type="number"
-                  name="nb_jours_campagne"
-                  min="1"
-                  class="duree-childs"
-                  size="5"
-                />
+                {{ form.duree_camp }}
                 <p class="duree-childs">jour(s)</p>
               </div>
             </div>

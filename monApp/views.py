@@ -1,5 +1,5 @@
 from flask import Flask,render_template, url_for, redirect, request,Response, session
-from monApp.forms import LoginForm, BudgetForm
+from monApp.forms import LoginForm, BudgetForm,PlanCampagneForm
 from .app import app, db
 from .models import *
 import random
@@ -48,8 +48,9 @@ def chercheur_campagne():
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     plateformes = Plateforme.query.all()
     personnels = Personnel.query.all()
+    formCamp = PlanCampagneForm(request.form)
     return render_template("chercheur_planifier_camp.html", user=session["user"],
-                           lesPlateformes=plateformes,lesPersonnels=personnels)
+                           lesPlateformes=plateformes,lesPersonnels=personnels,form=formCamp)
 
 @app.route('/chercheur/echantillon/')
 @app.errorhandler(401)
