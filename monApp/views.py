@@ -76,7 +76,7 @@ def directeur_budget():
 def admin_accueil():
     if session["user"].Role != 'admin':
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
-    return render_template("home_admin.html")
+    return render_template("home_admin.html", admin=session.get("user"))
 
 @app.route("/directeur/")
 def directeur_accueil():
@@ -95,14 +95,55 @@ def gerer_personnel_detail(id_pers):
     specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
     participations = Participer.query.filter_by(id_pers=id_pers).all()
     return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
-@app.route("/admin/gerer_personnel")
+@app.route("/admin/gerer_personnel", methods=['GET', 'POST'])
 def admin_gerer_personnel():
+    if request.method == 'POST':
+        id_pers = request.form.get('id_pers', '').strip().upper()
+        nom_pers = request.form.get('nom_pers', '').strip()
+
+        if not id_pers or not nom_pers:
+            flash('Merci de renseigner un identifiant et un nom.', 'danger')
+        elif not id_pers.startswith('PER'):
+            flash("L'identifiant doit commencer par 'PER'.", 'danger')
+        elif Personnel.query.get(id_pers):
+            flash('Un personnel avec cet identifiant existe déjà.', 'warning')
+        else:
+            nouveau_pers = Personnel(id_pers=id_pers, nom_pers=nom_pers)
+            db.session.add(nouveau_pers)
+            db.session.commit()
+            flash('Personnel créé avec succès.', 'success')
+
+        return redirect(url_for('admin_gerer_personnel'))
+
     personnels = Personnel.query.all()
     return render_template("gerer_personnel_admin.html", personnels=personnels)
-@app.route("/admin/gerer_materiel")
+@app.route("/admin/gerer_materiel", methods=['GET', 'POST'])
 def admin_gerer_materiel():
+    if request.method == 'POST':
+        id_mat = request.form.get('id_mat', '').strip().upper()
+        nom_mat = request.form.get('nom_mat', '').strip()
+        id_hab = request.form.get('id_hab') or None
+
+        if not id_mat or not nom_mat:
+            flash('Merci de renseigner un identifiant et un nom pour le matériel.', 'danger')
+        elif not id_mat.startswith('M'):
+            flash("L'identifiant doit commencer par 'M'.", 'danger')
+        elif Materiel.query.get(id_mat):
+            flash('Un matériel avec cet identifiant existe déjà.', 'warning')
+        else:
+            if id_hab and not Habilitation.query.get(id_hab):
+                flash("Habilitation sélectionnée invalide.", 'danger')
+            else:
+                nouvelle = Materiel(id_mat=id_mat, id_hab=id_hab, nom_mat=nom_mat)
+                db.session.add(nouvelle)
+                db.session.commit()
+                flash('Matériel créé avec succès.', 'success')
+
+        return redirect(url_for('admin_gerer_materiel'))
+
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
-    return render_template("gerer_materiel_admin.html", materiels=materiels)
+    habilitations = Habilitation.query.all()
+    return render_template("gerer_materiel_admin.html", materiels=materiels, habilitations=habilitations)
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -125,10 +166,32 @@ def gestion_changement_technicien():
 #------------------------------
 
 # Page de gestion du matériel du technicien
-@app.route("/technicien/gestion_changement_technicien/gerer_materiel")
+@app.route("/technicien/gestion_changement_technicien/gerer_materiel", methods=['GET', 'POST'])
 def technicien_gerer_materiel():
-    materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
-    return render_template("gerer_materiel_technicien.html", materiels=materiels)
+        if request.method == 'POST':
+            id_mat = request.form.get('id_mat', '').strip().upper()
+            nom_mat = request.form.get('nom_mat', '').strip()
+            id_hab = request.form.get('id_hab') or None
+
+            if not id_mat or not nom_mat:
+                flash('Merci de renseigner un identifiant et un nom pour le matériel.', 'danger')
+            elif not id_mat.startswith('M'):
+                flash("L'identifiant doit commencer par 'M'.", 'danger')
+            elif Materiel.query.get(id_mat):
+                flash('Un matériel avec cet identifiant existe déjà.', 'warning')
+            else:
+                if id_hab and not Habilitation.query.get(id_hab):
+                    flash("Habilitation sélectionnée invalide.", 'danger')
+                else:
+                    nouvelle = Materiel(id_mat=id_mat, id_hab=id_hab, nom_mat=nom_mat)
+                    db.session.add(nouvelle)
+                    db.session.commit()
+                    flash('Matériel créé avec succès.', 'success')
+
+            return redirect(url_for('technicien_gerer_materiel'))
+        materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
+        habilitations = Habilitation.query.all()
+        return render_template("gerer_materiel_technicien.html", materiels=materiels, habilitations=habilitations)
 
 #------------------------------
 # Page de gestion du personnel du technicien
