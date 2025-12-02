@@ -230,6 +230,18 @@
   justify-content: center;
 }
 
+.form-inline {
+  display: inline-flex;
+  margin: 0;
+}
+
+.form-inline .btn-supprimer {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .btn-retour {
   background-color: var(--light-primary);
   border: none;
