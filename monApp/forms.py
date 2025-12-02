@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, StringField, HiddenField, IntegerField, widgets,DateField, SelectField, SelectMultipleField
-from wtforms.validators import DataRequired, NumberRange
+from wtforms import StringField, PasswordField, StringField, HiddenField, IntegerField, widgets,DateField, SelectField, SelectMultipleField, TextAreaField
+from wtforms.validators import DataRequired, NumberRange, Optional
 from .models import User
 from hashlib import sha256
 
@@ -41,10 +41,21 @@ class PlanCampagneForm(FlaskForm):
     lieu_fouille = StringField('lieu_fouille', validators=[DataRequired()])
     pers = MultiCheckboxField("Personel")
     def init_list_pers(self, list_pers):
-        self.pers.choices = [(pers.id_pers , pers.nom_pers) for pers in list_pers ]
+        self.pers.choices = [(pers.Id_pers , pers.nom_pers) for pers in list_pers ]
     def init_plateform_affecte(self, list_plat):
         self.plateform_affecte.choices = [(plat.id_pla , plat.nom_pla) for plat in list_plat ]
     
+
+class SequenceADNForm(FlaskForm):
+    id_ech = HiddenField("id_ech")
+    sequence_adn = TextAreaField('Séquence ADN', validators=[DataRequired()], 
+                                  render_kw={"placeholder": "Entrez la séquence ADN (ex: ATCGATCGATCG...)", 
+                                            "rows": 10})
+
+
+class AjouterSequenceForm(FlaskForm):
+    nom_fichier = StringField('Nom du fichier', validators=[DataRequired()],
+                              render_kw={"placeholder": "Ex: S001.fasta"})
 
 
 # Roles : Chercheur, Technicien, Admin, Direction.

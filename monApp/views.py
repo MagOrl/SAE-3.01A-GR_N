@@ -1,5 +1,5 @@
-from flask import Flask,render_template, url_for, redirect, request,Response, session
-from monApp.forms import LoginForm, BudgetForm,PlanCampagneForm
+from flask import render_template, url_for, redirect, request,Response, session, flash
+from monApp.forms import LoginForm, BudgetForm,PlanCampagneForm, SequenceADNForm, AjouterSequenceForm
 from .app import app, db
 from .models import *
 import random
@@ -33,7 +33,6 @@ def logout():
     session["user"] = None
     return redirect ( url_for ('login'))
 @app.route('/chercheur/')
-@app.errorhandler(401)
 @login_required
 def chercheur_accueil():
     if session["user"].Role != 'chercheur':
@@ -42,7 +41,6 @@ def chercheur_accueil():
     return render_template("chercheur_accueil.html",user=session["user"])
 
 @app.route('/chercheur/campagne/')
-@app.errorhandler(401)
 @login_required
 def chercheur_campagne():
     if session["user"].Role != 'chercheur':
@@ -70,7 +68,7 @@ def insert_campagne():
         db.session.add(nouv_camp)
         for pers in formCamp.pers.data:
             try:
-                db.session.add(Participer(id_pers=pers,id_camp=CampId))
+                db.session.add(Participer(Id_pers=pers,id_camp=CampId))
             except HabilitationManquanteError as e:
                 pers_obj = Personnel.query.get(pers)
                 nom = pers_obj.nom_pers if pers_obj else f"ID {pers}"
@@ -85,7 +83,6 @@ def insert_campagne():
     return redirect(url_for('chercheur_campagne'))
 
 @app.route('/chercheur/echantillon/')
-@app.errorhandler(401)
 @login_required
 def chercheur_echantillon():
     if session["user"].Role != 'chercheur':
@@ -94,14 +91,209 @@ def chercheur_echantillon():
 
 @app.route('/chercheur/sequence/')
 @login_required
-@app.errorhandler(401)
 def chercheur_sequence():
     if session["user"].Role != 'chercheur':
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
-    return render_template("Chercheur_Sequence.html")
+    
+    user = User.query.get(session["user"].Login)
+    if not user.Id_pers:
+        return render_template("chercheur_sequence.html", campagnes=[], error="Votre compte n'est pas lié à un personnel. Contactez l'administrateur.")
+    
+    participations = Participer.query.filter_by(Id_pers=user.Id_pers).all()
+    campagnes_data = []
+    
+    for part in participations:
+        campagne = Campagne.query.get(part.id_camp)
+        if campagne:
+            plateforme = Plateforme.query.get(campagne.id_pla)
+            extractions = Extraire.query.filter_by(id_camp=campagne.id_camp).all()
+            nb_echantillons = len(extractions)
+            
+            campagnes_data.append({
+                'campagne': campagne,
+                'plateforme': plateforme,
+                'nb_echantillons': nb_echantillons
+            })
+    
+    return render_template("chercheur_sequence.html", campagnes=campagnes_data, user=session["user"])
+
+@app.route('/chercheur/campagne/<int:id_camp>')
+@login_required
+def chercheur_detail_campagne(id_camp):
+    if session["user"].Role != 'chercheur':
+        return render_template("access_denied.html", error='401', reason="Vous n'avez pas les droits d'accès à cette page.")
+    
+    user = User.query.get(session["user"].Login)
+    if not user.Id_pers:
+        return redirect(url_for('chercheur_sequence'))
+    
+    participation = Participer.query.filter_by(Id_pers=user.Id_pers, id_camp=id_camp).first()
+    if not participation:
+        return render_template("access_denied.html", error='403', reason="Vous ne participez pas à cette campagne.")
+    
+    campagne = Campagne.query.get_or_404(id_camp)
+    plateforme = Plateforme.query.get(campagne.id_pla)
+    budget = Budget.query.get(campagne.id_budg)
+    
+    participations = Participer.query.filter_by(id_camp=id_camp).all()
+    participants = [Personnel.query.get(p.Id_pers) for p in participations]
+    
+    extractions = Extraire.query.filter_by(id_camp=id_camp).all()
+    sequences_data = []
+    for extraction in extractions:
+        sequence = Sequence.query.get(extraction.id_seq)
+        echantillons = Echantillon.query.filter_by(id_seq=sequence.id_seq).all()
+        sequences_data.append({
+            'sequence': sequence,
+            'echantillons': echantillons
+        })
+    
+    forms = {}
+    for seq_data in sequences_data:
+        for echantillon in seq_data['echantillons']:
+            form = SequenceADNForm()
+            form.id_ech.data = echantillon.id_ech
+            if echantillon.sequence_adn:
+                form.sequence_adn.data = echantillon.sequence_adn
+            forms[echantillon.id_ech] = form
+    
+    return render_template("chercheur_detail_campagne.html", 
+                         campagne=campagne, 
+                         plateforme=plateforme,
+                         budget=budget,
+                         participants=participants,
+                         sequences=sequences_data,
+                         forms=forms,
+                         user=session["user"])
+
+@app.route('/chercheur/campagne/<int:id_camp>/upload_adn/<int:id_ech>', methods=['GET', 'POST'])
+@login_required
+def upload_sequence_adn(id_camp, id_ech):
+    if session["user"].Role != 'chercheur':
+        return redirect(url_for('chercheur_sequence'))
+    
+    user = User.query.get(session["user"].Login)
+    if not user.Id_pers:
+        return redirect(url_for('chercheur_sequence'))
+    
+    participation = Participer.query.filter_by(Id_pers=user.Id_pers, id_camp=id_camp).first()
+    if not participation:
+        return redirect(url_for('chercheur_sequence'))
+    
+    echantillon = Echantillon.query.get_or_404(id_ech)
+    extraction = Extraire.query.filter_by(id_camp=id_camp, id_seq=echantillon.id_seq).first()
+    if not extraction:
+        flash('Cet échantillon n\'appartient pas à cette campagne.', 'danger')
+        return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
+    
+    form = SequenceADNForm()
+    
+    if request.method == 'GET':
+        form.id_ech.data = id_ech
+        if echantillon.sequence_adn:
+            form.sequence_adn.data = echantillon.sequence_adn
+    
+    if form.validate_on_submit():
+        try:
+            echantillon.sequence_adn = form.sequence_adn.data
+            db.session.commit()
+            flash('Séquence ADN enregistrée avec succès !', 'success')
+            return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Erreur lors de l\'enregistrement: {str(e)}', 'danger')
+    
+    campagne = Campagne.query.get_or_404(id_camp)
+    sequence = Sequence.query.get(echantillon.id_seq)
+    
+    return render_template("chercheur_upload_adn.html", 
+                         form=form,
+                         echantillon=echantillon,
+                         sequence=sequence,
+                         campagne=campagne,
+                         user=session["user"])
+
+@app.route('/chercheur/campagne/<int:id_camp>/ajouter_sequence', methods=['GET', 'POST'])
+@login_required
+def ajouter_sequence(id_camp):
+    if session["user"].Role != 'chercheur':
+        return redirect(url_for('chercheur_sequence'))
+    
+    user = User.query.get(session["user"].Login)
+    if not user.Id_pers:
+        return redirect(url_for('chercheur_sequence'))
+    
+    participation = Participer.query.filter_by(Id_pers=user.Id_pers, id_camp=id_camp).first()
+    if not participation:
+        return redirect(url_for('chercheur_sequence'))
+    
+    campagne = Campagne.query.get_or_404(id_camp)
+    form = AjouterSequenceForm()
+    
+    if form.validate_on_submit():
+        try:
+            id_seq = Sequence.query.count() + 1
+            nouvelle_sequence = Sequence(id_seq=id_seq, nom_fichier=form.nom_fichier.data)
+            db.session.add(nouvelle_sequence)
+            
+            extraction = Extraire(id_camp=id_camp, id_seq=id_seq)
+            db.session.add(extraction)
+            
+            id_ech = Echantillon.query.count() + 1
+            echantillon = Echantillon(id_ech=id_ech, id_seq=id_seq, commentaire="Échantillon par défaut")
+            db.session.add(echantillon)
+            
+            db.session.commit()
+            flash('Séquence ajoutée avec succès !', 'success')
+            return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Erreur lors de l\'ajout: {str(e)}', 'danger')
+    
+    return render_template("chercheur_ajouter_sequence.html", 
+                         form=form,
+                         campagne=campagne,
+                         user=session["user"])
+
+@app.route('/chercheur/campagne/<int:id_camp>/supprimer_sequence/<int:id_seq>')
+@login_required
+def supprimer_sequence(id_camp, id_seq):
+    if session["user"].Role != 'chercheur':
+        return redirect(url_for('chercheur_sequence'))
+    
+    user = User.query.get(session["user"].Login)
+    if not user.Id_pers:
+        return redirect(url_for('chercheur_sequence'))
+    
+    participation = Participer.query.filter_by(Id_pers=user.Id_pers, id_camp=id_camp).first()
+    if not participation:
+        return redirect(url_for('chercheur_sequence'))
+    
+    extraction = Extraire.query.filter_by(id_camp=id_camp, id_seq=id_seq).first()
+    if not extraction:
+        flash('Cette séquence n\'appartient pas à cette campagne.', 'danger')
+        return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
+    
+    try:
+        Echantillon.query.filter_by(id_seq=id_seq).delete()
+        
+        Espece.query.filter_by(id_seq=id_seq).delete()
+        
+        db.session.delete(extraction)
+        
+        sequence = Sequence.query.get(id_seq)
+        if sequence:
+            db.session.delete(sequence)
+        
+        db.session.commit()
+        flash('Séquence supprimée avec succès !', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erreur lors de la suppression: {str(e)}', 'danger')
+    
+    return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
 
 @app.route("/admin/")
-@app.errorhandler(401)
 @login_required
 def admin_accueil():
     if session["user"].Role != 'admin':
@@ -109,7 +301,6 @@ def admin_accueil():
     return render_template("home_admin.html")
 
 @app.route("/directeur/")
-@app.errorhandler(401)
 @login_required
 def directeur_accueil():
     if session["user"].Role != 'directeur':
@@ -117,7 +308,6 @@ def directeur_accueil():
     return render_template("directeur_accueil.html",user=session["user"])        
 
 @app.route('/directeur/budget/')
-@app.errorhandler(401)
 @login_required
 def directeur_budget():
     if session["user"].Role != 'directeur':
@@ -139,18 +329,18 @@ def insert_budget():
         print(budgForm.errors)  
     return render_template("directeur_budget.html",user=session["user"],form=budgForm)
 
-@app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
-def gerer_personnel_detail(id_pers):
-    pers = personnel.query.get_or_404(id_pers)
+@app.route('/admin/gerer_personnel/<Id_pers>', methods=['GET', 'POST'])
+def gerer_personnel_detail(Id_pers):
+    pers = personnel.query.get_or_404(Id_pers)
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'update_name':
             pers.nom_pers = request.form['nom_pers']
             db.session.commit()
-        return redirect(url_for('gerer_personnel_detail', id_pers=id_pers))
+        return redirect(url_for('gerer_personnel_detail', Id_pers=Id_pers))
     
-    specialisations = db.session.query(habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
-    participations = Participer.query.filter_by(id_pers=id_pers).all()
+    specialisations = db.session.query(habilitation).join(SpecialiserEn).filter(SpecialiserEn.Id_pers == Id_pers).all()
+    participations = Participer.query.filter_by(Id_pers=Id_pers).all()
     return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
 @app.route("/admin/gerer_personnel")
 def admin_gerer_personnel():

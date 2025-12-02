@@ -9,9 +9,8 @@
         </div>
         <div class="boite-choix-menu">
             <a href="{{ url_for('chercheur_campagne') }}" class="bouton-gerer-personnel">Planifier une campagne</a>
-            <a href="" class="bouton-gerer-personnel">Analyser des échantillons</a>
-            <a href="" class="bouton-gerer-personnel">Téléverser les séquences</a>
-        </div>
+            <a href="{{ url_for('chercheur_sequence') }}" class="bouton-gerer-personnel">Mes campagnes et séquences ADN</a>
+            </div>
     </section>
 </body>
 {% endblock %}

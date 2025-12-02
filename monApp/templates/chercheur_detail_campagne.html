@@ -1,0 +1,105 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<body>
+    <section class="bloc-entier">
+        <div class="boite-bonjour">
+            <h2>Détail de la Campagne #{{ campagne.id_camp }}</h2>
+            <p>{{ campagne.nom_lieu_fouille }}</p>
+        </div>
+
+        <div class="boite-action">
+            <h3>Informations générales</h3>
+            <div class="boite-choix-menu">
+                <p><strong>Plateforme :</strong> {{ plateforme.nom_pla if plateforme else 'N/A' }}</p>
+                <p><strong>Date de début :</strong> {{ campagne.date_deb_camp }}</p>
+                <p><strong>Durée :</strong> {{ campagne.duree }} jours</p>
+                <p><strong>Budget :</strong> {{ budget.valeur if budget else 'N/A' }} € ({{ budget.date_deb_mois if budget else 'N/A' }})</p>
+                <p><strong>Coût exploitation journalier :</strong> {{ plateforme.cout_exploi_jour if plateforme else 'N/A' }} €</p>
+            </div>
+        </div>
+
+        <div class="boite-action">
+            <h3>Participants ({{ participants|length }})</h3>
+            <div class="boite-choix-menu">
+                <ul>
+                    {% for participant in participants %}
+                    <li>{{ participant.nom_pers if participant else 'N/A' }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="boite-action">
+            <h3>Séquences et Échantillons ADN</h3>
+            
+            <div class="ctn-btn btn-margin-bottom">
+                <a href="{{ url_for('ajouter_sequence', id_camp=campagne.id_camp) }}" class="bouton-planifier-camp btn-success">
+                    + Ajouter une séquence
+                </a>
+            </div>
+
+            {% if sequences %}
+                {% for seq_data in sequences %}
+                <div class="sequence-container">
+                    <div class="sequence-header">
+                        <div>
+                            <h4>Séquence : {{ seq_data.sequence.nom_fichier }}</h4>
+                            <p><strong>ID Séquence :</strong> {{ seq_data.sequence.id_seq }}</p>
+                        </div>
+                        <a href="{{ url_for('supprimer_sequence', id_camp=campagne.id_camp, id_seq=seq_data.sequence.id_seq) }}" 
+                           class="btn-supprimer btn-supprimer-sequence" 
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette séquence et tous ses échantillons ?');">
+                            Supprimer
+                        </a>
+                    </div>
+                    
+                    {% if seq_data.echantillons %}
+                    <table class="tableau">
+                        <thead>
+                            <tr>
+                                <th>ID Échantillon</th>
+                                <th>Commentaire</th>
+                                <th>Séquence ADN</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for echantillon in seq_data.echantillons %}
+                            <tr>
+                                <td>{{ echantillon.id_ech }}</td>
+                                <td>{{ echantillon.commentaire if echantillon.commentaire else 'Aucun commentaire' }}</td>
+                                <td class="sequence-adn-cell">
+                                    {% if echantillon.sequence_adn %}
+                                    <span class="sequence-adn-text">
+                                        {{ echantillon.sequence_adn[:50] }}{% if echantillon.sequence_adn|length > 50 %}...{% endif %}
+                                    </span>
+                                    {% else %}
+                                    <em class="no-sequence">Non renseignée</em>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('upload_sequence_adn', id_camp=campagne.id_camp, id_ech=echantillon.id_ech) }}" class="btn-voir">
+                                        {% if echantillon.sequence_adn %}Modifier{% else %}Ajouter{% endif %}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p>Aucun échantillon pour cette séquence.</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+            <p>Aucune séquence extraite pour cette campagne.</p>
+            {% endif %}
+        </div>
+
+        <div class="ctn-btn">
+            <a href="{{ url_for('chercheur_sequence') }}" class="bouton-planifier-camp">Retour à mes campagnes</a>
+        </div>
+    </section>
+</body>
+{% endblock %}

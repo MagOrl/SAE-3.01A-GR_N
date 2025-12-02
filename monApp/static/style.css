@@ -497,3 +497,165 @@
   flex-basis: 40%;
   border-radius: 10px;
 }
+
+/* CHERCHEUR - SEQUENCES ADN */
+.sequence-container {
+  background-color: var(--light-primary);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 95%;
+  box-shadow: var(--shadow);
+}
+
+.sequence-container h4 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.sequence-adn-cell {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sequence-adn-text {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85em;
+  color: #2c3e50;
+  word-break: break-all;
+}
+
+.no-sequence {
+  color: #999;
+  font-style: italic;
+}
+
+.sequence-adn-input {
+  width: 100% !important;
+  font-family: 'Courier New', monospace;
+  padding: 10px;
+  border: 2px solid var(--primary-color);
+  border-radius: 5px;
+  resize: vertical;
+  font-size: 0.95em;
+}
+
+.sequence-adn-input:focus {
+  outline: none;
+  border-color: var(--hover-primary);
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.info-text {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.error-message p {
+  margin: 0;
+}
+
+.flash-message {
+  padding: 15px;
+  margin: 20px auto;
+  border-radius: 5px;
+  max-width: 80%;
+  text-align: center;
+  font-weight: bold;
+}
+
+.flash-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.flash-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.flash-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.flash-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+/* Amélioration des tableaux pour les séquences */
+.sequence-container .tableau {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.sequence-container .tableau td {
+  vertical-align: middle;
+}
+
+.sequence-container .btn-voir {
+  width: auto;
+  margin: 0;
+  padding: 8px 15px;
+  font-size: 0.9em;
+}
+
+/* Classes utilitaires */
+.btn-margin-bottom {
+  margin-bottom: 20px;
+}
+
+.btn-margin-top {
+  margin-top: 20px;
+}
+
+.btn-success {
+  background-color: #28a745 !important;
+}
+
+.btn-success:hover {
+  background-color: #218838 !important;
+}
+
+.btn-danger {
+  background-color: #dc3545 !important;
+}
+
+.btn-danger:hover {
+  background-color: #c82333 !important;
+}
+
+.form-full-width {
+  flex-basis: 90%;
+  margin: 2%;
+}
+
+.sequence-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-supprimer-sequence {
+  text-decoration: none;
+  height: fit-content;
+}
+
+

@@ -53,6 +53,7 @@ class User(db.Model, UserMixin):
     Nom = db.Column(db.String(20))
     Prenom = db.Column(db.String(20))
     Role = db.Column(db.String(15))
+    Id_pers = db.Column(db.Integer, db.ForeignKey('personnel.Id_pers'), nullable=True)
 
     def get_id(self):
         return self.Login
@@ -62,6 +63,20 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"<User {self.Login}>"
+    
+    @validates('Id_pers', 'Role')
+    def validate_chercheur_personnel(self, key, value):
+        if key == 'Id_pers' and value is not None:
+            if hasattr(self, 'Role') and self.Role and self.Role != 'chercheur':
+                raise ValidationError(
+                    'Seuls les utilisateurs de type chercheur peuvent être liés à un personnel.'
+                )
+        if key == 'Role' and hasattr(self, 'Id_pers') and self.Id_pers is not None:
+            if value != 'chercheur':
+                raise ValidationError(
+                    'Seuls les utilisateurs de type chercheur peuvent être liés à un personnel.'
+                )
+        return value
 
 
 class Habilitation(db.Model):
@@ -74,12 +89,12 @@ class Habilitation(db.Model):
 
 
 class Personnel(db.Model):
-    id_pers = db.Column(db.Integer, primary_key=True)
+    Id_pers = db.Column(db.Integer, primary_key=True)
     nom_pers = db.Column(db.String(20))
 
 
     def __repr__(self):
-        return "<personnel (%s) %s>" % (self.id_pers, self.nom_pers)
+        return "<personnel (%s) %s>" % (self.Id_pers, self.nom_pers)
 
 
 class Plateforme(db.Model):
@@ -150,12 +165,12 @@ class SpecialiserEn(db.Model):
     id_hab = db.Column(db.Integer,
                        db.ForeignKey('habilitation.id_hab'),
                        primary_key=True)
-    id_pers = db.Column(db.Integer,
-                        db.ForeignKey('personnel.id_pers'),
+    Id_pers = db.Column(db.Integer,
+                        db.ForeignKey('personnel.Id_pers'),
                         primary_key=True)
 
     def __repr__(self):
-        return "<SpecialiserEn (%s, %s)>" % (self.id_hab, self.id_pers)
+        return "<SpecialiserEn (%s, %s)>" % (self.id_hab, self.Id_pers)
 
 
 class Budget(db.Model):
@@ -259,8 +274,8 @@ class Campagne(db.Model):
 
 
 class Participer(db.Model):
-    id_pers = db.Column(db.Integer,
-                        db.ForeignKey('personnel.id_pers'),
+    Id_pers = db.Column(db.Integer,
+                        db.ForeignKey('personnel.Id_pers'),
                         primary_key=True)
     id_camp = db.Column(db.Integer,
                         db.ForeignKey('campagne.id_camp'),
@@ -268,11 +283,11 @@ class Participer(db.Model):
 
 
     def __repr__(self):
-        return "<Participer (%s, %s)>" % (self.id_pers, self.id_camp)
+        return "<Participer (%s, %s)>" % (self.Id_pers, self.id_camp)
 
-    @validates('id_pers', 'id_camp')
+    @validates('Id_pers', 'id_camp')
     def validate_habilitations_et_conflits(self, key, value):
-        if key == 'id_camp' and hasattr(self, 'id_pers') and self.id_pers:
+        if key == 'id_camp' and hasattr(self, 'Id_pers') and self.Id_pers:
             campagne = Campagne.query.get(value)
             if campagne and hasattr(campagne, 'id_pla'):
                 plateforme = Plateforme.query.get(campagne.id_pla)
@@ -283,7 +298,7 @@ class Participer(db.Model):
                     ]
                     habilitations_personnel = [
                         s.id_hab for s in SpecialiserEn.query.filter_by(
-                            id_pers=self.id_pers).all()
+                            Id_pers=self.Id_pers).all()
                     ]
                     for hab_req in habilitations_requises:
                         if hab_req not in habilitations_personnel:
@@ -303,7 +318,7 @@ class Participer(db.Model):
                         days=campagne.duree)
 
                     participations_existantes = Participer.query.filter_by(
-                        id_pers=self.id_pers).all()
+                        Id_pers=self.Id_pers).all()
                     for part in participations_existantes:
                         camp_exist = Campagne.query.get(part.id_camp)
                         if camp_exist and hasattr(
@@ -372,6 +387,7 @@ class Echantillon(db.Model):
     id_ech = db.Column(db.Integer, primary_key=True)
     id_seq = db.Column(db.Integer, db.ForeignKey('sequence.id_seq'))
     commentaire = db.Column(db.String(255))
+    sequence_adn = db.Column(db.Text, nullable=True)
 
 
     def __repr__(self):
