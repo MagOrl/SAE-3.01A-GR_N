@@ -1,5 +1,5 @@
 from flask import render_template, url_for, redirect, request,Response, session, flash
-from monApp.forms import LoginForm, BudgetForm,PlanCampagneForm, SequenceADNForm, AjouterSequenceForm
+from monApp.forms import LoginForm, BudgetForm,PlanCampagneForm, SequenceADNForm, AjouterSequenceForm, AnalyseADNForm, CompareSequencesForm
 from .app import app, db
 from .models import *
 import random
@@ -7,6 +7,19 @@ from datetime import date, datetime, timedelta
 from monApp.models import Plateforme
 from flask_login import login_user,login_required,logout_user
 from sqlalchemy import extract
+import sys
+import os
+
+# Import DNA analysis functions from exercice.py
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'code', 'ALGO'))
+from exercice import (
+    mutation_par_remplacement, 
+    mutation_par_insertion, 
+    mutation_par_deletion,
+    estimation_distance_mutation,
+    sequence_levenshtein,
+    estimation_distance
+)
 
 @app.route('/')
 @app.route('/index')
@@ -293,7 +306,210 @@ def supprimer_sequence(id_camp, id_seq):
     
     return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
 
+@app.route('/chercheur/campagne/<int:id_camp>/analyser_adn/<int:id_ech>', methods=['GET', 'POST'])
+@login_required
+def analyser_adn(id_camp, id_ech):
+    if session["user"].Role != 'chercheur':
+        return redirect(url_for('chercheur_sequence'))
+    
+    user = User.query.get(session["user"].Login)
+    if not user.Id_pers:
+        return redirect(url_for('chercheur_sequence'))
+    
+    participation = Participer.query.filter_by(Id_pers=user.Id_pers, id_camp=id_camp).first()
+    if not participation:
+        return redirect(url_for('chercheur_sequence'))
+    
+    echantillon = Echantillon.query.get_or_404(id_ech)
+    extraction = Extraire.query.filter_by(id_camp=id_camp, id_seq=echantillon.id_seq).first()
+    if not extraction:
+        flash('Cet échantillon n\'appartient pas à cette campagne.', 'danger')
+        return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
+    
+    if not echantillon.sequence_adn:
+        flash('Vous devez d\'abord entrer une séquence ADN pour cet échantillon.', 'warning')
+        return redirect(url_for('upload_sequence_adn', id_camp=id_camp, id_ech=id_ech))
+    
+    form = AnalyseADNForm()
+    
+    if form.validate_on_submit():
+        try:
+            sequence_originale = echantillon.sequence_adn
+            type_analyse = form.type_analyse.data
+            p = form.taux_mutation.data / 100.0  # Convertir de pourcentage à décimal
+            
+            sequence_resultat = None
+            
+            if type_analyse == 'mutation_remplacement':
+                sequence_resultat = mutation_par_remplacement(sequence_originale, p)
+            elif type_analyse == 'mutation_insertion':
+                sequence_resultat = mutation_par_insertion(sequence_originale, p)
+            elif type_analyse == 'mutation_deletion':
+                sequence_resultat = mutation_par_deletion(sequence_originale, p)
+            
+            if sequence_resultat is None:
+                flash('Erreur lors de l\'analyse. Vérifiez les paramètres.', 'danger')
+                return redirect(url_for('analyser_adn', id_camp=id_camp, id_ech=id_ech))
+            
+            id_res = Resultat.query.count() + 1
+            nouveau_resultat = Resultat(
+                id_res=id_res,
+                id_ech=id_ech,
+                id_camp=id_camp,
+                type_analyse=type_analyse,
+                parametre=p,
+                sequence_originale=sequence_originale,
+                sequence_resultat=sequence_resultat
+            )
+            db.session.add(nouveau_resultat)
+            db.session.commit()
+            
+            flash('Analyse effectuée avec succès !', 'success')
+            return redirect(url_for('chercheur_resultats'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Erreur lors de l\'analyse: {str(e)}', 'danger')
+    
+    campagne = Campagne.query.get_or_404(id_camp)
+    sequence = Sequence.query.get(echantillon.id_seq)
+    
+    return render_template("chercheur_analyser_adn.html",
+                         form=form,
+                         echantillon=echantillon,
+                         sequence=sequence,
+                         campagne=campagne,
+                         user=session["user"])
+
+@app.route('/chercheur/campagne/<int:id_camp>/comparer_sequences/<int:id_ech>', methods=['GET', 'POST'])
+@login_required
+def comparer_sequences(id_camp, id_ech):
+    if session["user"].Role != 'chercheur':
+        return redirect(url_for('chercheur_sequence'))
+    
+    user = User.query.get(session["user"].Login)
+    if not user.Id_pers:
+        return redirect(url_for('chercheur_sequence'))
+    
+    participation = Participer.query.filter_by(Id_pers=user.Id_pers, id_camp=id_camp).first()
+    if not participation:
+        return redirect(url_for('chercheur_sequence'))
+    
+    echantillon1 = Echantillon.query.get_or_404(id_ech)
+    extraction = Extraire.query.filter_by(id_camp=id_camp, id_seq=echantillon1.id_seq).first()
+    if not extraction:
+        flash('Cet échantillon n\'appartient pas à cette campagne.', 'danger')
+        return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
+    
+    if not echantillon1.sequence_adn:
+        flash('Vous devez d\'abord entrer une séquence ADN pour cet échantillon.', 'warning')
+        return redirect(url_for('upload_sequence_adn', id_camp=id_camp, id_ech=id_ech))
+    
+    # Get all echantillons from this campaign
+    extractions = Extraire.query.filter_by(id_camp=id_camp).all()
+    echantillons_campagne = []
+    for ext in extractions:
+        echs = Echantillon.query.filter_by(id_seq=ext.id_seq).all()
+        for ech in echs:
+            if ech.id_ech != id_ech and ech.sequence_adn:
+                echantillons_campagne.append(ech)
+    
+    if not echantillons_campagne:
+        flash('Aucun autre échantillon avec séquence ADN disponible dans cette campagne.', 'warning')
+        return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
+    
+    form = CompareSequencesForm()
+    form.id_ech2.choices = [(ech.id_ech, f"Échantillon {ech.id_ech} - Séquence {ech.id_seq}") for ech in echantillons_campagne]
+    
+    if form.validate_on_submit():
+        try:
+            echantillon2 = Echantillon.query.get(form.id_ech2.data)
+            if not echantillon2:
+                flash('Échantillon de comparaison introuvable.', 'danger')
+                return redirect(url_for('comparer_sequences', id_camp=id_camp, id_ech=id_ech))
+            
+            sequence1 = echantillon1.sequence_adn
+            sequence2 = echantillon2.sequence_adn
+            type_distance = form.type_distance.data
+            
+            valeur_distance = None
+            
+            if type_distance == 'distance_naive':
+                valeur_distance = estimation_distance_mutation(sequence1, sequence2)
+                if valeur_distance is None:
+                    flash('Les séquences doivent avoir la même longueur pour le calcul de distance naïve.', 'danger')
+                    return redirect(url_for('comparer_sequences', id_camp=id_camp, id_ech=id_ech))
+            elif type_distance == 'distance_levenshtein':
+                valeur_distance = sequence_levenshtein(sequence1, sequence2)
+            elif type_distance == 'estimation_distance':
+                valeur_distance = estimation_distance(sequence1, sequence2)
+            
+            id_res = Resultat.query.count() + 1
+            nouveau_resultat = Resultat(
+                id_res=id_res,
+                id_ech=id_ech,
+                id_camp=id_camp,
+                type_analyse=type_distance,
+                sequence_originale=sequence1,
+                valeur_distance=valeur_distance,
+                id_ech_compare=echantillon2.id_ech
+            )
+            db.session.add(nouveau_resultat)
+            db.session.commit()
+            
+            flash(f'Comparaison effectuée avec succès ! Distance: {valeur_distance}', 'success')
+            return redirect(url_for('chercheur_resultats'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Erreur lors de la comparaison: {str(e)}', 'danger')
+    
+    campagne = Campagne.query.get_or_404(id_camp)
+    sequence = Sequence.query.get(echantillon1.id_seq)
+    
+    return render_template("chercheur_comparer_sequences.html",
+                         form=form,
+                         echantillon=echantillon1,
+                         sequence=sequence,
+                         campagne=campagne,
+                         user=session["user"])
+
+@app.route('/chercheur/resultats/')
+@login_required
+def chercheur_resultats():
+    if session["user"].Role != 'chercheur':
+        return render_template("access_denied.html", error='401', reason="Vous n'avez pas les droits d'accès à cette page.")
+    
+    user = User.query.get(session["user"].Login)
+    if not user.Id_pers:
+        return render_template("chercheur_resultats.html", resultats=[], error="Votre compte n'est pas lié à un personnel. Contactez l'administrateur.")
+    
+    # Get all campaigns the user participates in
+    participations = Participer.query.filter_by(Id_pers=user.Id_pers).all()
+    id_camps = [p.id_camp for p in participations]
+    
+    # Get all results for these campaigns
+    resultats = Resultat.query.filter(Resultat.id_camp.in_(id_camps)).order_by(Resultat.date_analyse.desc()).all()
+    
+    resultats_data = []
+    for res in resultats:
+        campagne = Campagne.query.get(res.id_camp)
+        echantillon = Echantillon.query.get(res.id_ech)
+        sequence = Sequence.query.get(echantillon.id_seq) if echantillon else None
+        echantillon_compare = Echantillon.query.get(res.id_ech_compare) if res.id_ech_compare else None
+        
+        resultats_data.append({
+            'resultat': res,
+            'campagne': campagne,
+            'echantillon': echantillon,
+            'sequence': sequence,
+            'echantillon_compare': echantillon_compare
+        })
+    
+    return render_template("chercheur_resultats.html", 
+                         resultats=resultats_data,
+                         user=session["user"])
+
 @app.route("/admin/")
+
 @login_required
 def admin_accueil():
     if session["user"].Role != 'admin':

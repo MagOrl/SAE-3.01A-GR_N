@@ -1,0 +1,54 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<body>
+    <section class="bloc-entier">
+        <div class="boite-bonjour">
+            <h2>Comparer des séquences ADN</h2>
+            <p>Campagne: {{ campagne.nom_lieu_fouille }} - Échantillon #{{ echantillon.id_ech }}</p>
+        </div>
+
+        <div class="boite-action">
+            <h3>Séquence de référence</h3>
+            <div class="boite-choix-menu">
+                <p><strong>Nom du fichier :</strong> {{ sequence.nom_fichier if sequence else 'N/A' }}</p>
+                <p><strong>Longueur :</strong> {{ echantillon.sequence_adn|length }} bases</p>
+                <div class="sequence-preview">
+                    <code>{{ echantillon.sequence_adn[:100] }}{% if echantillon.sequence_adn|length > 100 %}...{% endif %}</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="boite-action">
+            <h3>Paramètres de comparaison</h3>
+            <div class="boite-inter-campagne">
+                <form method="POST" class="formulaire-analyse">
+                    {{ form.hidden_tag() }}
+                    {{ form.id_ech1(value=echantillon.id_ech) }}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.id_ech2.id }}">{{ form.id_ech2.label }}</label>
+                        {{ form.id_ech2(class="form-control") }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.type_distance.id }}">{{ form.type_distance.label }}</label>
+                        {{ form.type_distance(class="form-control") }}
+                    </div>
+                    
+                    <div class="info-box">
+                        <p><strong>Distance naïve :</strong> Compare uniquement les séquences de même longueur, compte les différences position par position.</p>
+                        <p><strong>Distance de Levenshtein :</strong> Nombre minimal d'opérations (insertion, suppression, remplacement) pour transformer une séquence en l'autre.</p>
+                        <p><strong>Estimation de distance :</strong> Compte les différences + longueur de la partie restante (pour séquences de longueurs différentes).</p>
+                    </div>
+                    
+                    <div class="ctn-btn">
+                        <button type="submit" class="btn-success">Comparer</button>
+                        <a href="{{ url_for('chercheur_detail_campagne', id_camp=campagne.id_camp) }}" class="btn-annuler">Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+{% endblock %}

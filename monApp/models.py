@@ -392,3 +392,19 @@ class Echantillon(db.Model):
 
     def __repr__(self):
         return "<Echantillon (%s)>" % (self.id_ech)
+
+
+class Resultat(db.Model):
+    id_res = db.Column(db.Integer, primary_key=True)
+    id_ech = db.Column(db.Integer, db.ForeignKey('echantillon.id_ech'))
+    id_camp = db.Column(db.Integer, db.ForeignKey('campagne.id_camp'))
+    type_analyse = db.Column(db.String(50))  # 'mutation_remplacement', 'mutation_insertion', 'mutation_deletion', 'distance_levenshtein', 'distance_naive'
+    parametre = db.Column(db.Float, nullable=True)  # Taux de mutation (p) ou None pour distance
+    sequence_originale = db.Column(db.Text)
+    sequence_resultat = db.Column(db.Text, nullable=True)  # Pour mutations
+    valeur_distance = db.Column(db.Integer, nullable=True)  # Pour calculs de distance
+    id_ech_compare = db.Column(db.Integer, db.ForeignKey('echantillon.id_ech'), nullable=True)  # Pour comparaisons
+    date_analyse = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    def __repr__(self):
+        return "<Resultat (%s) %s>" % (self.id_res, self.type_analyse)

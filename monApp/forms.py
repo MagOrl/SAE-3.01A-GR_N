@@ -58,4 +58,30 @@ class AjouterSequenceForm(FlaskForm):
                               render_kw={"placeholder": "Ex: S001.fasta"})
 
 
+class AnalyseADNForm(FlaskForm):
+    id_ech = HiddenField("id_ech")
+    type_analyse = SelectField('Type d\'analyse', 
+                               choices=[
+                                   ('mutation_remplacement', 'Mutation par remplacement'),
+                                   ('mutation_insertion', 'Mutation par insertion'),
+                                   ('mutation_deletion', 'Mutation par suppression')
+                               ],
+                               validators=[DataRequired()])
+    taux_mutation = IntegerField('Taux de mutation (0-100%)', 
+                                validators=[DataRequired(), NumberRange(min=0, max=100)],
+                                default=10)
+
+
+class CompareSequencesForm(FlaskForm):
+    id_ech1 = HiddenField("id_ech1")
+    id_ech2 = SelectField('Échantillon à comparer', validators=[DataRequired()], coerce=int)
+    type_distance = SelectField('Type de calcul', 
+                               choices=[
+                                   ('distance_naive', 'Distance naïve (même longueur)'),
+                                   ('distance_levenshtein', 'Distance de Levenshtein'),
+                                   ('estimation_distance', 'Estimation de distance')
+                               ],
+                               validators=[DataRequired()])
+
+
 # Roles : Chercheur, Technicien, Admin, Direction.

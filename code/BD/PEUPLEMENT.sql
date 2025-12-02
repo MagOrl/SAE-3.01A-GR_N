@@ -1,250 +1,216 @@
---Insertions supplémentaires faites avec l'aide d'une IA
-DELETE FROM ESPECE;
+-- Jeu de donnees adapte au nouveau modele SQLAlchemy (IDs numeriques, noms de tables inferes)
+-- Purge ordonnee (enfants -> parents)
+DELETE FROM extraire;
+DELETE FROM participer;
+DELETE FROM espece;
+DELETE FROM echantillon;
+DELETE FROM sequence;
+DELETE FROM campagne;
+DELETE FROM specialiser_en;
+DELETE FROM necessiter;
+DELETE FROM utiliser;
+DELETE FROM materiel;
+DELETE FROM operation_maintenance;
+DELETE FROM maintenance;
+DELETE FROM plateforme;
+DELETE FROM budget;
+DELETE FROM personnel;
+DELETE FROM habilitation;
 
-DELETE FROM EXTRAIRE;
+INSERT INTO habilitation (id_hab, nom_hab) VALUES
+    (1, 'Chimique'),
+    (2, 'Biologique'),
+    (3, 'Geologique'),
+    (4, 'Paleontologique'),
+    (5, 'Radiologique'),
+    (6, 'Microscopique'),
+    (7, 'Spectroscopique'),
+    (8, 'Cristallographique'),
+    (9, 'Immunologique'),
+    (10, 'Moleculaire');
 
-DELETE FROM PARTICIPER;
+INSERT INTO personnel (Id_pers, nom_pers) VALUES
+    (1, 'LEROY'),
+    (2, 'MARTIN'),
+    (3, 'BERNARD'),
+    (4, 'THOMAS'),
+    (5, 'PETIT'),
+    (6, 'ROBERT'),
+    (7, 'RICHARD'),
+    (8, 'DURAND'),
+    (9, 'DUBOIS'),
+    (10, 'MOREAU');
 
-DELETE FROM CAMPAGNE;
+INSERT INTO plateforme (id_pla, nom_pla, nb_pers_nec, cout_exploi_jour, inter_mainte, jours_av_mainte) VALUES
+    (1, 'LesDino', 20, 100.50, 30, 30),
+    (2, 'FossilLab', 15, 85.25, 60, 60),
+    (3, 'DinoCenter', 25, 120.75, 30, 30),
+    (4, 'PaleoStation', 18, 95.00, 90, 90),
+    (5, 'JurassicLab', 22, 110.30, 60, 60),
+    (6, 'CretaceousHub', 30, 140.80, 30, 30),
+    (7, 'TriassicBase', 12, 75.60, 120, 120),
+    (8, 'MesozoicCenter', 28, 135.20, 60, 60),
+    (9, 'DinoTech', 16, 88.90, 90, 90),
+    (10, 'FossilWorks', 24, 115.45, 30, 30);
 
-DELETE FROM BUDGET;
+INSERT INTO maintenance (id_maint, id_pla, date_deb_maint, date_fin_maint) VALUES
+    (1, 1, '2025-12-05', '2025-12-06'),
+    (2, 2, '2025-12-15', '2025-12-17'),
+    (3, 3, '2025-12-25', '2025-12-26'),
+    (4, 4, '2026-01-05', '2026-01-07'),
+    (5, 5, '2026-01-15', '2026-01-16'),
+    (6, 6, '2026-01-25', '2026-01-27'),
+    (7, 7, '2026-02-05', '2026-02-06'),
+    (8, 8, '2026-02-15', '2026-02-17'),
+    (9, 9, '2026-02-22', '2026-02-23'),
+    (10, 10, '2026-02-25', '2026-02-27');
 
-DELETE FROM ECHANTILLON;
+INSERT INTO operation_maintenance (id_op_maint, id_pla, date_maintenance) VALUES
+    (1, 1, '2025-12-05'),
+    (2, 2, '2025-12-16'),
+    (3, 3, '2025-12-25'),
+    (4, 4, '2026-01-06'),
+    (5, 5, '2026-01-15'),
+    (6, 6, '2026-01-26'),
+    (7, 7, '2026-02-05'),
+    (8, 8, '2026-02-16'),
+    (9, 9, '2026-02-22'),
+    (10, 10, '2026-02-26');
 
-DELETE FROM SEQUENCE;
+INSERT INTO materiel (id_mat, id_hab, nom_mat) VALUES
+    (1, 3, 'Pelleteuse'),
+    (2, 4, 'Truelle'),
+    (3, 4, 'Pinceau'),
+    (4, 3, 'Tamis'),
+    (5, 3, 'Marteau'),
+    (6, 2, 'Scalpel'),
+    (7, 1, 'Gants'),
+    (8, 5, 'Lunettes'),
+    (9, 4, 'Sac a dos'),
+    (10, 6, 'Camera'),
+    (11, 3, 'GPS');
 
-DELETE FROM SPECIALISER_EN;
+INSERT INTO utiliser (id_mat, id_pla) VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10),
+    (11, 1);
 
-DELETE FROM NECESSITER;
+INSERT INTO necessiter (id_hab, id_pla) VALUES
+    (1, 1),
+    (1, 2),
+    (2, 2),
+    (2, 1),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10);
 
-DELETE FROM UTILISER;
+INSERT INTO specialiser_en (id_hab, Id_pers) VALUES
+    (1, 1),
+    (2, 1),
+    (1, 2),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10);
 
-DELETE FROM OPERATION_MAINTENANCE;
+INSERT INTO sequence (id_seq, nom_fichier) VALUES
+    (1, 'S001.fasta'),
+    (2, 'S002.fasta'),
+    (3, 'S003.fasta'),
+    (4, 'S004.fasta'),
+    (5, 'S005.fasta'),
+    (6, 'S006.fasta'),
+    (7, 'S007.fasta'),
+    (8, 'S008.fasta'),
+    (9, 'S009.fasta'),
+    (10, 'S010.fasta');
 
-DELETE FROM MAINTENANCE;
+INSERT INTO echantillon (id_ech, id_seq, commentaire) VALUES
+    (1, 1, 'Echantillon dun T-Rex'),
+    (2, 2, 'Echantillon de Triceratops'),
+    (3, 3, 'Echantillon de Velociraptor'),
+    (4, 4, 'Echantillon de Brachiosaure'),
+    (5, 5, 'Echantillon de Stegosaure'),
+    (6, 6, 'Echantillon dAllosaure'),
+    (7, 7, 'Echantillon de Diplodocus'),
+    (8, 8, 'Echantillon de Pteranodon'),
+    (9, 9, 'Echantillon dAnkylosaure'),
+    (10, 10, 'Echantillon de Spinosaure');
 
-DELETE FROM MATERIEL;
+INSERT INTO budget (id_budg, valeur, date_deb_mois) VALUES
+    (1, 41999.99, '2025-09-25'),
+    (2, 35000.00, '2025-01-15'),
+    (3, 28500.50, '2025-02-10'),
+    (4, 52000.75, '2025-03-05'),
+    (5, 19999.99, '2025-04-20'),
+    (6, 67500.25, '2025-05-12'),
+    (7, 33250.80, '2025-06-18'),
+    (8, 45000.00, '2025-07-03'),
+    (9, 58750.45, '2025-08-14'),
+    (10, 22000.60, '2025-09-08');
 
-DELETE FROM PLATEFORME;
+INSERT INTO campagne (id_camp, duree, date_deb_camp, id_pla, id_budg, nom_lieu_fouille) VALUES
+    (1, 2, '2025-09-11', 1, 1, 'Site Alpha'),
+    (2, 3, '2025-10-15', 2, 2, 'Site Beta'),
+    (3, 1, '2025-11-20', 3, 3, 'Site Gamma'),
+    (4, 4, '2025-08-05', 4, 4, 'Site Delta'),
+    (5, 2, '2025-12-03', 5, 5, 'Site Epsilon'),
+    (6, 5, '2025-07-18', 6, 6, 'Site Zeta'),
+    (7, 3, '2025-06-22', 7, 7, 'Site Eta'),
+    (8, 2, '2025-05-14', 8, 8, 'Site Theta'),
+    (9, 1, '2025-04-28', 9, 9, 'Site Iota'),
+    (10, 4, '2025-03-12', 10, 10, 'Site Kappa');
 
-DELETE FROM PERSONNEL;
+INSERT INTO participer (Id_pers, id_camp) VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10);
 
-DELETE FROM HABILITATION;
+INSERT INTO extraire (id_camp, id_seq) VALUES
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10);
 
-INSERT INTO
-    HABILITATION
-VALUES
-    ("H001", "Chimique"),
-    ("H002", "Biologique"),
-    ("H003", "Géologique"),
-    ("H004", "Paléontologique"),
-    ("H005", "Radiologique"),
-    ("H006", "Microscopique"),
-    ("H007", "Spectroscopique"),
-    ("H008", "Cristallographique"),
-    ("H009", "Immunologique"),
-    ("H010", "Moléculaire");
-
-INSERT INTO
-    PERSONNEL
-VALUES
-    ("PER001", "LEROY"),
-    ("PER002", "MARTIN"),
-    ("PER003", "BERNARD"),
-    ("PER004", "THOMAS"),
-    ("PER005", "PETIT"),
-    ("PER006", "ROBERT"),
-    ("PER007", "RICHARD"),
-    ("PER008", "DURAND"),
-    ("PER009", "DUBOIS"),
-    ("PER010", "MOREAU");
-
-INSERT INTO
-    PLATEFORME
-VALUES
-    ("PLA001", "LesDino", 20, 100.50, 30),
-    ("PLA002", "FossilLab", 15, 85.25, 60),
-    ("PLA003", "DinoCenter", 25, 120.75, 30),
-    ("PLA004", "PaleoStation", 18, 95.00, 90),
-    ("PLA005", "JurassicLab", 22, 110.30, 60),
-    ("PLA006", "CretaceousHub", 30, 140.80, 30),
-    ("PLA007", "TriassicBase", 12, 75.60, 120),
-    ("PLA008", "MesozoicCenter", 28, 135.20, 60),
-    ("PLA009", "DinoTech", 16, 88.90, 90),
-    ("PLA010", "FossilWorks", 24, 115.45, 30);
-
-INSERT INTO
-    MAINTENANCE
-VALUES
-    ("M001", "PLA001", '2025-12-05', '2025-12-06'),
-    ("M002", "PLA002", '2025-12-15', '2025-12-17'),
-    ("M003", "PLA003", '2025-12-25', '2025-12-26'),
-    ("M004", "PLA004", '2026-01-05', '2026-01-07'),
-    ("M005", "PLA005", '2026-01-15', '2026-01-16'),
-    ("M006", "PLA006", '2026-01-25', '2026-01-27'),
-    ("M007", "PLA007", '2026-02-05', '2026-02-06'),
-    ("M008", "PLA008", '2026-02-15', '2026-02-17'),
-    ("M009", "PLA009", '2026-02-22', '2026-02-23'),
-    ("M010", "PLA010", '2026-02-25', '2026-02-27');
-
-INSERT INTO
-    OPERATION_MAINTENANCE
-VALUES
-    ("OPM001", "PLA001", '2025-12-05'),
-    ("OPM002", "PLA002", '2025-12-16'),
-    ("OPM003", "PLA003", '2025-12-25'),
-    ("OPM004", "PLA004", '2026-01-06'),
-    ("OPM005", "PLA005", '2026-01-15'),
-    ("OPM006", "PLA006", '2026-01-26'),
-    ("OPM007", "PLA007", '2026-02-05'),
-    ("OPM008", "PLA008", '2026-02-16'),
-    ("OPM009", "PLA009", '2026-02-22'),
-    ("OPM010", "PLA010", '2026-02-26');
-
-INSERT INTO
-    MATERIEL
-VALUES
-    ("M001", "H003", "Pelleteuse"),
-    ("M002", "H004", "Truelle"),
-    ("M003", "H004", "Pinceau"),
-    ("M004", "H003", "Tamis"),
-    ("M005", "H003", "Marteau"),
-    ("M006", "H002", "Scalpel"),
-    ("M007", "H001", "Gants"),
-    ("M008", "H005", "Lunettes"),
-    ("M009", "H004", "Sac à dos"),
-    ("M010", "H006", "Caméra"),
-    ("M011", "H003", "GPS");
-
-INSERT INTO
-    UTILISER
-VALUES
-    ("M001", "PLA001"),
-    ("M002", "PLA002"),
-    ("M003", "PLA003"),
-    ("M004", "PLA004"),
-    ("M005", "PLA005"),
-    ("M006", "PLA006"),
-    ("M007", "PLA007"),
-    ("M008", "PLA008"),
-    ("M009", "PLA009"),
-    ("M010", "PLA010"),
-    ("M011", "PLA001");
-
-INSERT INTO
-    NECESSITER
-VALUES
-    ("H001", "PLA001"),
-    ("H001", "PLA002"),
-    ("H002", "PLA002"),
-    ("H002", "PLA001"),
-    ("H003", "PLA003"),
-    ("H004", "PLA004"),
-    ("H005", "PLA005"),
-    ("H006", "PLA006"),
-    ("H007", "PLA007"),
-    ("H008", "PLA008"),
-    ("H009", "PLA009"),
-    ("H010", "PLA010");
-
-INSERT INTO
-    SPECIALISER_EN
-VALUES
-    ("H001", "PER001"),
-    ("H002", "PER001"),
-    ("H001", "PER002"),
-    ("H002", "PER002"),
-    ("H003", "PER003"),
-    ("H004", "PER004"),
-    ("H005", "PER005"),
-    ("H006", "PER006"),
-    ("H007", "PER007"),
-    ("H008", "PER008"),
-    ("H009", "PER009"),
-    ("H010", "PER010");
-
-INSERT INTO
-    SEQUENCE
-VALUES
-    ("S001", "S001.fasta"),
-    ("S002", "S002.fasta"),
-    ("S003", "S003.fasta"),
-    ("S004", "S004.fasta"),
-    ("S005", "S005.fasta"),
-    ("S006", "S006.fasta"),
-    ("S007", "S007.fasta"),
-    ("S008", "S008.fasta"),
-    ("S009", "S009.fasta"),
-    ("S010", "S010.fasta");
-
-INSERT INTO
-    ECHANTILLON
-VALUES
-    ("ECH001", "S001", "Échantillon d'un T-Rex"),
-    ("ECH002", "S002", "Échantillon de Tricératops"),
-    ("ECH003", "S003", "Échantillon de Vélociraptor"),
-    ("ECH004", "S004", "Échantillon de Brachiosaure"),
-    ("ECH005", "S005", "Échantillon de Stégosaure"),
-    ("ECH006", "S006", "Échantillon d'Allosaure"),
-    ("ECH007", "S007", "Échantillon de Diplodocus"),
-    ("ECH008", "S008", "Échantillon de Ptéranodon"),
-    ("ECH009", "S009", "Échantillon d'Ankylosaure"),
-    ("ECH010", "S010", "Échantillon de Spinosaure");
-
-INSERT INTO
-    BUDGET
-VALUES
-    ("B001", 41999.99, '2025-09-25'),
-    ("B002", 35000.00, '2025-01-15'),
-    ("B003", 28500.50, '2025-02-10'),
-    ("B004", 52000.75, '2025-03-05'),
-    ("B005", 19999.99, '2025-04-20'),
-    ("B006", 67500.25, '2025-05-12'),
-    ("B007", 33250.80, '2025-06-18'),
-    ("B008", 45000.00, '2025-07-03'),
-    ("B009", 58750.45, '2025-08-14'),
-    ("B010", 22000.60, '2025-09-08');
-
-INSERT INTO
-    CAMPAGNE
-VALUES
-    ("C001", 2, '2025-09-11', "PLA001", "B001", ""),
-    ("C002", 3, '2025-10-15', "PLA002", "B002", ""),
-    ("C003", 1, '2025-11-20', "PLA003", "B003", ""),
-    ("C004", 4, '2025-08-05', "PLA004", "B004", ""),
-    ("C005", 2, '2025-12-03', "PLA005", "B005", ""),
-    ("C006", 5, '2025-07-18', "PLA006", "B006", ""),
-    ("C007", 3, '2025-06-22', "PLA007", "B007", ""),
-    ("C008", 2, '2025-05-14', "PLA008", "B008", ""),
-    ("C009", 1, '2025-04-28', "PLA009", "B009", ""),
-    ("C010", 4, '2025-03-12', "PLA010", "B010", "");
-
-INSERT INTO
-    PARTICIPER
-VALUES
-    ("PER001", "C001"),
-    ("PER002", "C002"),
-    ("PER003", "C003"),
-    ("PER004", "C004"),
-    ("PER005", "C005"),
-    ("PER006", "C006"),
-    ("PER007", "C007"),
-    ("PER008", "C008"),
-    ("PER009", "C009"),
-    ("PER010", "C010");
-
-
-
-INSERT INTO
-    ESPECE
-VALUES
-    ("ESP001", "S001", "T-Rex"),
-    ("ESP002", "S002", "Tricératops"),
-    ("ESP003", "S003", "Vélociraptor"),
-    ("ESP004", "S004", "Brachiosaure"),
-    ("ESP005", "S005", "Stégosaure"),
-    ("ESP006", "S006", "Allosaure"),
-    ("ESP007", "S007", "Diplodocus"),
-    ("ESP008", "S008", "Ptéranodon"),
-    ("ESP009", "S009", "Ankylosaure"),
-    ("ESP010", "S010", "Spinosaure");
+INSERT INTO espece (id_esp, id_seq, nom_esp) VALUES
+    (1, 1, 'T-Rex'),
+    (2, 2, 'Triceratops'),
+    (3, 3, 'Velociraptor'),
+    (4, 4, 'Brachiosaure'),
+    (5, 5, 'Stegosaure'),
+    (6, 6, 'Allosaure'),
+    (7, 7, 'Diplodocus'),
+    (8, 8, 'Pteranodon'),
+    (9, 9, 'Ankylosaure'),
+    (10, 10, 'Spinosaure');

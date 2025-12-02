@@ -61,7 +61,7 @@
                                 <th>ID Échantillon</th>
                                 <th>Commentaire</th>
                                 <th>Séquence ADN</th>
-                                <th>Action</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,9 +79,19 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('upload_sequence_adn', id_camp=campagne.id_camp, id_ech=echantillon.id_ech) }}" class="btn-voir">
-                                        {% if echantillon.sequence_adn %}Modifier{% else %}Ajouter{% endif %}
-                                    </a>
+                                    <div class="action-buttons">
+                                        <a href="{{ url_for('upload_sequence_adn', id_camp=campagne.id_camp, id_ech=echantillon.id_ech) }}" class="btn-voir">
+                                            {% if echantillon.sequence_adn %}Modifier{% else %}Ajouter{% endif %}
+                                        </a>
+                                        {% if echantillon.sequence_adn %}
+                                        <a href="{{ url_for('analyser_adn', id_camp=campagne.id_camp, id_ech=echantillon.id_ech) }}" class="btn-analyser">
+                                            Analyser
+                                        </a>
+                                        <a href="{{ url_for('comparer_sequences', id_camp=campagne.id_camp, id_ech=echantillon.id_ech) }}" class="btn-comparer">
+                                            Comparer
+                                        </a>
+                                        {% endif %}
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
