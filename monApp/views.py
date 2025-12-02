@@ -482,11 +482,9 @@ def chercheur_resultats():
     if not user.Id_pers:
         return render_template("chercheur_resultats.html", resultats=[], error="Votre compte n'est pas lié à un personnel. Contactez l'administrateur.")
     
-    # Get all campaigns the user participates in
     participations = Participer.query.filter_by(Id_pers=user.Id_pers).all()
     id_camps = [p.id_camp for p in participations]
     
-    # Get all results for these campaigns
     resultats = Resultat.query.filter(Resultat.id_camp.in_(id_camps)).order_by(Resultat.date_analyse.desc()).all()
     
     resultats_data = []
