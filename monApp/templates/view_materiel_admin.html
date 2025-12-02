@@ -1,0 +1,61 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<div class="bloc-entier-admin">
+  <div class="boite-bonjour-admin">
+    <h1>Détails du Matériel</h1>
+  </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="alert-container">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'success' if category == 'success' else category }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+  <div class="boite-choix-menu">
+    <form method="POST" action="{{ url_for('gerer_materiel_detail', id_mat=materiel.id_mat) }}">
+      <p><strong>ID Matériel :</strong> {{ materiel.id_mat }}</p>
+      <p>
+        <label for="nom_mat"><strong>Nom du Matériel :</strong></label>
+        <input type="text" id="nom_mat" name="nom_mat" value="{{ materiel.nom_mat }}" required>
+      </p>
+      <button type="submit" name="action" value="update_name" class="btn-update">Mettre à jour le nom</button>
+    </form>
+
+    <form method="POST" action="{{ url_for('gerer_materiel_detail', id_mat=materiel.id_mat) }}" class="form-habilitation">
+      <p>
+        <strong>Habilitation actuelle :</strong>
+        {% if habilitation %}
+          {{ habilitation.id_hab }} - {{ habilitation.nom_hab }}
+        {% else %}
+          Aucune habilitation liée
+        {% endif %}
+      </p>
+      <label for="id_hab"><strong>Modifier l'habilitation :</strong></label>
+      <select id="id_hab" name="id_hab" required>
+        {% for hab in habilitations %}
+        <option value="{{ hab.id_hab }}" {% if hab.id_hab == materiel.id_hab %}selected{% endif %}>{{ hab.id_hab }} - {{ hab.nom_hab }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" name="action" value="update_hab" class="btn-update">Mettre à jour l'habilitation</button>
+    </form>
+
+    <h3>Plateformes utilisant ce matériel :</h3>
+    {% if plateformes %}
+    <ul>
+      {% for pla in plateformes %}
+      <li>{{ pla.id_pla }} - {{ pla.nom_pla }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>Aucune plateforme n'utilise ce matériel.</p>
+    {% endif %}
+
+    <button class="btn-retour" onclick="window.location.href='/admin/gerer_materiel'">Retour</button>
+  </div>
+</div>
+{% endblock %}

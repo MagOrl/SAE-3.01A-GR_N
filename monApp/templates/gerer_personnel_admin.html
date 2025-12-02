@@ -3,17 +3,29 @@
   <div class="boite-bonjour-admin">
     <h1>Gestion du matériel</h1>
   </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="alert-container">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'success' if category == 'success' else category }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
   <div class="boite-choix-menu">
-    <div class="boite-creer-personnel">
-      <h2>Créer un personnel</h2>
-      <form>
-        <label for="nom_personnel">Nom du personnel:</label>
-        <input type="text" id="nom_personnel" name="nom_personnel" required />
-        <button type="submit">Créer</button>
+    <div class="boite-ajout-personnel">
+      <h2>Ajouter un personnel</h2>
+      <form method="POST" action="{{ url_for('admin_gerer_personnel') }}" class="form-inline">
+        <label for="id_pers"><strong>ID Personnel :</strong></label>
+        <input type="text" id="id_pers" name="id_pers" placeholder="PER001" required>
+        <label for="nom_pers"><strong>Nom Personnel :</strong></label>
+        <input type="text" id="nom_pers" name="nom_pers" placeholder="Nom" required>
+        <button type="submit" class="btn-add">Créer</button>
       </form>
     </div>
-    <table class="tableau"> 
-    <table class="tableau" >
+    <table class="tableau">
       <thead>
         <tr>
           <th>ID Personnel</th>
@@ -27,14 +39,15 @@
           <td>{{ p.Id_pers }}</td>
           <td>{{ p.nom_pers }}</td>
           <td>
-            <button class="btn-voir">Voir</button>
-            <button class="btn-supprimer">Supprimer</button>
+            <a class="btn-voir" href="{{ url_for('gerer_personnel_detail', id_pers=p.id_pers) }}">Voir</a>
+            <form method="POST" action="{{ url_for('supprimer_personnel', id_pers=p.id_pers) }}" class="form-inline" onsubmit="return confirm('Supprimer ce personnel ?');">
+              <button type="submit" class="btn-supprimer">Supprimer</button>
+            </form>
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-    <button class="btn-retour" onclick="window.location.href='/admin/'">Retour</button>
+      <button class="btn-retour" onclick="window.location.href='/admin/'">Retour</button>
   </div>
-</div>
 {% endblock %}
