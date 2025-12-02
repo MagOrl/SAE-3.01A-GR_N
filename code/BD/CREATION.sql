@@ -38,7 +38,7 @@ CREATE TABLE
 
 CREATE TABLE
     PERSONNEL (
-        id_pers VARCHAR(10) PRIMARY KEY,
+        Id_pers VARCHAR(10) PRIMARY KEY,
         nom_pers VARCHAR(20)
     );
 
@@ -97,10 +97,10 @@ CREATE TABLE
 CREATE TABLE
     SPECIALISER_EN (
         id_hab VARCHAR(10),
-        id_pers VARCHAR(10),
-        PRIMARY KEY (id_hab, id_pers),
+        Id_pers VARCHAR(10),
+        PRIMARY KEY (id_hab, Id_pers),
         FOREIGN KEY (id_hab) REFERENCES HABILITATION (id_hab),
-        FOREIGN KEY (id_pers) REFERENCES PERSONNEL (id_pers)
+        FOREIGN KEY (Id_pers) REFERENCES PERSONNEL (Id_pers)
     );
 
 CREATE TABLE
@@ -123,10 +123,10 @@ CREATE TABLE
 
 CREATE TABLE
     PARTICIPER (
-        id_pers VARCHAR(10),
+        Id_pers VARCHAR(10),
         id_camp VARCHAR(10),
-        PRIMARY KEY (id_pers, id_camp),
-        FOREIGN KEY (id_pers) REFERENCES PERSONNEL (id_pers),
+        PRIMARY KEY (Id_pers, id_camp),
+        FOREIGN KEY (Id_pers) REFERENCES PERSONNEL (Id_pers),
         FOREIGN KEY (id_camp) REFERENCES CAMPAGNE (id_camp)
     );
 

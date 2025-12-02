@@ -16,7 +16,7 @@ BEGIN
     read_loop: LOOP
         FETCH cursCamp INTO habCamp;
         IF fini THEN LEAVE read_loop; END IF;
-        IF habCamp NOT IN (SELECT id_hab FROM SPECIALISER_EN WHERE id_pers = NEW.id_pers) THEN
+        IF habCamp NOT IN (SELECT id_hab FROM SPECIALISER_EN WHERE Id_pers = NEW.Id_pers) THEN
             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le personnel ne possède pas une habilitation requise pour la plateforme.';
         END IF;
     END LOOP;
@@ -35,7 +35,7 @@ BEGIN
         SELECT c.date_deb_camp, c.duree
         FROM CAMPAGNE c
         NATURAL JOIN PARTICIPER p
-        WHERE p.id_pers = NEW.id_pers;
+        WHERE p.Id_pers = NEW.Id_pers;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET fini = TRUE;
     SELECT date_deb_camp INTO date_ajoutee FROM CAMPAGNE WHERE id_camp = NEW.id_camp;
     OPEN curs_personnel;

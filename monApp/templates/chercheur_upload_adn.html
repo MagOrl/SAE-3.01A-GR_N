@@ -1,0 +1,44 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<body>
+    <section class="bloc-entier">
+        <div class="boite-bonjour">
+            <h2>{% if echantillon.sequence_adn %}Modifier{% else %}Ajouter{% endif %} la séquence ADN</h2>
+            <p>Campagne : {{ campagne.nom_lieu_fouille }} - Échantillon #{{ echantillon.id_ech }}</p>
+        </div>
+
+        <div class="boite-action">
+            <h3>Informations de l'échantillon</h3>
+            <div class="boite-choix-menu">
+                <p><strong>Séquence :</strong> {{ sequence.nom_fichier }}</p>
+                <p><strong>Commentaire :</strong> {{ echantillon.commentaire if echantillon.commentaire else 'Aucun commentaire' }}</p>
+            </div>
+        </div>
+
+        <div id="boite-cree-campagne">
+            <form method="POST" action="{{ url_for('upload_sequence_adn', id_camp=campagne.id_camp, id_ech=echantillon.id_ech) }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="boite-inter-campagne form-full-width">
+                    <label for="sequence_adn" class="sb-infos-camp"><strong>Séquence ADN (ATCG) :</strong></label>
+                    {{ form.sequence_adn(class="campagne-childs sequence-adn-input") }}
+                    {% if form.sequence_adn.errors %}
+                        <div class="error-message">
+                            {% for error in form.sequence_adn.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="info-text">Entrez la séquence ADN composée uniquement des lettres A, T, C et G.</p>
+                </div>
+
+                <div class="ctn-btn btn-margin-top">
+                    <button type="submit" class="bouton-planifier-camp btn-success">Enregistrer</button>
+                    <a href="{{ url_for('chercheur_detail_campagne', id_camp=campagne.id_camp) }}" class="bouton-planifier-camp btn-danger">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+{% endblock %}

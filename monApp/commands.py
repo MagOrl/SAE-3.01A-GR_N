@@ -44,13 +44,16 @@ def loaddb() -> None:
 @click.argument('nom')
 @click.argument('prenom')
 @click.argument('role')
-def newuser(login, pwd,nom,prenom,role):
+@click.argument('personnel')
+def newuser(login, pwd,nom,prenom,role,personnel):
     '''Adds a new user'''
     from .models import User
     from hashlib import sha256
     m = sha256()
     m.update(pwd.encode())
-    unUser = User(Login=login, Password=m.hexdigest(),Nom=nom,Prenom=prenom,Role=role)
+    if role != "chercheur":
+        personnel = None
+    unUser = User(Login=login, Password=m.hexdigest(),Nom=nom,Prenom=prenom,Role=role,Id_pers=personnel)
     db.session.add(unUser)
     db.session.commit()
     lg.warning('User ' + login + ' created!')

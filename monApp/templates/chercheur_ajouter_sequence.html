@@ -1,0 +1,36 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<body>
+    <section class="bloc-entier">
+        <div class="boite-bonjour">
+            <h2>Ajouter une nouvelle séquence</h2>
+            <p>Campagne : {{ campagne.nom_lieu_fouille }}</p>
+        </div>
+
+        <div id="boite-cree-campagne">
+            <form method="POST" action="{{ url_for('ajouter_sequence', id_camp=campagne.id_camp) }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="boite-inter-campagne form-full-width">
+                    <label for="nom_fichier" class="sb-infos-camp"><strong>Nom du fichier de séquence :</strong></label>
+                    {{ form.nom_fichier(class="campagne-childs") }}
+                    {% if form.nom_fichier.errors %}
+                        <div class="error-message">
+                            {% for error in form.nom_fichier.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="info-text">Exemple: S001.fasta, sequence_trex.fasta, etc.</p>
+                </div>
+
+                <div class="ctn-btn btn-margin-top">
+                    <button type="submit" class="bouton-planifier-camp btn-success">Ajouter</button>
+                    <a href="{{ url_for('chercheur_detail_campagne', id_camp=campagne.id_camp) }}" class="bouton-planifier-camp btn-danger">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+{% endblock %}
