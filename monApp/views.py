@@ -84,14 +84,41 @@ def gerer_personnel_detail(id_pers):
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'update_name':
-            pers.nom_pers = request.form['nom_pers']
-            db.session.commit()
-            flash('Nom du personnel mis à jour avec succès.', 'success')
+            nouveau_nom = request.form.get('nom_pers', '').strip()
+            if nouveau_nom:
+                pers.nom_pers = nouveau_nom
+                db.session.commit()
+                flash('Nom du personnel mis à jour avec succès.', 'success')
+            else:
+                flash('Le nom du personnel ne peut pas être vide.', 'danger')
+        elif action == 'add_hab':
+            id_hab = request.form.get('id_hab')
+            if id_hab and Habilitation.query.get(id_hab):
+                deja_present = SpecialiserEn.query.filter_by(id_pers=id_pers, id_hab=id_hab).first()
+                if deja_present:
+                    flash('Ce personnel possède déjà cette habilitation.', 'warning')
+                else:
+                    specialisation = SpecialiserEn(id_hab=id_hab, id_pers=id_pers)
+                    db.session.add(specialisation)
+                    db.session.commit()
+                    flash('Habilitation ajoutée avec succès.', 'success')
+            else:
+                flash("Habilitation sélectionnée invalide.", 'danger')
+        elif action == 'remove_hab':
+            id_hab = request.form.get('id_hab')
+            lien = SpecialiserEn.query.filter_by(id_pers=id_pers, id_hab=id_hab).first()
+            if lien:
+                db.session.delete(lien)
+                db.session.commit()
+                flash('Habilitation retirée avec succès.', 'success')
+            else:
+                flash("Cette habilitation n'est pas liée à ce personnel.", 'warning')
         return redirect(url_for('gerer_personnel_detail', id_pers=id_pers))
     
     specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
     participations = Participer.query.filter_by(id_pers=id_pers).all()
-    return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
+    habilitations = Habilitation.query.all()
+    return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations, habilitations=habilitations)
 
 
 @app.route('/admin/gerer_personnel/<id_pers>/supprimer', methods=['POST'])
@@ -139,14 +166,55 @@ def supprimer_materiel(id_mat):
     db.session.delete(materiel)
     db.session.commit()
     return redirect(url_for('admin_gerer_materiel'))
-@app.route("/admin/gerer_personnel")
+@app.route("/admin/gerer_personnel", methods=['GET', 'POST'])
 def admin_gerer_personnel():
+    if request.method == 'POST':
+        id_pers = request.form.get('id_pers', '').strip().upper()
+        nom_pers = request.form.get('nom_pers', '').strip()
+
+        if not id_pers or not nom_pers:
+            flash('Merci de renseigner un identifiant et un nom.', 'danger')
+        elif not id_pers.startswith('PER'):
+            flash("L'identifiant doit commencer par 'PER'.", 'danger')
+        elif Personnel.query.get(id_pers):
+            flash('Un personnel avec cet identifiant existe déjà.', 'warning')
+        else:
+            nouveau_pers = Personnel(id_pers=id_pers, nom_pers=nom_pers)
+            db.session.add(nouveau_pers)
+            db.session.commit()
+            flash('Personnel créé avec succès.', 'success')
+
+        return redirect(url_for('admin_gerer_personnel'))
+
     personnels = Personnel.query.all()
     return render_template("gerer_personnel_admin.html", personnels=personnels)
-@app.route("/admin/gerer_materiel")
+@app.route("/admin/gerer_materiel", methods=['GET', 'POST'])
 def admin_gerer_materiel():
+    if request.method == 'POST':
+        id_mat = request.form.get('id_mat', '').strip().upper()
+        nom_mat = request.form.get('nom_mat', '').strip()
+        id_hab = request.form.get('id_hab') or None
+
+        if not id_mat or not nom_mat:
+            flash('Merci de renseigner un identifiant et un nom pour le matériel.', 'danger')
+        elif not id_mat.startswith('M'):
+            flash("L'identifiant doit commencer par 'M'.", 'danger')
+        elif Materiel.query.get(id_mat):
+            flash('Un matériel avec cet identifiant existe déjà.', 'warning')
+        else:
+            if id_hab and not Habilitation.query.get(id_hab):
+                flash("Habilitation sélectionnée invalide.", 'danger')
+            else:
+                nouvelle = Materiel(id_mat=id_mat, id_hab=id_hab, nom_mat=nom_mat)
+                db.session.add(nouvelle)
+                db.session.commit()
+                flash('Matériel créé avec succès.', 'success')
+
+        return redirect(url_for('admin_gerer_materiel'))
+
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
-    return render_template("gerer_materiel_admin.html", materiels=materiels)
+    habilitations = Habilitation.query.all()
+    return render_template("gerer_materiel_admin.html", materiels=materiels, habilitations=habilitations)
 
 
 # Page d'accueil technicien

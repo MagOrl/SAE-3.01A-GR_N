@@ -27,18 +27,44 @@
     </form>
     
     <h3>Habilitations:</h3>
-    <ul>
+    {% if specialisations %}
+    <ul class="liste-habilitations">
       {% for spec in specialisations %}
-      <li>{{ spec.id_hab }} - {{ spec.nom_hab }}</li>
+      <li>
+        <span>{{ spec.id_hab }} - {{ spec.nom_hab }}</span>
+        <form method="POST" action="{{ url_for('gerer_personnel_detail', id_pers=personnel.id_pers) }}" class="form-inline">
+          <input type="hidden" name="action" value="remove_hab">
+          <input type="hidden" name="id_hab" value="{{ spec.id_hab }}">
+          <button type="submit" class="btn-remove">Retirer</button>
+        </form>
+      </li>
       {% endfor %}
     </ul>
+    {% else %}
+    <p>Ce personnel ne possède aucune habilitation.</p>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('gerer_personnel_detail', id_pers=personnel.id_pers) }}" class="form-add-hab">
+      <input type="hidden" name="action" value="add_hab">
+      <label for="id_hab"><strong>Ajouter une habilitation :</strong></label>
+      <select id="id_hab" name="id_hab" required>
+        {% for hab in habilitations %}
+        <option value="{{ hab.id_hab }}">{{ hab.id_hab }} - {{ hab.nom_hab }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn-add">Ajouter</button>
+    </form>
     
     <h3>Campagnes Participées:</h3>
+    {% if participations %}
     <ul>
       {% for part in participations %}
       <li>{{ part.id_camp }}</li>
       {% endfor %}
     </ul>
+    {% else %}
+    <p>Ce personnel ne participe à aucune campagne.</p>
+    {% endif %}
     
     <button class="btn-retour" onclick="window.location.href='/admin/gerer_personnel'">Retour</button>
   </div>

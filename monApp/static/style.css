@@ -221,6 +221,74 @@
   text-align: center;
 }
 
+.boite-ajout-personnel {
+  background-color: var(--light-primary);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.boite-ajout-personnel h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.boite-ajout-personnel .form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.boite-ajout-personnel label {
+  font-weight: 600;
+}
+
+.boite-ajout-personnel input {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 120px;
+}
+
+.boite-ajout-materiel {
+  background-color: var(--light-primary);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.boite-ajout-materiel h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.boite-ajout-materiel .form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.boite-ajout-materiel label {
+  font-weight: 600;
+}
+
+.boite-ajout-materiel input,
+.boite-ajout-materiel select {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 120px;
+}
+
 .bloc-entier {
   background-color: var(--bg);
   padding: 1rem;
