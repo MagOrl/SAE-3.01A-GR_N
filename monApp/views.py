@@ -198,6 +198,25 @@ def technicien_gerer_materiel():
 
 @app.route("/technicien/gestion_changement_technicien/gerer_personnel/")
 def technicien_gerer_personnel():
+    if request.method == 'POST':
+        # Création d'un nouveau personnel (similaire à l'admin)
+        id_pers = request.form.get('id_pers', '').strip().upper()
+        nom_pers = request.form.get('nom_pers', '').strip()
+
+        if not id_pers or not nom_pers:
+            flash('Merci de renseigner un identifiant et un nom.', 'danger')
+        elif not id_pers.startswith('PER'):
+            flash("L'identifiant doit commencer par 'PER'.", 'danger')
+        elif Personnel.query.get(id_pers):
+            flash('Un personnel avec cet identifiant existe déjà.', 'warning')
+        else:
+            nouveau_pers = Personnel(id_pers=id_pers, nom_pers=nom_pers)
+            db.session.add(nouveau_pers)
+            db.session.commit()
+            flash('Personnel créé avec succès.', 'success')
+
+        return redirect(url_for('technicien_gerer_personnel'))
+
     personnels = Personnel.query.all()
     return render_template("gerer_personnel_technicien.html", personnels=personnels)
 
@@ -212,6 +231,28 @@ def technicien_gerer_personnel_detail(id_pers):
             pers.nom_pers = request.form['nom_pers']
             db.session.commit()
             flash('Nom du personnel mis à jour avec succès.', 'success')
+        elif action == 'add_hab':
+            id_hab = request.form.get('id_hab')
+            if id_hab and Habilitation.query.get(id_hab):
+                deja_present = SpecialiserEn.query.filter_by(id_pers=id_pers, id_hab=id_hab).first()
+                if deja_present:
+                    flash('Ce personnel possède déjà cette habilitation.', 'warning')
+                else:
+                    specialisation = SpecialiserEn(id_hab=id_hab, id_pers=id_pers)
+                    db.session.add(specialisation)
+                    db.session.commit()
+                    flash('Habilitation ajoutée avec succès.', 'success')
+            else:
+                flash("Habilitation sélectionnée invalide.", 'danger')
+        elif action == 'remove_hab':
+            id_hab = request.form.get('id_hab')
+            lien = SpecialiserEn.query.filter_by(id_pers=id_pers, id_hab=id_hab).first()
+            if lien:
+                db.session.delete(lien)
+                db.session.commit()
+                flash('Habilitation retirée avec succès.', 'success')
+            else:
+                flash("Cette habilitation n'est pas liée à ce personnel.", 'warning')
         return redirect(url_for('technicien_gerer_personnel_detail', id_pers=id_pers))
     
     specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
