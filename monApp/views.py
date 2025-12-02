@@ -6,6 +6,7 @@ import random
 from datetime import date, datetime, timedelta
 from monApp.models import Plateforme
 from flask_login import login_user,login_required,logout_user
+from sqlalchemy import extract
 
 @app.route('/')
 @app.route('/index')
@@ -46,11 +47,42 @@ def chercheur_accueil():
 def chercheur_campagne():
     if session["user"].Role != 'chercheur':
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
-    plateformes = Plateforme.query.all()
-    personnels = Personnel.query.all()
     formCamp = PlanCampagneForm(request.form)
-    return render_template("chercheur_planifier_camp.html", user=session["user"],
-                           lesPlateformes=plateformes,lesPersonnels=personnels,form=formCamp)
+    formCamp.init_list_pers(Personnel.query.all())
+    formCamp.init_plateform_affecte(Plateforme.query.all())
+    return render_template("chercheur_planifier_camp.html",form=formCamp)
+
+@app.route('/chercheur/campagne/insert',methods=("POST",))
+def insert_campagne():
+    formCamp = PlanCampagneForm(request.form)
+    formCamp.init_list_pers(Personnel.query.all())
+    formCamp.init_plateform_affecte(Plateforme.query.all())
+
+    if formCamp.validate_on_submit():
+        mois_entrer = f"{str(formCamp.dat_deb.data).split("-")[0]}-{str(formCamp.dat_deb.data).split("-")[1]}"
+        annee, mois = map(int, mois_entrer.split("-"))
+        budget_mois = Budget.query.filter(extract('year', Budget.date_deb_mois) == annee).filter(extract('month', Budget.date_deb_mois) == mois).first()
+        if budget_mois is None:
+            return Response(f"<script>alert('Aucun budget défini pour {mois_entrer}. Veuillez demander un budget à votre directeur pour ce mois avant de planifier une campagne.'); window.location.href='{url_for('chercheur_campagne')}';</script>", mimetype='text/html')
+        CampId = Campagne.query.count() + 1
+        nouv_camp = Campagne(id_camp=CampId,id_pla=formCamp.plateform_affecte.data,duree=formCamp.duree_camp.data, 
+                                 date_deb_camp=formCamp.dat_deb.data,nom_lieu_fouille=formCamp.lieu_fouille.data,id_budg=budget_mois.id_budg)
+        db.session.add(nouv_camp)
+        for pers in formCamp.pers.data:
+            try:
+                db.session.add(Participer(id_pers=pers,id_camp=CampId))
+            except HabilitationManquanteError as e:
+                pers_obj = Personnel.query.get(pers)
+                nom = pers_obj.nom_pers if pers_obj else f"ID {pers}"
+                return Response(
+                    f"<script>alert('Le personnel {nom} ne possède pas l’habilitation requise pour participer à cette campagne sur la plateforme sélectionnée. Veuillez vérifier ses habilitations ou sélectionner un autre personnel.'); window.location.href='{url_for('chercheur_campagne')}';</script>",
+                    mimetype='text/html'
+                )
+        db.session.commit()
+        return redirect(url_for('chercheur_campagne'))  
+    else:
+        print(formCamp.errors)  
+    return redirect(url_for('chercheur_campagne'))
 
 @app.route('/chercheur/echantillon/')
 @app.errorhandler(401)
@@ -98,7 +130,6 @@ def directeur_budget():
 def insert_budget():
     budgForm = BudgetForm(request.form)
     if budgForm.validate_on_submit():
-        print(budgForm.dat_deb.data)
         budgId = Budget.query.count()
         insert_budget = Budget(id_budg=budgId,valeur=budgForm.valeur.data, date_deb_mois=budgForm.dat_deb.data)
         db.session.add(insert_budget)

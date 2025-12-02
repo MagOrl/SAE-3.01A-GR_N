@@ -6,6 +6,42 @@ from flask_login import UserMixin
 from .app import login_manager
 
 
+# Exceptions personnalisées pour les validations
+class ValidationError(Exception):
+    """Exception de base pour les erreurs de validation"""
+    pass
+
+
+class PlateformeOccupeeError(ValidationError):
+    """La plateforme est déjà affectée à une autre campagne"""
+    pass
+
+
+class DureeMaximaleDepasseeError(ValidationError):
+    """La durée de la campagne dépasse la durée maximale de la plateforme"""
+    pass
+
+
+class BudgetDepasseError(ValidationError):
+    """Le budget alloué est insuffisant pour la campagne"""
+    pass
+
+
+class HabilitationManquanteError(ValidationError):
+    """Le personnel ne possède pas les habilitations requises"""
+    pass
+
+
+class PersonnelOccupeError(ValidationError):
+    """Le personnel est déjà affecté à une autre campagne"""
+    pass
+
+
+class NombreMaxParticipantsError(ValidationError):
+    """Le nombre maximum de participants pour la plateforme est atteint"""
+    pass
+
+
 @login_manager.user_loader
 def load_user(username):
     return User.query.get(username)
@@ -124,7 +160,7 @@ class SpecialiserEn(db.Model):
 
 class Budget(db.Model):
     id_budg = db.Column(db.Integer, primary_key=True)
-    valeur = db.Column(db.Float,primary_key=True)
+    valeur = db.Column(db.Float)
     date_deb_mois = db.Column(db.Date)
 
 
@@ -171,7 +207,7 @@ class Campagne(db.Model):
 
                             if (date_ajoutee <= date_fin_exist
                                     and date_fin_ajoutee >= date_deb_exist):
-                                raise ValueError(
+                                raise PlateformeOccupeeError(
                                     'La plateforme est déjà affectée à une autre campagne pendant cette période.'
                                 )
             except (ValueError, TypeError, AttributeError):
@@ -182,7 +218,7 @@ class Campagne(db.Model):
             if plateforme and hasattr(plateforme,
                                       'duree_max') and plateforme.duree_max:
                 if value > plateforme.duree_max:
-                    raise ValueError(
+                    raise DureeMaximaleDepasseeError(
                         'La durée de la campagne dépasse la durée maximale de la plateforme.'
                     )
 
@@ -215,7 +251,7 @@ class Campagne(db.Model):
                             cout_total += pla_camp.cout_exploi_jour * camp.duree
 
                 if cout_total + cout_nouveau > budget.valeur:
-                    raise ValueError(
+                    raise BudgetDepasseError(
                         f'Insertion impossible, la campagne est hors budget. Budget couvert : {cout_total}/{budget.valeur}'
                     )
 
@@ -251,7 +287,7 @@ class Participer(db.Model):
                     ]
                     for hab_req in habilitations_requises:
                         if hab_req not in habilitations_personnel:
-                            raise ValueError(
+                            raise HabilitationManquanteError(
                                 'Le personnel ne possède pas une habilitation requise pour la plateforme.'
                             )
 
@@ -282,7 +318,7 @@ class Participer(db.Model):
 
                             if (date_ajoutee <= date_fin_exist
                                     and date_fin_ajoutee >= date_deb_exist):
-                                raise ValueError(
+                                raise PersonnelOccupeError(
                                     'Le personnel est déjà affecté à une autre campagne pendant cette période.'
                                 )
                 except (ValueError, TypeError, AttributeError):
@@ -295,7 +331,7 @@ class Participer(db.Model):
                     nb_participants_actuel = Participer.query.filter_by(
                         id_camp=value).count()
                     if nb_participants_actuel >= plateforme.nb_pers_max:
-                        raise ValueError(
+                        raise NombreMaxParticipantsError(
                             'Le nombre maximum de participants pour cette plateforme est atteint.'
                         )
 

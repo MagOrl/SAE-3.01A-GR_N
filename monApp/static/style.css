@@ -433,8 +433,11 @@
 #sect-pers-affecte {
   display: flex;
   flex-wrap: wrap;
-}
+}  
 
+#sect-pers-affecte ul {
+  list-style: none;
+}
 .perso-select {
   margin: 2%;
   flex-basis: 16%;

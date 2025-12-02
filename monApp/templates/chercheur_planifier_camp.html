@@ -3,22 +3,14 @@
   <div class="boite-action">
     <p>Veuillez renseigner les informations de votre campagne</p>
   </div>
-  <form action="">
+  <form role="form" action="{{ url_for('insert_campagne') }}" method="POST">
+    {{ form.hidden_tag() }}
     <div id="boite-cree-campagne">
       <div id="boite-camp-1" class="boite-camp">
         <fieldset id="select-perso-field">
           <legend>Choisissez le personnel mobilisé :</legend>
           <section id="sect-pers-affecte">
-            {% for personnel in lesPersonnels %}
-            <div class="perso-select">
-              <input
-                type="checkbox"
-                class="check-perso"
-                name="{{ personnel.id_pers }}"
-              />
-              <label for="{{ personnel.id_pers }}"> {{ personnel.nom_pers }}</label>
-            </div>
-            {% endfor %}
+            {{ form.pers }}
           </section>
         </fieldset>
       </div>
@@ -27,22 +19,22 @@
           <div class="boite-inter-campagne">
             <div class="sb-infos-camp">
               <p>Plateforme affectée</p>
-              {{ form.plateform_affecte }}
+              {{ form.plateform_affecte(size=1, class_="form-control") }}
             </div>
             <div class="sb-infos-camp">
               <p>Début de la campagne</p>
-              <input type="date" name="deb_campagne" />
+              {{ form.dat_deb(size=1, class_="form-control") }}
             </div>
           </div>
           <div class="boite-inter-campagne">
             <div class="sb-infos-camp">
               <p>Lieu de fouilles</p>
-              {{ form.lieu_fouille }}
+              {{ form.lieu_fouille(size=50, class_="form-control") }}
             </div>
             <div class="sb-infos-camp">
               <p>Durée de la campagne</p>
               <div id="boite-duree-camp">
-                {{ form.duree_camp }}
+                {{ form.duree_camp(size=50, class_="form-control") }}
                 <p class="duree-childs">jour(s)</p>
               </div>
             </div>

@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, StringField, HiddenField, IntegerField, DateField, SelectField
-from wtforms.validators import DataRequired
+from wtforms import StringField, PasswordField, StringField, HiddenField, IntegerField, widgets,DateField, SelectField, SelectMultipleField
+from wtforms.validators import DataRequired, NumberRange
 from .models import User
 from hashlib import sha256
 
@@ -27,16 +27,23 @@ class BudgetForm(FlaskForm):
                         validators=[DataRequired()],
                         format='%Y-%m-%d')
 
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
 
 class PlanCampagneForm(FlaskForm):
     id_camp = HiddenField("id_camp")
     plateform_affecte = SelectField('Role', validators=[DataRequired()])
-    dat_deb = DateField('date_deb',
+    dat_deb = DateField('dat_deb',
                         validators=[DataRequired()],
                         format='%Y-%m-%d')
-    duree_camp = IntegerField('duree_camp', validators=[DataRequired()])
+    duree_camp = IntegerField('duree_camp', validators=[DataRequired(), NumberRange(min=0)])
     lieu_fouille = StringField('lieu_fouille', validators=[DataRequired()])
-    list_pers = []
+    pers = MultiCheckboxField("Personel")
+    def init_list_pers(self, list_pers):
+        self.pers.choices = [(pers.id_pers , pers.nom_pers) for pers in list_pers ]
+    def init_plateform_affecte(self, list_plat):
+        self.plateform_affecte.choices = [(plat.id_pla , plat.nom_pla) for plat in list_plat ]
     
 
 
