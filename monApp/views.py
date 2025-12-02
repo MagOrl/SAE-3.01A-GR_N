@@ -110,8 +110,8 @@ def admin_gerer_materiel():
 @app.errorhandler(401)
 @login_required
 @app.route("/technicien/")
-def Technicien_accueil():
-    if session["user"].Role != 'Technicien':
+def technicien_accueil():
+    if session["user"].Role != 'technicien':
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("accueil_technicien.html")
 
