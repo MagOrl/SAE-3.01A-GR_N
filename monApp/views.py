@@ -1,4 +1,4 @@
-from flask import render_template, url_for, redirect, request,Response, session, flash
+from flask import render_template, url_for, redirect, request,Response, session
 from monApp.forms import LoginForm, BudgetForm,PlanCampagneForm, SequenceADNForm, AjouterSequenceForm, AnalyseADNForm, CompareSequencesForm
 from .app import app, db
 from .models import *
@@ -197,7 +197,6 @@ def upload_sequence_adn(id_camp, id_ech):
     echantillon = Echantillon.query.get_or_404(id_ech)
     extraction = Extraire.query.filter_by(id_camp=id_camp, id_seq=echantillon.id_seq).first()
     if not extraction:
-        flash('Cet échantillon n\'appartient pas à cette campagne.', 'danger')
         return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
     
     form = SequenceADNForm()
@@ -211,11 +210,9 @@ def upload_sequence_adn(id_camp, id_ech):
         try:
             echantillon.sequence_adn = form.sequence_adn.data
             db.session.commit()
-            flash('Séquence ADN enregistrée avec succès !', 'success')
             return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
         except Exception as e:
             db.session.rollback()
-            flash(f'Erreur lors de l\'enregistrement: {str(e)}', 'danger')
     
     campagne = Campagne.query.get_or_404(id_camp)
     sequence = Sequence.query.get(echantillon.id_seq)
@@ -258,11 +255,9 @@ def ajouter_sequence(id_camp):
             db.session.add(echantillon)
             
             db.session.commit()
-            flash('Séquence ajoutée avec succès !', 'success')
             return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
         except Exception as e:
             db.session.rollback()
-            flash(f'Erreur lors de l\'ajout: {str(e)}', 'danger')
     
     return render_template("chercheur_ajouter_sequence.html", 
                          form=form,
@@ -285,7 +280,6 @@ def supprimer_sequence(id_camp, id_seq):
     
     extraction = Extraire.query.filter_by(id_camp=id_camp, id_seq=id_seq).first()
     if not extraction:
-        flash('Cette séquence n\'appartient pas à cette campagne.', 'danger')
         return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
     
     try:
@@ -300,10 +294,8 @@ def supprimer_sequence(id_camp, id_seq):
             db.session.delete(sequence)
         
         db.session.commit()
-        flash('Séquence supprimée avec succès !', 'success')
     except Exception as e:
         db.session.rollback()
-        flash(f'Erreur lors de la suppression: {str(e)}', 'danger')
     
     return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
 
@@ -324,11 +316,9 @@ def analyser_adn(id_camp, id_ech):
     echantillon = Echantillon.query.get_or_404(id_ech)
     extraction = Extraire.query.filter_by(id_camp=id_camp, id_seq=echantillon.id_seq).first()
     if not extraction:
-        flash('Cet échantillon n\'appartient pas à cette campagne.', 'danger')
         return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
     
     if not echantillon.sequence_adn:
-        flash('Vous devez d\'abord entrer une séquence ADN pour cet échantillon.', 'warning')
         return redirect(url_for('upload_sequence_adn', id_camp=id_camp, id_ech=id_ech))
     
     form = AnalyseADNForm()
@@ -349,7 +339,6 @@ def analyser_adn(id_camp, id_ech):
                 sequence_resultat = mutation_par_deletion(sequence_originale, p)
             
             if sequence_resultat is None:
-                flash('Erreur lors de l\'analyse. Vérifiez les paramètres.', 'danger')
                 return redirect(url_for('analyser_adn', id_camp=id_camp, id_ech=id_ech))
             
             id_res = Resultat.query.count() + 1
@@ -365,11 +354,9 @@ def analyser_adn(id_camp, id_ech):
             db.session.add(nouveau_resultat)
             db.session.commit()
             
-            flash('Analyse effectuée avec succès !', 'success')
             return redirect(url_for('chercheur_resultats'))
         except Exception as e:
             db.session.rollback()
-            flash(f'Erreur lors de l\'analyse: {str(e)}', 'danger')
     
     campagne = Campagne.query.get_or_404(id_camp)
     sequence = Sequence.query.get(echantillon.id_seq)
@@ -398,11 +385,9 @@ def comparer_sequences(id_camp, id_ech):
     echantillon1 = Echantillon.query.get_or_404(id_ech)
     extraction = Extraire.query.filter_by(id_camp=id_camp, id_seq=echantillon1.id_seq).first()
     if not extraction:
-        flash('Cet échantillon n\'appartient pas à cette campagne.', 'danger')
         return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
     
     if not echantillon1.sequence_adn:
-        flash('Vous devez d\'abord entrer une séquence ADN pour cet échantillon.', 'warning')
         return redirect(url_for('upload_sequence_adn', id_camp=id_camp, id_ech=id_ech))
     
     # Get all echantillons from this campaign
@@ -415,7 +400,6 @@ def comparer_sequences(id_camp, id_ech):
                 echantillons_campagne.append(ech)
     
     if not echantillons_campagne:
-        flash('Aucun autre échantillon avec séquence ADN disponible dans cette campagne.', 'warning')
         return redirect(url_for('chercheur_detail_campagne', id_camp=id_camp))
     
     form = CompareSequencesForm()
@@ -425,7 +409,6 @@ def comparer_sequences(id_camp, id_ech):
         try:
             echantillon2 = Echantillon.query.get(form.id_ech2.data)
             if not echantillon2:
-                flash('Échantillon de comparaison introuvable.', 'danger')
                 return redirect(url_for('comparer_sequences', id_camp=id_camp, id_ech=id_ech))
             
             sequence1 = echantillon1.sequence_adn
@@ -437,7 +420,6 @@ def comparer_sequences(id_camp, id_ech):
             if type_distance == 'distance_naive':
                 valeur_distance = estimation_distance_mutation(sequence1, sequence2)
                 if valeur_distance is None:
-                    flash('Les séquences doivent avoir la même longueur pour le calcul de distance naïve.', 'danger')
                     return redirect(url_for('comparer_sequences', id_camp=id_camp, id_ech=id_ech))
             elif type_distance == 'distance_levenshtein':
                 valeur_distance = sequence_levenshtein(sequence1, sequence2)
@@ -457,11 +439,9 @@ def comparer_sequences(id_camp, id_ech):
             db.session.add(nouveau_resultat)
             db.session.commit()
             
-            flash(f'Comparaison effectuée avec succès ! Distance: {valeur_distance}', 'success')
             return redirect(url_for('chercheur_resultats'))
         except Exception as e:
             db.session.rollback()
-            flash(f'Erreur lors de la comparaison: {str(e)}', 'danger')
     
     campagne = Campagne.query.get_or_404(id_camp)
     sequence = Sequence.query.get(echantillon1.id_seq)
@@ -552,7 +532,6 @@ def admin_gerer_personnel():
         nouveau_pers = Personnel(Id_pers=Id_pers, nom_pers=nom_pers)
         db.session.add(nouveau_pers)
         db.session.commit()
-        flash('Personnel créé avec succès.', 'success')
         return redirect(url_for('admin_gerer_personnel'))
     personnels = Personnel.query.all()
     return render_template("gerer_personnel_admin.html", personnels=personnels)
@@ -568,31 +547,22 @@ def gerer_personnel_detail(Id_pers):
             if nouveau_nom:
                 pers.nom_pers = nouveau_nom
                 db.session.commit()
-                flash('Nom du personnel mis à jour avec succès.', 'success')
-            else:
-                flash('Le nom du personnel ne peut pas être vide.', 'danger')
         elif action == 'add_hab':
             id_hab = request.form.get('id_hab')
             if id_hab and Habilitation.query.get(id_hab):
                 deja_present = SpecialiserEn.query.filter_by(Id_pers=Id_pers, id_hab=id_hab).first()
-                if deja_present:
-                    flash('Ce personnel possède déjà cette habilitation.', 'warning')
+                if not deja_present:
+                    print('Ce personnel possède déjà cette habilitation.')
                 else:
                     specialisation = SpecialiserEn(id_hab=id_hab, Id_pers=Id_pers)
                     db.session.add(specialisation)
                     db.session.commit()
-                    flash('Habilitation ajoutée avec succès.', 'success')
-            else:
-                flash("Habilitation sélectionnée invalide.", 'danger')
         elif action == 'remove_hab':
             id_hab = request.form.get('id_hab')
             lien = SpecialiserEn.query.filter_by(Id_pers=Id_pers, id_hab=id_hab).first()
             if lien:
                 db.session.delete(lien)
                 db.session.commit()
-                flash('Habilitation retirée avec succès.', 'success')
-            else:
-                flash("Cette habilitation n'est pas liée à ce personnel.", 'warning')
         return redirect(url_for('gerer_personnel_detail', Id_pers=Id_pers))
     
     specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.Id_pers == Id_pers).all()
@@ -619,12 +589,10 @@ def gerer_materiel_detail(id_mat):
         action = request.form.get('action')
         if action == 'update_name':
             materiel.nom_mat = request.form['nom_mat']
-            flash('Nom du matériel mis à jour avec succès.', 'success')
         elif action == 'update_hab':
             nouvelle_hab = request.form.get('id_hab')
             if nouvelle_hab and Habilitation.query.get(nouvelle_hab):
                 materiel.id_hab = nouvelle_hab
-                flash("Habilitation du matériel mise à jour avec succès.", 'success')
         db.session.commit()
         return redirect(url_for('gerer_materiel_detail', id_mat=id_mat))
 
@@ -661,7 +629,6 @@ def admin_gerer_materiel():
         nouvelle = Materiel(id_mat=id_mat, id_hab=id_hab, nom_mat=nom_mat)
         db.session.add(nouvelle)
         db.session.commit()
-        flash('Matériel créé avec succès.', 'success')
         return redirect(url_for('admin_gerer_materiel'))
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
     habilitations = Habilitation.query.all()
