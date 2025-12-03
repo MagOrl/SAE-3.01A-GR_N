@@ -41,17 +41,17 @@ INSERT INTO personnel (Id_pers, nom_pers) VALUES
     (9, 'DUBOIS'),
     (10, 'MOREAU');
 
-INSERT INTO plateforme (id_pla, nom_pla, nb_pers_nec, cout_exploi_jour, inter_mainte, jours_av_mainte) VALUES
-    (1, 'LesDino', 20, 100.50, 30, 30),
-    (2, 'FossilLab', 15, 85.25, 60, 60),
-    (3, 'DinoCenter', 25, 120.75, 30, 30),
-    (4, 'PaleoStation', 18, 95.00, 90, 90),
-    (5, 'JurassicLab', 22, 110.30, 60, 60),
-    (6, 'CretaceousHub', 30, 140.80, 30, 30),
-    (7, 'TriassicBase', 12, 75.60, 120, 120),
-    (8, 'MesozoicCenter', 28, 135.20, 60, 60),
-    (9, 'DinoTech', 16, 88.90, 90, 90),
-    (10, 'FossilWorks', 24, 115.45, 30, 30);
+INSERT INTO plateforme (id_pla, nom_pla, nb_pers_nec, cout_exploi_jour, inter_mainte) VALUES
+    (1, 'LesDino', 20, 100.50, 30),
+    (2, 'FossilLab', 15, 85.25, 60),
+    (3, 'DinoCenter', 25, 120.75, 30),
+    (4, 'PaleoStation', 18, 95.00, 90),
+    (5, 'JurassicLab', 22, 110.30, 60),
+    (6, 'CretaceousHub', 30, 140.80, 30),
+    (7, 'TriassicBase', 12, 75.60, 120),
+    (8, 'MesozoicCenter', 28, 135.20, 60),
+    (9, 'DinoTech', 16, 88.90, 90),
+    (10, 'FossilWorks', 24, 115.45, 30);
 
 INSERT INTO maintenance (id_maint, id_pla, date_deb_maint, date_fin_maint) VALUES
     (1, 1, '2025-12-05', '2025-12-06'),

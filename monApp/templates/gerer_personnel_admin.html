@@ -3,17 +3,6 @@
   <div class="boite-bonjour-admin">
     <h1>Gestion du matériel</h1>
   </div>
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-  <div class="alert-container">
-    {% for category, message in messages %}
-    <div class="alert alert-{{ 'success' if category == 'success' else category }}" role="alert">
-      {{ message }}
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
-  {% endwith %}
   <div class="boite-choix-menu">
     <div class="boite-ajout-personnel">
       <h2>Ajouter un personnel</h2>

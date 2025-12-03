@@ -3,17 +3,6 @@
   <div class="boite-bonjour-admin">
     <h1>Gestion du matériel</h1>
   </div>
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-  <div class="alert-container">
-    {% for category, message in messages %}
-    <div class="alert alert-{{ 'success' if category == 'success' else category }}" role="alert">
-      {{ message }}
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
-  {% endwith %}
   <div class="boite-choix-menu">
     <div class="boite-ajout-materiel">
       <h2>Ajouter un matériel</h2>
@@ -21,7 +10,7 @@
         <label for="nom_mat"><strong>Nom :</strong></label>
         <input type="text" id="nom_mat" name="nom_mat" placeholder="Nom du matériel" required>
         <label for="id_hab"><strong>Habilitation :</strong></label>
-        <select id="id_hab" name="id_hab">
+        <select id="id_hab" name="id_hab" required>
           <option value="">-- Aucune --</option>
           {% for hab in habilitations %}
           <option value="{{ hab.id_hab }}">{{ hab.id_hab }} - {{ hab.nom_hab }}</option>
