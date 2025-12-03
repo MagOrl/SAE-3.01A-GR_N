@@ -666,7 +666,6 @@ def admin_gerer_materiel():
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
     habilitations = Habilitation.query.all()
     return render_template("gerer_materiel_admin.html", materiels=materiels, habilitations=habilitations)
-<<<<<<< HEAD
 @app.route("/technicien/")
 @login_required
 def technicien_accueil():
@@ -676,185 +675,6 @@ def technicien_accueil():
 
 @app.route("/technicien/gestion_maintenance/")
 @login_required
-=======
-
-#------------------------------------------------------------------------------------------------------------------------------------------
-
-# Page d'accueil technicien
-@app.errorhandler(401)
-@login_required
-@app.route("/technicien/")
-def technicien_accueil():
-    if session["user"].Role != 'technicien':
-            return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
-    return render_template("accueil_technicien.html")
-
-#-----------------------------------------------------------------
-
-# Page de menu gestion des changements de technicien
-@app.route("/technicien/gestion_changement_technicien/")
-def gestion_changement_technicien():
-    return render_template("gestion_changement_technicien.html")
-
-#------------------------------
-
-# Page de gestion du matériel du technicien
-@app.route("/technicien/gestion_changement_technicien/gerer_materiel", methods=['GET', 'POST'])
-def technicien_gerer_materiel():
-    if request.method == 'POST':
-        id_mat = request.form.get('id_mat', '').strip().upper()
-        nom_mat = request.form.get('nom_mat', '').strip()
-        id_hab = request.form.get('id_hab') or None
-
-        if not id_mat or not nom_mat:
-            flash('Merci de renseigner un identifiant et un nom pour le matériel.', 'danger')
-        elif not id_mat.startswith('M'):
-            flash("L'identifiant doit commencer par 'M'.", 'danger')
-        elif Materiel.query.get(id_mat):
-            flash('Un matériel avec cet identifiant existe déjà.', 'warning')
-        else:
-            if id_hab and not Habilitation.query.get(id_hab):
-                flash("Habilitation sélectionnée invalide.", 'danger')
-            else:
-                nouvelle = Materiel(id_mat=id_mat, id_hab=id_hab, nom_mat=nom_mat)
-                db.session.add(nouvelle)
-                db.session.commit()
-                flash('Matériel créé avec succès.', 'success')
-
-        return redirect(url_for('technicien_gerer_materiel'))
-
-    materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
-    habilitations = Habilitation.query.all()
-    return render_template("gerer_materiel_technicien.html", materiels=materiels, habilitations=habilitations)
-
-#------------------------------
-# Page de gestion du personnel du technicien
-
-@app.route("/technicien/gestion_changement_technicien/gerer_personnel/", methods=['GET', 'POST'])
-def technicien_gerer_personnel():
-    if request.method == 'POST':
-        id_pers = request.form.get('id_pers', '').strip().upper()
-        nom_pers = request.form.get('nom_pers', '').strip()
-
-        if not id_pers or not nom_pers:
-            flash('Merci de renseigner un identifiant et un nom.', 'danger')
-        elif not id_pers.startswith('PER'):
-            flash("L'identifiant doit commencer par 'PER'.", 'danger')
-        elif Personnel.query.get(id_pers):
-            flash('Un personnel avec cet identifiant existe déjà.', 'warning')
-        else:
-            nouveau_pers = Personnel(id_pers=id_pers, nom_pers=nom_pers)
-            db.session.add(nouveau_pers)
-            db.session.commit()
-            flash('Personnel créé avec succès.', 'success')
-
-        return redirect(url_for('technicien_gerer_personnel'))
-
-    personnels = Personnel.query.all()
-    return render_template("gerer_personnel_technicien.html", personnels=personnels)
-
-#--------------
-
-@app.route("/technicien/gestion_changement_technicien/gerer_personnel/<id_pers>", methods=['GET', 'POST'])
-def technicien_gerer_personnel_detail(id_pers):
-    pers = Personnel.query.get_or_404(id_pers)
-    if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'update_name':
-            nouveau_nom = request.form.get('nom_pers', '').strip()
-            if nouveau_nom:
-                pers.nom_pers = nouveau_nom
-                db.session.commit()
-                flash('Nom du personnel mis à jour avec succès.', 'success')
-            else:
-                flash('Le nom du personnel ne peut pas être vide.', 'danger')
-        elif action == 'add_hab':
-            id_hab = request.form.get('id_hab')
-            if id_hab and Habilitation.query.get(id_hab):
-                deja_present = SpecialiserEn.query.filter_by(id_pers=id_pers, id_hab=id_hab).first()
-                if deja_present:
-                    flash('Ce personnel possède déjà cette habilitation.', 'warning')
-                else:
-                    specialisation = SpecialiserEn(id_hab=id_hab, id_pers=id_pers)
-                    db.session.add(specialisation)
-                    db.session.commit()
-                    flash('Habilitation ajoutée avec succès.', 'success')
-            else:
-                flash("Habilitation sélectionnée invalide.", 'danger')
-        elif action == 'remove_hab':
-            id_hab = request.form.get('id_hab')
-            lien = SpecialiserEn.query.filter_by(id_pers=id_pers, id_hab=id_hab).first()
-            if lien:
-                db.session.delete(lien)
-                db.session.commit()
-                flash('Habilitation retirée avec succès.', 'success')
-            else:
-                flash("Cette habilitation n'est pas liée à ce personnel.", 'warning')
-        return redirect(url_for('technicien_gerer_personnel_detail', id_pers=id_pers))
-    
-    specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
-    participations = Participer.query.filter_by(id_pers=id_pers).all()
-    habilitations = Habilitation.query.all()
-    return render_template('view_personnel_technicien.html', personnel=pers, specialisations=specialisations, participations=participations, habilitations=habilitations)
-
-
-#--------------
-
-@app.route('/technicien/gestion_changement_technicien/gerer_personnel/<id_pers>/supprimer', methods=['POST'])
-def technicien_supprimer_personnel(id_pers):
-    pers = Personnel.query.get_or_404(id_pers)
-    SpecialiserEn.query.filter_by(id_pers=id_pers).delete(synchronize_session=False)
-    Participer.query.filter_by(id_pers=id_pers).delete(synchronize_session=False)
-    db.session.delete(pers)
-    db.session.commit()
-    return redirect(url_for('technicien_gerer_personnel'))
-
-#--------------
-
-@app.route('/technicien/gestion_changement_technicien/gerer_materiel/<id_mat>', methods=['GET', 'POST'])
-def technicien_gerer_materiel_detail(id_mat):
-    materiel = Materiel.query.get_or_404(id_mat)
-    if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'update_name':
-            materiel.nom_mat = request.form['nom_mat']
-            flash('Nom du matériel mis à jour avec succès.', 'success')
-        elif action == 'update_hab':
-            nouvelle_hab = request.form.get('id_hab')
-            if nouvelle_hab and Habilitation.query.get(nouvelle_hab):
-                materiel.id_hab = nouvelle_hab
-                flash("Habilitation du matériel mise à jour avec succès.", 'success')
-        db.session.commit()
-        return redirect(url_for('technicien_gerer_materiel_detail', id_mat=id_mat))
-
-    habilitation = Habilitation.query.get(materiel.id_hab)
-    toutes_habilitations = Habilitation.query.all()
-    plateformes = db.session.query(Plateforme).join(Utiliser, Utiliser.id_pla == Plateforme.id_pla).filter(Utiliser.id_mat == id_mat).all()
-    return render_template(
-        'view_materiel_technicien.html',
-        materiel=materiel,
-        habilitation=habilitation,
-        habilitations=toutes_habilitations,
-        plateformes=plateformes,
-    )
-
-#--------------
-    
-@app.route('/technicien/gestion_changement_technicien/gerer_materiel/<id_mat>/supprimer', methods=['POST'])
-def technicien_supprimer_materiel(id_mat):
-    materiel = Materiel.query.get_or_404(id_mat)
-    Utiliser.query.filter_by(id_mat=id_mat).delete(synchronize_session=False)
-    db.session.delete(materiel)
-    db.session.commit()
-    return redirect(url_for('technicien_gerer_materiel'))
-
-
-
-#-----------------------------------------------------------------
-
-# Page de gestion des maintenances
-@app.route("/technicien/gestion_maintenance/")
->>>>>>> 3006e9e9862fabc3cc80044d5177188a5928c277
 def gestion_maintenance():
     if session["user"].Role != 'technicien':
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
@@ -874,15 +694,8 @@ def gestion_maintenance():
             
     return render_template("gestion_maintenance.html", plateformes=donnees_plateformes)
 
-<<<<<<< HEAD
 @app.route("/technicien/ajouter/", methods=["GET", "POST"])
 @login_required
-=======
-#------------------------------
-
-# Méthode pour ajouter une Maintenance
-@app.route("/technicien/gestion_maintenance/ajouter/", methods=["GET", "POST"])
->>>>>>> 3006e9e9862fabc3cc80044d5177188a5928c277
 def ajouter_maintenance():
     if session["user"].Role != 'technicien':
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
@@ -898,11 +711,9 @@ def ajouter_maintenance():
 
         nouvelle_maintenance = Maintenance(id_maint=id_maint,id_pla= id_pla,date_deb_maint= date_deb, date_fin_maint =date_fin)
         db.session.add(nouvelle_maintenance)
-        
         db.session.commit()
-        flash("Maintenance ajoutée avec succès.", 'success')
-        return redirect(url_for('ajouter_maintenance'))
-    
+        
+        return redirect(url_for('gestion_maintenance'))
     
     plateformes = []
     for p in Plateforme.query.all():
@@ -924,15 +735,8 @@ def ajouter_maintenance():
         
     return render_template("ajouter_maintenance.html", plateformes=plateformes)
 
-<<<<<<< HEAD
 @app.route("/technicien/supprimer/<id_maint>")
 @login_required
-=======
-#------------------------------
-
-# Méthode pour supprimer une Maintenance
-@app.route("/technicien/gestion_maintenance/supprimer/<id_maint>")
->>>>>>> 3006e9e9862fabc3cc80044d5177188a5928c277
 def supprimer_maintenance(id_maint):
     if session["user"].Role != 'technicien':
         return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
@@ -942,8 +746,6 @@ def supprimer_maintenance(id_maint):
         db.session.delete(maintenance_a_supprimer)
         db.session.commit()
     return redirect(url_for('gestion_maintenance'))
-
-#------------------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     app.run()
