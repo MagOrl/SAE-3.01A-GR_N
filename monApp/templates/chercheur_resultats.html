@@ -1,0 +1,114 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<body>
+    <section class="bloc-entier">
+        <div class="boite-bonjour">
+            <h2>Résultats des analyses ADN</h2>
+            <p>Historique complet de vos analyses</p>
+        </div>
+
+        {% if error %}
+        <div class="boite-action">
+            <div class="alert-warning">
+                <p>{{ error }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if resultats %}
+        <div class="boite-action">
+            <h3>Résultats ({{ resultats|length }})</h3>
+            
+            {% for data in resultats %}
+            <div class="resultat-card">
+                <div class="resultat-header">
+                    <h4>
+                        {% if data.resultat.type_analyse == 'mutation_remplacement' %}
+                        🧬 Mutation par remplacement
+                        {% elif data.resultat.type_analyse == 'mutation_insertion' %}
+                        ➕ Mutation par insertion
+                        {% elif data.resultat.type_analyse == 'mutation_deletion' %}
+                        ➖ Mutation par suppression
+                        {% elif data.resultat.type_analyse == 'distance_naive' %}
+                        📏 Distance naïve
+                        {% elif data.resultat.type_analyse == 'distance_levenshtein' %}
+                        📐 Distance de Levenshtein
+                        {% elif data.resultat.type_analyse == 'estimation_distance' %}
+                        📊 Estimation de distance
+                        {% endif %}
+                    </h4>
+                    <span class="date-analyse">{{ data.resultat.date_analyse.strftime('%d/%m/%Y %H:%M') }}</span>
+                </div>
+                
+                <div class="resultat-info">
+                    <div class="info-row">
+                        <strong>Campagne :</strong> 
+                        <a href="{{ url_for('chercheur_detail_campagne', id_camp=data.campagne.id_camp) }}">
+                            {{ data.campagne.nom_lieu_fouille }} (#{{ data.campagne.id_camp }})
+                        </a>
+                    </div>
+                    <div class="info-row">
+                        <strong>Séquence :</strong> {{ data.sequence.nom_fichier if data.sequence else 'N/A' }}
+                    </div>
+                    <div class="info-row">
+                        <strong>Échantillon :</strong> #{{ data.echantillon.id_ech }}
+                    </div>
+                    
+                    {% if data.resultat.parametre %}
+                    <div class="info-row">
+                        <strong>Taux de mutation :</strong> {{ (data.resultat.parametre * 100)|round(1) }}%
+                    </div>
+                    {% endif %}
+                    
+                    {% if data.resultat.id_ech_compare %}
+                    <div class="info-row">
+                        <strong>Comparé avec :</strong> Échantillon #{{ data.resultat.id_ech_compare }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if data.resultat.valeur_distance is not none %}
+                    <div class="info-row resultat-distance">
+                        <strong>Distance calculée :</strong> 
+                        <span class="distance-value">{{ data.resultat.valeur_distance }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="resultat-sequences">
+                    <div class="sequence-box">
+                        <strong>Séquence originale ({{ data.resultat.sequence_originale|length }} bases) :</strong>
+                        <div class="sequence-preview">
+                            <code>{{ data.resultat.sequence_originale[:150] }}{% if data.resultat.sequence_originale|length > 150 %}...{% endif %}</code>
+                        </div>
+                    </div>
+                    
+                    {% if data.resultat.sequence_resultat %}
+                    <div class="sequence-box">
+                        <strong>Séquence après mutation ({{ data.resultat.sequence_resultat|length }} bases) :</strong>
+                        <div class="sequence-preview">
+                            <code>{{ data.resultat.sequence_resultat[:150] }}{% if data.resultat.sequence_resultat|length > 150 %}...{% endif %}</code>
+                        </div>
+                        {% if data.resultat.sequence_originale|length != data.resultat.sequence_resultat|length %}
+                        <small class="mutation-info">
+                            Δ Longueur : {{ data.resultat.sequence_resultat|length - data.resultat.sequence_originale|length }} bases
+                        </small>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="boite-action">
+            <div class="no-results">
+                <p>Aucune analyse effectuée pour le moment.</p>
+                <p>Retournez dans vos campagnes pour analyser des séquences ADN.</p>
+                <a href="{{ url_for('chercheur_sequence') }}" class="btn-success btn-margin-top">Voir mes campagnes</a>
+            </div>
+        </div>
+        {% endif %}
+    </section>
+</body>
+{% endblock %}

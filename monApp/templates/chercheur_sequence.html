@@ -1,0 +1,61 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<body>
+    <section class="bloc-entier">
+        <div class="boite-bonjour">
+            <h2>Mes Campagnes</h2>
+            <p>Bienvenue {{ user.Nom }} {{ user.Prenom }}.</p>
+            <p>Voici la liste des campagnes auxquelles vous participez.</p>
+        </div>
+
+        {% if error %}
+        <div class="boite-action" style="background-color: #dc3545; color: white;">
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+
+        <div class="boite-action">
+            <h3>Liste des campagnes</h3>
+            {% if campagnes %}
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>ID Campagne</th>
+                        <th>Lieu de fouille</th>
+                        <th>Plateforme</th>
+                        <th>Date début</th>
+                        <th>Durée (jours)</th>
+                        <th>Échantillons</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in campagnes %}
+                    <tr>
+                        <td>{{ item.campagne.id_camp }}</td>
+                        <td>{{ item.campagne.nom_lieu_fouille }}</td>
+                        <td>{{ item.plateforme.nom_pla if item.plateforme else 'N/A' }}</td>
+                        <td>{{ item.campagne.date_deb_camp }}</td>
+                        <td>{{ item.campagne.duree }}</td>
+                        <td>{{ item.nb_echantillons }}</td>
+                        <td>
+                            <a href="{{ url_for('chercheur_detail_campagne', id_camp=item.campagne.id_camp) }}" class="btn-voir">
+                                Voir détails
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>Vous ne participez à aucune campagne pour le moment.</p>
+            {% endif %}
+        </div>
+
+        <div class="ctn-btn">
+            <a href="{{ url_for('chercheur_accueil') }}" class="bouton-planifier-camp">Retour à l'accueil</a>
+        </div>
+    </section>
+</body>
+{% endblock %}

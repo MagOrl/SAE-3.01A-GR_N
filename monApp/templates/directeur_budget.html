@@ -1,0 +1,21 @@
+{% extends "nav_bar.html" %} {% block content %}
+<section class="bloc-entier-directeur">
+  <div class="boite-bonjour-directeur">
+    <p>Directeur {{ user.Nom }} {{ user.Prenom }}.</p>
+  </div>
+  <div class="boite-glob-infos-budget">
+    <form role="form" method="POST" action="{{ url_for('insert_budget') }}">
+      {{ form.hidden_tag() }}
+      <div {% if form.valeur.errors %} class="boite-infos-budget has-error"{% else %}class="boite-infos-budget mb-3"{% endif %}>
+        <p class="info-budget-text">Budget:</p>
+        {{ form.valeur(size=50, class_="form-control") }}
+      </div>
+      <div {% if form.dat_deb.errors %} class="boite-infos-budget has-error"{% else %}class="boite-infos-budget mb-3"{% endif %}>
+        <p class="info-budget-text">Mois:</p>
+        {{ form.dat_deb(size=50, class_="form-control") }}
+      </div>
+      <input class="submit-budget" type="submit" value="Enregistrer" />
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -4,14 +4,14 @@
 <body>
     <section class="bloc-entier">
         <div class="boite-bonjour">
-            <p>Bienvenue sur ADN'O NOM PRENOM.</p>
+            <p>Bienvenue {{ user.Nom }} {{ user.Prenom }}.</p>
             <p>Que souhaitez-vous faire aujourd'hui ?</p>
         </div>
         <div class="boite-choix-menu">
             <a href="{{ url_for('chercheur_campagne') }}" class="bouton-gerer-personnel">Planifier une campagne</a>
-            <a href="" class="bouton-gerer-personnel">Analyser des échantillons</a>
-            <a href="" class="bouton-gerer-personnel">Téléverser les séquences</a>
-        </div>
+            <a href="{{ url_for('chercheur_sequence') }}" class="bouton-gerer-personnel">Mes campagnes et séquences ADN</a>
+            <a href="{{ url_for('chercheur_resultats') }}" class="bouton-gerer-personnel">Résultats des analyses ADN</a>
+            </div>
     </section>
 </body>
 {% endblock %}

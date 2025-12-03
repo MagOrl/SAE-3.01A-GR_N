@@ -70,7 +70,6 @@
   cursor: pointer;
   width: auto;
   margin-left: 0;
-
 }
 
 .btn-voir:hover {
@@ -132,6 +131,9 @@
   padding: 0.5rem 1rem;
 }
 
+.ctn-btn{
+  text-align: center;
+}
 .boite-choix-menu {
   display: flex;
   flex-direction: column;
@@ -146,8 +148,6 @@
   margin: 1rem;
 }
 /* Directeur */
-
-
 .boite-bonjour-directeur,
 .boite-choix-menu,
 .bloc-entier-directeur {
@@ -216,6 +216,18 @@
   margin: 2px;
   cursor: pointer;
   text-decoration: none;
+}
+
+.form-inline {
+  display: inline-flex;
+  margin: 0;
+}
+
+.form-inline .btn-supprimer {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .form-inline {
@@ -327,12 +339,121 @@
   text-align: center;
 }
 
+.boite-ajout-personnel {
+  background-color: var(--light-primary);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.boite-ajout-personnel h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.boite-ajout-personnel .form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.boite-ajout-personnel label {
+  font-weight: 600;
+}
+
+.boite-ajout-personnel input {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 120px;
+}
+
+.boite-ajout-materiel {
+  background-color: var(--light-primary);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.boite-ajout-materiel h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.boite-ajout-materiel .form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.boite-ajout-materiel label {
+  font-weight: 600;
+}
+
+.boite-ajout-materiel input,
+.boite-ajout-materiel select {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  min-width: 120px;
+}
+
+.bloc-entier {
+  background-color: var(--bg);
+  padding: 1rem;
+  margin: 1rem;
+}
+ /* DIRECTEUR - FIXER BUDGET */
+.boite-glob-infos-budget {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  padding-left: 30%;
+  padding-right: 30%;
+  flex-basis: 40%;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  justify-content: center;
+}
+
+.bloc-entier-directeur,
 .bloc-entier {
   background-color: var(--bg);
   padding: 1rem;
   margin: 1rem;
 }
 
+.bouton-planifier-camp{
+    text-align: center;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  background-color: var(--light-primary);
+  transition: 250ms all;
+  text-decoration: none;
+  color: black;
+
+}
+.bouton-planifier-camp:hover {
+  background-color: var(--hover-primary);
+  box-shadow: var(--shadow-hover);
+}
+
+
+.boite-bonjour-directeur p{
+  font-weight: bold;
+  font-size: large;
+}
 
 /* TECHNICIEN */
 .bouton-retour {
@@ -452,50 +573,9 @@
   position: center;
   border-radius: 10px;
   text-decoration: none;
-  /* DIRECTEUR - FIXER BUDGET */
+ 
 }
 
-.boite-glob-infos-budget {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  background-color: var(--primary-color);
-  padding: 0.5rem 1rem;
-  padding-left: 30%;
-  padding-right: 30%;
-  flex-basis: 40%;
-  border-radius: 10px;
-  box-shadow: var(--shadow);
-  justify-content: center;
-}
-
-.bloc-entier-directeur,
-.bloc-entier {
-  background-color: var(--bg);
-  padding: 1rem;
-  margin: 1rem;
-}
-
-.bouton-planifier-camp{
-    text-align: center;
-  padding: 0.5rem 1rem;
-  margin: 0.5rem;
-  background-color: var(--light-primary);
-  transition: 250ms all;
-  text-decoration: none;
-  color: black;
-
-}
-.bouton-planifier-camp:hover {
-  background-color: var(--hover-primary);
-  box-shadow: var(--shadow-hover);
-}
-
-
-.boite-bonjour-directeur p{
-  font-weight: bold;
-  font-size: large;
-}
   
 /* Page B - Planifier une campagne */
 
@@ -545,8 +625,11 @@
 #sect-pers-affecte {
   display: flex;
   flex-wrap: wrap;
-}
+}  
 
+#sect-pers-affecte ul {
+  list-style: none;
+}
 .perso-select {
   margin: 2%;
   flex-basis: 16%;
@@ -597,12 +680,8 @@
 
 .info-budget-text {
   flex-basis: 20%;
-}
-
-.info-budget-field {
-  border-radius: 10px;
-  margin-left: 5%;
-  flex-basis: 55%;
+  font-weight: bold;
+  margin-right: 5%;
 }
 
 .submit-budget {
@@ -610,4 +689,391 @@
   flex-basis: 40%;
   border-radius: 10px;
 }
+
+/* CHERCHEUR - SEQUENCES ADN */
+.sequence-container {
+  background-color: var(--light-primary);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 95%;
+  box-shadow: var(--shadow);
+}
+
+.sequence-container h4 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.sequence-adn-cell {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sequence-adn-text {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85em;
+  color: #2c3e50;
+  word-break: break-all;
+}
+
+.no-sequence {
+  color: #999;
+  font-style: italic;
+}
+
+.sequence-adn-input {
+  width: 100% !important;
+  font-family: 'Courier New', monospace;
+  padding: 10px;
+  border: 2px solid var(--primary-color);
+  border-radius: 5px;
+  resize: vertical;
+  font-size: 0.95em;
+}
+
+.sequence-adn-input:focus {
+  outline: none;
+  border-color: var(--hover-primary);
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.info-text {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+.error-message {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.error-message p {
+  margin: 0;
+}
+
+.flash-message {
+  padding: 15px;
+  margin: 20px auto;
+  border-radius: 5px;
+  max-width: 80%;
+  text-align: center;
+  font-weight: bold;
+}
+
+.flash-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.flash-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.flash-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.flash-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+/* Amélioration des tableaux pour les séquences */
+.sequence-container .tableau {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.sequence-container .tableau td {
+  vertical-align: middle;
+}
+
+.sequence-container .btn-voir {
+  width: auto;
+  margin: 0;
+  padding: 8px 15px;
+  font-size: 0.9em;
+}
+
+/* Classes utilitaires */
+.btn-margin-bottom {
+  margin-bottom: 20px;
+}
+
+.btn-margin-top {
+  margin-top: 20px;
+}
+
+.btn-success {
+  background-color: #28a745 !important;
+}
+
+.btn-success:hover {
+  background-color: #218838 !important;
+}
+
+.btn-danger {
+  background-color: #dc3545 !important;
+}
+
+.btn-danger:hover {
+  background-color: #c82333 !important;
+}
+
+.form-full-width {
+  flex-basis: 90%;
+  margin: 2%;
+}
+
+.sequence-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-supprimer-sequence {
+  text-decoration: none;
+  height: fit-content;
+}
+
+/* Analyse ADN */
+.formulaire-analyse {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.formulaire-analyse .form-group {
+  margin-bottom: 20px;
+}
+
+.formulaire-analyse label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.formulaire-analyse .form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.formulaire-analyse .form-text {
+  display: block;
+  margin-top: 5px;
+  color: #666;
+  font-size: 14px;
+}
+
+.sequence-preview {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 10px;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+  overflow-x: auto;
+}
+
+.sequence-preview code {
+  color: #d63384;
+  font-size: 14px;
+}
+
+.info-box {
+  background-color: #e7f3ff;
+  border-left: 4px solid #007bff;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 4px;
+}
+
+.info-box p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.info-box strong {
+  color: #007bff;
+}
+
+.btn-annuler {
+  background-color: #6c757d;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  display: inline-block;
+  transition: background-color 0.3s;
+}
+
+.btn-annuler:hover {
+  background-color: #5a6268;
+  color: white;
+}
+
+/* Résultats */
+.resultat-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resultat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #007bff;
+}
+
+.resultat-header h4 {
+  margin: 0;
+  color: #007bff;
+  font-size: 18px;
+}
+
+.date-analyse {
+  color: #666;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.resultat-info {
+  margin-bottom: 15px;
+}
+
+.info-row {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row strong {
+  color: #333;
+  margin-right: 10px;
+}
+
+.resultat-distance {
+  background-color: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.distance-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+  margin-left: 10px;
+}
+
+.resultat-sequences {
+  margin-top: 20px;
+}
+
+.sequence-box {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.sequence-box strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #495057;
+}
+
+.mutation-info {
+  display: block;
+  margin-top: 8px;
+  color: #666;
+  font-style: italic;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.no-results p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-analyser {
+  background-color: #17a2b8;
+  color: white;
+  padding: 6px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.btn-analyser:hover {
+  background-color: #138496;
+  color: white;
+}
+
+.btn-comparer {
+  background-color: #6f42c1;
+  color: white;
+  padding: 6px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.btn-comparer:hover {
+  background-color: #5a32a3;
+  color: white;
+}
+
+
 
