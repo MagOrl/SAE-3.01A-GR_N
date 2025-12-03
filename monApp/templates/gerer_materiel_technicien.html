@@ -1,0 +1,63 @@
+{% extends "nav_bar.html" %} {% block content %}
+<div class="bloc-entier-admin">
+  <div class="boite-bonjour-admin">
+    <h1>Gestion du matériel</h1>
+  </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="alert-container">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'success' if category == 'success' else category }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+  <div class="boite-choix-menu">
+    <div class="boite-ajout-materiel">
+      <h2>Ajouter un matériel</h2>
+      <form method="POST" action="{{ url_for('admin_gerer_materiel') }}" class="form-inline">
+        <label for="id_mat"><strong>ID Matériel :</strong></label>
+        <input type="text" id="id_mat" name="id_mat" placeholder="M001" required>
+        <label for="nom_mat"><strong>Nom :</strong></label>
+        <input type="text" id="nom_mat" name="nom_mat" placeholder="Nom du matériel" required>
+        <label for="id_hab"><strong>Habilitation :</strong></label>
+        <select id="id_hab" name="id_hab">
+          <option value="">-- Aucune --</option>
+          {% for hab in habilitations %}
+          <option value="{{ hab.id_hab }}">{{ hab.id_hab }} - {{ hab.nom_hab }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn-add">Créer</button>
+      </form>
+    </div>
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>ID Matériel</th>
+          <th>Habilitation affectée</th>
+          <th>Nom</th>
+          <th>Action Possible</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mat, hab_nom in materiels %}
+        <tr>
+          <td>{{ mat.id_mat }}</td>
+          <td>{{ hab_nom }}</td>
+          <td>{{ mat.nom_mat }}</td>
+          <td>
+            <a class="btn-voir" href="{{ url_for('technicien_gerer_materiel_detail', id_mat=mat.id_mat) }}">Voir</a>
+            <form method="POST" action="{{ url_for('technicien_supprimer_materiel', id_mat=mat.id_mat) }}" class="form-inline" onsubmit="return confirm('Supprimer ce matériel ?');">
+              <button type="submit" class="btn-supprimer">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a class="bouton-retour" href="{{ url_for('gestion_changement_technicien') }}">Retour</a>
+  </div>
+</div>
+{% endblock %}

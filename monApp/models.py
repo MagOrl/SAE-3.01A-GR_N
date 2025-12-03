@@ -103,7 +103,6 @@ class Plateforme(db.Model):
     nb_pers_nec = db.Column(db.Integer)
     cout_exploi_jour = db.Column(db.Float)
     inter_mainte = db.Column(db.Integer)
-    jours_av_mainte = db.Column(db.Integer)
 
     
     def __repr__(self):
@@ -237,14 +236,6 @@ class Campagne(db.Model):
                         'La durée de la campagne dépasse la durée maximale de la plateforme.'
                     )
 
-            if plateforme and hasattr(
-                    plateforme, 'jours_av_mainte'
-            ) and plateforme.jours_av_mainte is not None:
-                if plateforme.jours_av_mainte >= value:
-                    plateforme.jours_av_mainte -= value
-                else:
-                    plateforme.jours_av_mainte = plateforme.inter_mainte - value if hasattr(
-                        plateforme, 'inter_mainte') else 0
 
         if key == 'id_budg' and hasattr(self,
                                         'id_pla') and self.id_pla and hasattr(

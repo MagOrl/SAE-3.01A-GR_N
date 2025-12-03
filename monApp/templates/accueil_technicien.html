@@ -1,0 +1,16 @@
+{% extends "nav_bar.html" %} {% block content %}
+<div class="bloc-entier-admin">
+<div class="boite-bonjour-admin">
+    {% if current_user.is_authenticated %}
+    <h1>Bonjour Technicien {{ current_user.Nom }} {{ current_user.Prenom }}!</h1>
+    {% else %}
+    <h1>Bonjour Technicien !</h1>
+    {% endif %}
+</div>
+<div class="boite-choix-menu">
+    <a type="button" class="bouton-gerer-materiel" href="{{ url_for('gestion_maintenance') }}">Gérer les opérations de maintenance</a>
+    <a type="button" class="bouton-gerer-personnel" href="{{ url_for('gestion_changement_technicien') }}">Gérer les changements</a>
+</div>
+</div>
+{% endblock %}
+    

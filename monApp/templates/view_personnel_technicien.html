@@ -1,0 +1,71 @@
+{% extends "nav_bar.html" %}
+
+{% block content %}
+<div class="bloc-entier-admin">
+  <div class="boite-bonjour-admin">
+    <h1>Détails du Personnel</h1>
+  </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="alert-container">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'success' if category == 'success' else category }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+  <div class="boite-choix-menu">
+    <form method="POST" action="{{ url_for('technicien_gerer_personnel_detail', id_pers=personnel.id_pers) }}">
+      <p><strong>ID Personnel:</strong> {{ personnel.id_pers }}</p>
+      <p>
+        <label for="nom_pers"><strong>Nom Personnel:</strong></label>
+        <input type="text" id="nom_pers" name="nom_pers" value="{{ personnel.nom_pers }}" required>
+      </p>
+      <button type="submit" name="action" value="update_name" class="btn-update">Mettre à jour le nom</button>
+    </form>
+    
+    <h3>Habilitations:</h3>
+    {% if specialisations %}
+    <ul class="liste-habilitations">
+      {% for spec in specialisations %}
+      <li>
+        <span>{{ spec.id_hab }} - {{ spec.nom_hab }}</span>
+        <form method="POST" action="{{ url_for('technicien_gerer_personnel_detail', id_pers=personnel.id_pers) }}" class="form-inline">
+          <input type="hidden" name="action" value="remove_hab">
+          <input type="hidden" name="id_hab" value="{{ spec.id_hab }}">
+          <button type="submit" class="btn-remove">Retirer</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>Ce personnel ne possède aucune habilitation.</p>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('technicien_gerer_personnel_detail', id_pers=personnel.id_pers) }}" class="form-add-hab">
+      <input type="hidden" name="action" value="add_hab">
+      <label for="id_hab"><strong>Ajouter une habilitation :</strong></label>
+      <select id="id_hab" name="id_hab" required>
+        {% for hab in habilitations %}
+        <option value="{{ hab.id_hab }}">{{ hab.id_hab }} - {{ hab.nom_hab }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn-add">Ajouter</button>
+    </form>
+    
+    <h3>Campagnes Participées:</h3>
+    {% if participations %}
+    <ul>
+      {% for part in participations %}
+      <li>{{ part.id_camp }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>Ce personnel ne participe à aucune campagne.</p>
+    {% endif %}
+    
+    <a class="bouton-retour" href="{{ url_for('technicien_gerer_personnel') }}">Retour</a>  </div>
+</div>
+{% endblock %}
