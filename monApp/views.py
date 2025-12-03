@@ -653,27 +653,16 @@ def supprimer_materiel(id_mat):
 @login_required
 def admin_gerer_materiel():
     if request.method == 'POST':
-        id_mat = request.form.get('id_mat', '').strip().upper()
         nom_mat = request.form.get('nom_mat', '').strip()
         id_hab = request.form.get('id_hab') or None
+        max_id = db.session.query(func.max(Materiel.id_mat)).scalar()
+        id_mat = (max_id or 0) + 1
 
-        if not id_mat or not nom_mat:
-            flash('Merci de renseigner un identifiant et un nom pour le matériel.', 'danger')
-        elif not id_mat.startswith('M'):
-            flash("L'identifiant doit commencer par 'M'.", 'danger')
-        elif Materiel.query.get(id_mat):
-            flash('Un matériel avec cet identifiant existe déjà.', 'warning')
-        else:
-            if id_hab and not Habilitation.query.get(id_hab):
-                flash("Habilitation sélectionnée invalide.", 'danger')
-            else:
-                nouvelle = Materiel(id_mat=id_mat, id_hab=id_hab, nom_mat=nom_mat)
-                db.session.add(nouvelle)
-                db.session.commit()
-                flash('Matériel créé avec succès.', 'success')
-
+        nouvelle = Materiel(id_mat=id_mat, id_hab=id_hab, nom_mat=nom_mat)
+        db.session.add(nouvelle)
+        db.session.commit()
+        flash('Matériel créé avec succès.', 'success')
         return redirect(url_for('admin_gerer_materiel'))
-
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
     habilitations = Habilitation.query.all()
     return render_template("gerer_materiel_admin.html", materiels=materiels, habilitations=habilitations)
