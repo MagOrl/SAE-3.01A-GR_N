@@ -8,18 +8,14 @@ lg = logging.getLogger(__name__)
 
 @app.cli.command()
 def syncdb() -> None:
-    """
-    Crée les tables de la base de données.
-    """
+    """Crée les tables de la base de données."""
     db.create_all()
     lg.warning('Base de donnée synchronisée!')
 
 
 @app.cli.command()
 def loaddb() -> None:
-    """
-    Charge les données de peuplement.
-    """
+    """Charge les données de peuplement depuis PEUPLEMENT.sql."""
     import os
     
     # Chemin vers le fichier PEUPLEMENT.sql
@@ -46,7 +42,7 @@ def loaddb() -> None:
 @click.argument('role')
 @click.argument('personnel')
 def newuser(login, pwd,nom,prenom,role,personnel):
-    '''Adds a new user'''
+    """Crée un nouveau compte utilisateur."""
     from .models import User
     from hashlib import sha256
     m = sha256()
