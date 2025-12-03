@@ -507,7 +507,7 @@ def directeur_budget():
 def insert_budget():
     budgForm = BudgetForm(request.form)
     if budgForm.validate_on_submit():
-        budgId = Budget.query.count()
+        budgId = Budget.query.count() + 1
         insert_budget = Budget(id_budg=budgId,valeur=budgForm.valeur.data, date_deb_mois=budgForm.dat_deb.data)
         db.session.add(insert_budget)
         db.session.commit()

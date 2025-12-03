@@ -48,6 +48,7 @@ def load_user(username):
 
 
 class User(db.Model, UserMixin):
+    """Utilisateur du système avec rôle (chercheur, directeur, admin, technicien)."""
     Login = db.Column(db.String(50), primary_key=True)
     Password = db.Column(db.String(64))
     Nom = db.Column(db.String(20))
@@ -66,6 +67,7 @@ class User(db.Model, UserMixin):
     
     @validates('Id_pers', 'Role')
     def validate_chercheur_personnel(self, key, value):
+        """Valide que seuls les chercheurs peuvent être liés à un personnel."""
         if key == 'Id_pers' and value is not None:
             if hasattr(self, 'Role') and self.Role and self.Role != 'chercheur':
                 raise ValidationError(
@@ -80,6 +82,7 @@ class User(db.Model, UserMixin):
 
 
 class Habilitation(db.Model):
+    """Habilitation requise pour utiliser du matériel ou travailler sur une plateforme."""
     id_hab = db.Column(db.Integer, primary_key=True)
     nom_hab = db.Column(db.String(20))
 
@@ -89,6 +92,7 @@ class Habilitation(db.Model):
 
 
 class Personnel(db.Model):
+    """Personnel participant aux campagnes de fouille."""
     Id_pers = db.Column(db.Integer, primary_key=True)
     nom_pers = db.Column(db.String(20))
 
@@ -98,6 +102,7 @@ class Personnel(db.Model):
 
 
 class Plateforme(db.Model):
+    """Plateforme de fouille archéologique avec son matériel et ses contraintes."""
     id_pla = db.Column(db.Integer, primary_key=True)
     nom_pla = db.Column(db.String(20))
     nb_pers_nec = db.Column(db.Integer)
@@ -109,6 +114,7 @@ class Plateforme(db.Model):
         return "<Plateforme (%s) %s>" % (self.id_pla, self.nom_pla)
 
 class Maintenance(db.Model):
+    """Période de maintenance programmée d'une plateforme."""
     id_maint = db.Column(db.Integer, primary_key=True)
     id_pla = db.Column(db.Integer, db.ForeignKey('plateforme.id_pla'))
     date_deb_maint = db.Column(db.Date)
@@ -127,6 +133,7 @@ class OperationMaintenance(db.Model):
         return "<OperationMaintenance (%s) %s>" % (self.id_op_maint, self.id_pla)
 
 class Materiel(db.Model):
+    """Matériel utilisé sur les plateformes, nécessitant une habilitation."""
     id_mat = db.Column(db.Integer, primary_key=True)
     id_hab = db.Column(db.Integer, db.ForeignKey('habilitation.id_hab'))
     nom_mat = db.Column(db.String(20))
@@ -173,6 +180,7 @@ class SpecialiserEn(db.Model):
 
 
 class Budget(db.Model):
+    """Budget mensuel alloué pour les campagnes."""
     id_budg = db.Column(db.Integer, primary_key=True)
     valeur = db.Column(db.Float)
     date_deb_mois = db.Column(db.Date)
@@ -184,6 +192,7 @@ class Budget(db.Model):
 
 
 class Campagne(db.Model):
+    """Campagne de fouille archéologique sur une plateforme."""
     id_camp = db.Column(db.Integer, primary_key=True)
     duree = db.Column(db.Integer)
     date_deb_camp = db.Column(db.Date)
@@ -198,6 +207,7 @@ class Campagne(db.Model):
 
     @validates('id_pla', 'date_deb_camp', 'duree', 'id_budg')
     def validate_campagne(self, key, value):
+        """Valide la disponibilité de la plateforme, la durée et le budget."""
         if key == 'id_pla' and hasattr(
                 self, 'date_deb_camp') and self.date_deb_camp and hasattr(
                     self, 'duree') and self.duree:
@@ -265,6 +275,7 @@ class Campagne(db.Model):
 
 
 class Participer(db.Model):
+    """Association personnel-campagne avec validation des habilitations et disponibilités."""
     Id_pers = db.Column(db.Integer,
                         db.ForeignKey('personnel.Id_pers'),
                         primary_key=True)
@@ -278,6 +289,7 @@ class Participer(db.Model):
 
     @validates('Id_pers', 'id_camp')
     def validate_habilitations_et_conflits(self, key, value):
+        """Valide les habilitations requises et l'absence de conflits de planning."""
         if key == 'id_camp' and hasattr(self, 'Id_pers') and self.Id_pers:
             campagne = Campagne.query.get(value)
             if campagne and hasattr(campagne, 'id_pla'):
@@ -345,6 +357,7 @@ class Participer(db.Model):
 
 
 class Sequence(db.Model):
+    """Séquence génétique extraite lors d'une campagne."""
     id_seq = db.Column(db.Integer, primary_key=True)
     nom_fichier = db.Column(db.String(40))
 
@@ -375,6 +388,7 @@ class Espece(db.Model):
 
 
 class Echantillon(db.Model):
+    """Échantillon d'ADN associé à une séquence."""
     id_ech = db.Column(db.Integer, primary_key=True)
     id_seq = db.Column(db.Integer, db.ForeignKey('sequence.id_seq'))
     commentaire = db.Column(db.String(255))
@@ -386,6 +400,7 @@ class Echantillon(db.Model):
 
 
 class Resultat(db.Model):
+    """Résultat d'analyse ADN (mutation ou comparaison de séquences)."""
     id_res = db.Column(db.Integer, primary_key=True)
     id_ech = db.Column(db.Integer, db.ForeignKey('echantillon.id_ech'))
     id_camp = db.Column(db.Integer, db.ForeignKey('campagne.id_camp'))

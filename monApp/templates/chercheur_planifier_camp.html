@@ -2,6 +2,7 @@
 <section class="bloc-entier">
   <div class="boite-action">
     <p>Veuillez renseigner les informations de votre campagne</p>
+    <a href="{{ url_for('chercheur_accueil') }}" class="bouton-planifier-camp">Retour à l'accueil</a>
   </div>
   <form role="form" action="{{ url_for('insert_campagne') }}" method="POST">
     {{ form.hidden_tag() }}
@@ -41,6 +42,9 @@
           </div>
         </div>
         <input type="submit" value="Enregistrer" class="campagne-childs" />
+      </div>
+      
+      <div class="ctn-btn">
       </div>
     </div>
   </form>
