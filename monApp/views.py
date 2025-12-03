@@ -666,18 +666,18 @@ def admin_gerer_materiel():
     materiels = Materiel.query.join(Habilitation, Materiel.id_hab == Habilitation.id_hab).add_columns(Habilitation.nom_hab).all()
     habilitations = Habilitation.query.all()
     return render_template("gerer_materiel_admin.html", materiels=materiels, habilitations=habilitations)
-
-
 @app.route("/technicien/")
-def technicien():
-    return render_template("accueil_technicien.html")
+@login_required
+def technicien_accueil():
+    if session["user"].Role != 'technicien':
+        return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
+    return render_template("technicien_accueil.html",user=session["user"])
 
-@app.route("/gestion_changement_technicien/")
-def gestion_changement_technicien():
-    return render_template("gestion_changement_technicien.html")
-
-@app.route("/gestion_maintenance/")
+@app.route("/technicien/gestion_maintenance/")
+@login_required
 def gestion_maintenance():
+    if session["user"].Role != 'technicien':
+        return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     maintenances_passees = Maintenance.query.filter(Maintenance.date_fin_maint < date.today()).all()
     for m in maintenances_passees:
         db.session.delete(m)
@@ -694,8 +694,11 @@ def gestion_maintenance():
             
     return render_template("gestion_maintenance.html", plateformes=donnees_plateformes)
 
-@app.route("/maintenance/ajouter/", methods=["GET", "POST"])
+@app.route("/technicien/ajouter/", methods=["GET", "POST"])
+@login_required
 def ajouter_maintenance():
+    if session["user"].Role != 'technicien':
+        return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     if request.method == "POST":
         id_pla = request.form["id_pla"]
         date_deb = request.form["date_deb_maint"]
@@ -732,8 +735,12 @@ def ajouter_maintenance():
         
     return render_template("ajouter_maintenance.html", plateformes=plateformes)
 
-@app.route("/maintenance/supprimer/<id_maint>")
+@app.route("/technicien/supprimer/<id_maint>")
+@login_required
 def supprimer_maintenance(id_maint):
+    if session["user"].Role != 'technicien':
+        return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
+
     maintenance_a_supprimer = Maintenance.query.get(id_maint)
     if maintenance_a_supprimer:
         db.session.delete(maintenance_a_supprimer)

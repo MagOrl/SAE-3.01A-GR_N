@@ -1,0 +1,12 @@
+{% extends "nav_bar.html" %}
+{% block content %}
+<div class="bloc-entier-admin">
+    <div class="boite-bonjour-admin">
+        <h1>Bonjour Technicien {{ user.Nom}} {{user.Prenom }}</h1>
+    </div>
+    <div class="boite-choix-menu">
+        <a type="button" class="bouton-gerer-materiel" href="{{ url_for('gestion_maintenance') }}">Gérer les opérations
+            de maintenance</a>
+    </div>
+</div>
+{% endblock %}
