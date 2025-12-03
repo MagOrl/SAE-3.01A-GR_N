@@ -11,5 +11,7 @@
 ### Faire le pytest :
 ```
 pytest --cov=exercice --cov-report=term-missing test.py #dans le repertoire ALGO
+pytest --cov=monApp.views --cov-report=html --cov-report=term tests/ -v --tb=line
+
 ```
 
