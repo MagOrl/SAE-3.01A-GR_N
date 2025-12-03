@@ -551,7 +551,7 @@ def gerer_personnel_detail(Id_pers):
             id_hab = request.form.get('id_hab')
             if id_hab and Habilitation.query.get(id_hab):
                 deja_present = SpecialiserEn.query.filter_by(Id_pers=Id_pers, id_hab=id_hab).first()
-                if not deja_present:
+                if deja_present:
                     print('Ce personnel possède déjà cette habilitation.')
                 else:
                     specialisation = SpecialiserEn(id_hab=id_hab, Id_pers=Id_pers)
