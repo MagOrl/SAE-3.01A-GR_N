@@ -4,11 +4,11 @@
     <h1>Gestion des changements</h1>
 </div>
 <div class="boite-choix-menu">
-    <input type="button" class="bouton-gerer-materiel" value="Gérer le matériels">
-    <input type="button" class="bouton-gerer-personnel" value="Gérer le personnel">
+    <a href="{{ url_for('technicien_gerer_materiel') }}" class="bouton-gerer-materiel">Gérer le matériels</a>
+    <a href="{{ url_for('technicien_gerer_personnel') }}" class="bouton-gerer-personnel">Gérer le personnel</a>
 </div>
 <div class="box-retour">
-    <button class="bouton-retour" onclick="history.back();">Retour</button>
+    <a class="bouton-retour-z" href="{{ url_for('technicien_accueil') }}">Retour</a>
 </div>
 </div>
 {% endblock %}

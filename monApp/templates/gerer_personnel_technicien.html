@@ -1,0 +1,53 @@
+{% extends "nav_bar.html" %} {% block content %}
+<div class="bloc-entier-admin">
+  <div class="boite-bonjour-admin">
+    <h1>Gestion du personnel</h1>
+  </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="alert-container">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'success' if category == 'success' else category }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+  <div class="boite-choix-menu">
+    <div class="boite-ajout-personnel">
+      <h2>Ajouter un personnel</h2>
+      <form method="POST" action="{{ url_for('technicien_gerer_personnel') }}" class="form-inline">
+        <label for="id_pers"><strong>ID Personnel :</strong></label>
+        <input type="text" id="id_pers" name="id_pers" placeholder="PER001" required>
+        <label for="nom_pers"><strong>Nom Personnel :</strong></label>
+        <input type="text" id="nom_pers" name="nom_pers" placeholder="Nom" required>
+        <button type="submit" class="btn-add">Créer</button>
+      </form>
+    </div>
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>ID Personnel</th>
+          <th>Nom Personnel</th>
+          <th>Action Possible</th>  
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in personnels %}
+        <tr>
+          <td>{{ p.id_pers }}</td>
+          <td>{{ p.nom_pers }}</td>
+          <td>
+            <a class="btn-voir" href="{{ url_for('technicien_gerer_personnel_detail', id_pers=p.id_pers) }}">Voir</a>
+            <form method="POST" action="{{ url_for('technicien_supprimer_personnel', id_pers=p.id_pers) }}" class="form-inline" onsubmit="return confirm('Supprimer ce personnel ?');">
+              <button type="submit" class="btn-supprimer">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a class="bouton-retour" href="{{ url_for('gestion_changement_technicien') }}">Retour</a>
+  </div>
+{% endblock %}

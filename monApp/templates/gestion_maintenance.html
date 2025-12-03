@@ -4,9 +4,9 @@
     <h1>Gestion des maintenances</h1>
 </div>
 <br>
-<a href="{{ url_for('ajouter_maintenance') }}" class="bouton_ajout">Ajouter une maintenance</a>
+<a href="{{ url_for('ajouter_maintenance') }}" class="bouton-ajout-maintenance">Ajouter une maintenance</a>
 <div class="boite-choix-menu">
-    <table class="">
+    <table class="tableau">
         <thead>
             <tr>
                 <th>ID Maintenance</th>
@@ -39,9 +39,7 @@
              </tbody>
     </table>
     <br>
-</div>
-<div class="box-retour">
-    <a class="bouton-retour" href="{{ url_for('technicien') }}">Retour</a>
+    <a class="bouton-retour" href="{{ url_for('technicien_accueil') }}">Retour</a>
 </div>
 
 {% endblock %}

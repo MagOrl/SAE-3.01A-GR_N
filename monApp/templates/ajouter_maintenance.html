@@ -1,6 +1,17 @@
 {% extends "nav_bar.html" %}
 {% block content %}
 <div class="bloc-entier-admin">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert-container">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'success' if category == 'success' else category }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
     <div class="boite-bonjour-admin">
         {% if id_pla %}
         <h1>Ajouter une maintenance pour {{ id_pla }}</h1>
