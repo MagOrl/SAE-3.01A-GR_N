@@ -9,6 +9,7 @@ from flask_login import login_user,login_required,logout_user
 from sqlalchemy import extract
 import sys
 import os
+from sqlalchemy import func
 
 # Import DNA analysis functions from exercice.py
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'code', 'ALGO'))
@@ -516,7 +517,7 @@ def directeur_accueil():
 @app.route('/directeur/budget/')
 @login_required
 def directeur_budget():
-    if session["user"].Role != 'directeur':
+    if session["user"].Role != 'directeur': 
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     budgForm = BudgetForm()
     return render_template("directeur_budget.html",user=session["user"],form=budgForm)
@@ -541,9 +542,25 @@ def admin_accueil():
             return render_template("access_denied.html",error ='401', reason="Vous n'avez pas les droits d'accès à cette page.")
     return render_template("home_admin.html", admin=session.get("user"))
 
-@app.route('/admin/gerer_personnel/<id_pers>', methods=['GET', 'POST'])
-def gerer_personnel_detail(id_pers):
-    pers = Personnel.query.get_or_404(id_pers)
+@app.route("/admin/gerer_personnel",methods=["POST","GET"])
+@login_required
+def admin_gerer_personnel():
+    if request.method == 'POST':
+        max_id = db.session.query(func.max(Personnel.Id_pers)).scalar()
+        Id_pers = (max_id or 0) + 1
+        nom_pers = request.form.get('nom_pers', '').strip()
+        nouveau_pers = Personnel(Id_pers=Id_pers, nom_pers=nom_pers)
+        db.session.add(nouveau_pers)
+        db.session.commit()
+        flash('Personnel créé avec succès.', 'success')
+        return redirect(url_for('admin_gerer_personnel'))
+    personnels = Personnel.query.all()
+    return render_template("gerer_personnel_admin.html", personnels=personnels)
+
+@app.route('/admin/gerer_personnel/<Id_pers>', methods=['GET', 'POST'])
+@login_required
+def gerer_personnel_detail(Id_pers):
+    pers = Personnel.query.get_or_404(Id_pers)
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'update_name':
@@ -557,11 +574,11 @@ def gerer_personnel_detail(id_pers):
         elif action == 'add_hab':
             id_hab = request.form.get('id_hab')
             if id_hab and Habilitation.query.get(id_hab):
-                deja_present = SpecialiserEn.query.filter_by(id_pers=id_pers, id_hab=id_hab).first()
+                deja_present = SpecialiserEn.query.filter_by(Id_pers=Id_pers, id_hab=id_hab).first()
                 if deja_present:
                     flash('Ce personnel possède déjà cette habilitation.', 'warning')
                 else:
-                    specialisation = SpecialiserEn(id_hab=id_hab, id_pers=id_pers)
+                    specialisation = SpecialiserEn(id_hab=id_hab, Id_pers=Id_pers)
                     db.session.add(specialisation)
                     db.session.commit()
                     flash('Habilitation ajoutée avec succès.', 'success')
@@ -569,26 +586,27 @@ def gerer_personnel_detail(id_pers):
                 flash("Habilitation sélectionnée invalide.", 'danger')
         elif action == 'remove_hab':
             id_hab = request.form.get('id_hab')
-            lien = SpecialiserEn.query.filter_by(id_pers=id_pers, id_hab=id_hab).first()
+            lien = SpecialiserEn.query.filter_by(Id_pers=Id_pers, id_hab=id_hab).first()
             if lien:
                 db.session.delete(lien)
                 db.session.commit()
                 flash('Habilitation retirée avec succès.', 'success')
             else:
                 flash("Cette habilitation n'est pas liée à ce personnel.", 'warning')
-        return redirect(url_for('gerer_personnel_detail', id_pers=id_pers))
+        return redirect(url_for('gerer_personnel_detail', Id_pers=Id_pers))
     
-    specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.id_pers == id_pers).all()
-    participations = Participer.query.filter_by(id_pers=id_pers).all()
+    specialisations = db.session.query(Habilitation).join(SpecialiserEn).filter(SpecialiserEn.Id_pers == Id_pers).all()
+    participations = Participer.query.filter_by(Id_pers=Id_pers).all()
     habilitations = Habilitation.query.all()
     return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations, habilitations=habilitations)
 
 
-@app.route('/admin/gerer_personnel/<id_pers>/supprimer', methods=['POST'])
-def supprimer_personnel(id_pers):
-    pers = Personnel.query.get_or_404(id_pers)
-    SpecialiserEn.query.filter_by(id_pers=id_pers).delete(synchronize_session=False)
-    Participer.query.filter_by(id_pers=id_pers).delete(synchronize_session=False)
+@app.route('/admin/gerer_personnel/<Id_pers>/supprimer', methods=['POST'])
+@login_required
+def supprimer_personnel(Id_pers):
+    pers = Personnel.query.get_or_404(Id_pers)
+    SpecialiserEn.query.filter_by(Id_pers=Id_pers).delete(synchronize_session=False)
+    Participer.query.filter_by(Id_pers=Id_pers).delete(synchronize_session=False)
     db.session.delete(pers)
     db.session.commit()
     return redirect(url_for('admin_gerer_personnel'))
@@ -623,51 +641,16 @@ def gerer_materiel_detail(id_mat):
 
 
 @app.route('/admin/gerer_materiel/<id_mat>/supprimer', methods=['POST'])
+@login_required
 def supprimer_materiel(id_mat):
     materiel = Materiel.query.get_or_404(id_mat)
     Utiliser.query.filter_by(id_mat=id_mat).delete(synchronize_session=False)
     db.session.delete(materiel)
     db.session.commit()
     return redirect(url_for('admin_gerer_materiel'))
-@app.route("/admin/gerer_personnel", methods=['GET', 'POST'])
 
-
-@app.route('/admin/gerer_personnel/<Id_pers>', methods=['GET', 'POST'])
-def gerer_personnel_detail(Id_pers):
-    pers = personnel.query.get_or_404(Id_pers)
-    if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'update_name':
-            pers.nom_pers = request.form['nom_pers']
-            db.session.commit()
-        return redirect(url_for('gerer_personnel_detail', Id_pers=Id_pers))
-    
-    specialisations = db.session.query(habilitation).join(SpecialiserEn).filter(SpecialiserEn.Id_pers == Id_pers).all()
-    participations = Participer.query.filter_by(Id_pers=Id_pers).all()
-    return render_template('view_personel_admin.html', personnel=pers, specialisations=specialisations, participations=participations)
-@app.route("/admin/gerer_personnel")
-def admin_gerer_personnel():
-    if request.method == 'POST':
-        id_pers = request.form.get('id_pers', '').strip().upper()
-        nom_pers = request.form.get('nom_pers', '').strip()
-
-        if not id_pers or not nom_pers:
-            flash('Merci de renseigner un identifiant et un nom.', 'danger')
-        elif not id_pers.startswith('PER'):
-            flash("L'identifiant doit commencer par 'PER'.", 'danger')
-        elif Personnel.query.get(id_pers):
-            flash('Un personnel avec cet identifiant existe déjà.', 'warning')
-        else:
-            nouveau_pers = Personnel(id_pers=id_pers, nom_pers=nom_pers)
-            db.session.add(nouveau_pers)
-            db.session.commit()
-            flash('Personnel créé avec succès.', 'success')
-
-        return redirect(url_for('admin_gerer_personnel'))
-
-    personnels = Personnel.query.all()
-    return render_template("gerer_personnel_admin.html", personnels=personnels)
 @app.route("/admin/gerer_materiel", methods=['GET', 'POST'])
+@login_required
 def admin_gerer_materiel():
     if request.method == 'POST':
         id_mat = request.form.get('id_mat', '').strip().upper()

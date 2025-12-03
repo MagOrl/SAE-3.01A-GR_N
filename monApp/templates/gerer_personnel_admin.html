@@ -18,8 +18,6 @@
     <div class="boite-ajout-personnel">
       <h2>Ajouter un personnel</h2>
       <form method="POST" action="{{ url_for('admin_gerer_personnel') }}" class="form-inline">
-        <label for="id_pers"><strong>ID Personnel :</strong></label>
-        <input type="text" id="id_pers" name="id_pers" placeholder="PER001" required>
         <label for="nom_pers"><strong>Nom Personnel :</strong></label>
         <input type="text" id="nom_pers" name="nom_pers" placeholder="Nom" required>
         <button type="submit" class="btn-add">Créer</button>
@@ -39,8 +37,8 @@
           <td>{{ p.Id_pers }}</td>
           <td>{{ p.nom_pers }}</td>
           <td>
-            <a class="btn-voir" href="{{ url_for('gerer_personnel_detail', id_pers=p.id_pers) }}">Voir</a>
-            <form method="POST" action="{{ url_for('supprimer_personnel', id_pers=p.id_pers) }}" class="form-inline" onsubmit="return confirm('Supprimer ce personnel ?');">
+            <a class="btn-voir" href="{{ url_for('gerer_personnel_detail', Id_pers=p.Id_pers) }}">Voir</a>
+            <form method="POST" action="{{ url_for('supprimer_personnel', Id_pers=p.Id_pers) }}" class="form-inline" onsubmit="return confirm('Supprimer ce personnel ?');">
               <button type="submit" class="btn-supprimer">Supprimer</button>
             </form>
           </td>

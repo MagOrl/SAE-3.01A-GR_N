@@ -32,7 +32,7 @@
       {% for spec in specialisations %}
       <li>
         <span>{{ spec.id_hab }} - {{ spec.nom_hab }}</span>
-        <form method="POST" action="{{ url_for('gerer_personnel_detail', id_pers=personnel.id_pers) }}" class="form-inline">
+        <form method="POST" action="{{ url_for('gerer_personnel_detail', Id_pers=personnel.Id_pers) }}" class="form-inline">
           <input type="hidden" name="action" value="remove_hab">
           <input type="hidden" name="id_hab" value="{{ spec.id_hab }}">
           <button type="submit" class="btn-remove">Retirer</button>
@@ -44,7 +44,7 @@
     <p>Ce personnel ne possède aucune habilitation.</p>
     {% endif %}
 
-    <form method="POST" action="{{ url_for('gerer_personnel_detail', id_pers=personnel.id_pers) }}" class="form-add-hab">
+    <form method="POST" action="{{ url_for('gerer_personnel_detail', Id_pers=personnel.Id_pers) }}" class="form-add-hab">
       <input type="hidden" name="action" value="add_hab">
       <label for="id_hab"><strong>Ajouter une habilitation :</strong></label>
       <select id="id_hab" name="id_hab" required>
